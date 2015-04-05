@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Creating initial configuration</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Molecular Simulation Blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/.html"></a></li>
+                    <li class="active"><a href="/category/molsimgithubio.html">molsim.github.io</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/lammps_init.html" rel="bookmark"
+           title="Permalink to Creating initial configuration">Creating initial configuration</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-12-23T00:00:00+01:00">
+                Published: Tue 23 December 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
+        </address>
+<p>In <a href="/category/molsimgithubio.html">molsim.github.io</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/initial-configuration.html">initial configuration</a> <a href="/tag/creating-melt.html">creating melt</a> <a href="/tag/datafile.html">datafile</a> </p>
+</footer><!-- /.post-info -->      <blockquote>
+<p>Problem to solve: How to create lammps data file for polymer melt</p>
+<p>Solution:
+Using fortran code to create initial melt. Here is a pseudo-code snippet of 
+<code>chain.f</code></p>
+</blockquote>
+<div class="highlight"><pre><span class="k">c</span> <span class="n">random</span> <span class="n">starting</span> <span class="n">point</span> <span class="k">for</span> <span class="n">the</span> <span class="k">chain</span> <span class="k">in</span> <span class="n">the</span> <span class="n">box</span>
+
+          <span class="n">x1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+          <span class="n">y1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+          <span class="n">z1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">0</span>
+          <span class="n">x2</span> <span class="o">=</span> <span class="n">xboundlo</span> <span class="o">+</span> <span class="n">random</span><span class="p">(</span><span class="n">iseed</span><span class="p">)</span><span class="o">*</span><span class="n">xprd</span>
+          <span class="n">y2</span> <span class="o">=</span> <span class="n">yboundlo</span> <span class="o">+</span> <span class="n">random</span><span class="p">(</span><span class="n">iseed</span><span class="p">)</span><span class="o">*</span><span class="n">yprd</span>
+          <span class="n">z2</span> <span class="o">=</span> <span class="n">zboundlo</span> <span class="o">+</span> <span class="n">random</span><span class="p">(</span><span class="n">iseed</span><span class="p">)</span><span class="o">*</span><span class="n">zprd</span>
+
+<span class="k">c</span> <span class="n">store</span> <span class="mi">1</span><span class="n">st</span> <span class="n">monomer</span> <span class="k">of</span> <span class="k">chain</span>
+<span class="k">c</span> <span class="mi">1</span><span class="n">st</span> <span class="n">monomer</span> <span class="k">is</span> <span class="n">always</span> <span class="k">in</span> <span class="n">original</span> <span class="n">box</span> <span class="p">(</span><span class="n">image</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">c</span> <span class="n">generate</span> <span class="n">rest</span> <span class="k">of</span> <span class="n">monomers</span> <span class="k">in</span> <span class="n">this</span> <span class="k">chain</span>
+
+          <span class="k">do</span> <span class="n">imonomer</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span><span class="n">nmonomer</span><span class="p">(</span><span class="n">iset</span><span class="p">)</span>
+
+            <span class="n">x0</span> <span class="o">=</span> <span class="n">x1</span>
+            <span class="n">y0</span> <span class="o">=</span> <span class="n">y1</span>
+            <span class="n">z0</span> <span class="o">=</span> <span class="n">z1</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="n">x2</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="n">y2</span>
+            <span class="n">z1</span> <span class="o">=</span> <span class="n">z2</span>
+
+<span class="k">c</span> <span class="n">random</span> <span class="n">point</span> <span class="n">inside</span> <span class="n">sphere</span> <span class="k">of</span> <span class="n">unit</span> <span class="n">radius</span>
+<span class="k">c</span> <span class="n">project</span> <span class="n">point</span> <span class="k">to</span> <span class="n">surface</span> <span class="k">of</span> <span class="n">sphere</span> <span class="k">of</span> <span class="n">unit</span> <span class="n">radius</span>
+<span class="k">c</span> <span class="k">create</span> <span class="k">new</span> <span class="n">point</span> <span class="k">by</span> <span class="n">scaling</span> <span class="n">unit</span> <span class="n">offsets</span> <span class="k">by</span> <span class="n">bondlength</span> <span class="p">(</span><span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">c</span> <span class="k">check</span> <span class="n">that</span> <span class="k">new</span> <span class="n">point</span> <span class="n">meets</span> <span class="n">restriction</span> <span class="n">requirement</span>
+<span class="k">c</span> <span class="k">only</span> <span class="k">for</span> <span class="mi">3</span><span class="n">rd</span> <span class="n">monomer</span> <span class="k">and</span> <span class="n">beyond</span>
+</pre></div>
+
+
+<p>To run the program chain.f we need :</p>
+<ol>
+<li>Compile <code>chain.f</code>  with <code>gfortran chain.f -o create_init.out</code></li>
+<li>Create a initial file <code>def.chain</code>, specifying what type of polymers we want to create</li>
+<li>Create the melt using <code>./create_init.out &lt; def.chain &gt; init.data</code></li>
+</ol>
+<p>What is in <code>def.chain</code>?</p>
+<p>To create <code>def.chain</code> one must follow standard format:
+Imagine we want to create 3 sets of polymers, 
+1st set with one chain, every chain is 10 Carbon atoms, 
+2nd set with 2 chains, every chain is 20 Carbon atoms long,
+3rd set with 3 chains, every chain is 30 Carbon atoms long. Total number of atoms in the system would be : 1<em>10+2</em>20+3*30</p>
+<div class="highlight"><pre><span class="n">Polymer</span> <span class="n">chain</span> <span class="n">definition</span>
+
+<span class="mf">0.8442</span>          <span class="c1">#rhostar, density in lj units</span>
+<span class="mi">592984</span>          <span class="c1">#random seed (8 digits or less)</span>
+<span class="mi">3</span>               <span class="c1"># of sets of chains (blank line + 6 values for each set)</span>
+<span class="mi">0</span>               <span class="c1">#molecule tag rule: 0 = by mol, 1 = from 1 end, 2 = from 2 ends</span>
+
+<span class="mi">1</span>             <span class="c1">#number of chains</span>
+<span class="mi">10</span>             <span class="c1">#monomers/chain</span>
+<span class="mi">1</span>               <span class="c1">#type of monomers (for output into LAMMPS file)</span>
+<span class="mi">1</span>               <span class="c1">#type of bonds (for output into LAMMPS file)</span>
+<span class="mf">0.97</span>            <span class="c1">#distance between monomers (in reduced units)</span>
+<span class="mf">1.02</span>            <span class="c1">#no distance less than this from site i-1 to i+1 (reduced unit)</span>
+
+<span class="mi">2</span>             <span class="c1">#number of chains</span>
+<span class="mi">20</span>             <span class="c1">#monomers/chain</span>
+<span class="mi">1</span>               <span class="c1">#type of monomers (for output into LAMMPS file)</span>
+<span class="mi">1</span>               <span class="c1">#type of bonds (for output into LAMMPS file)</span>
+<span class="mf">0.97</span>            <span class="c1">#distance between monomers (in reduced units)</span>
+<span class="mf">1.02</span>            <span class="c1">#no distance less than this from site i-1 to i+1 (reduced unit)</span>
+
+<span class="mi">3</span>             <span class="c1">#number of chains</span>
+<span class="mi">30</span>             <span class="c1">#monomers/chain</span>
+<span class="mi">1</span>               <span class="c1">#type of monomers (for output into LAMMPS file)</span>
+<span class="mi">1</span>               <span class="c1">#type of bonds (for output into LAMMPS file)</span>
+<span class="mf">0.97</span>            <span class="c1">#distance between monomers (in reduced units)</span>
+<span class="mf">1.02</span>            <span class="c1">#no distance less than this from site i-1 to i+1 (reduced unit)</span>
+</pre></div>
+
+
+<p>After this procedure this data file will look like:</p>
+<div class="highlight"><pre><span class="n">LAMMPS</span> <span class="n">FENE</span> <span class="n">chain</span> <span class="n">data</span> <span class="n">file</span>
+
+       <span class="mi">140</span>  <span class="n">atoms</span>
+       <span class="mi">134</span>  <span class="n">bonds</span>
+           <span class="mi">0</span>  <span class="n">angles</span>
+           <span class="mi">0</span>  <span class="n">dihedrals</span>
+           <span class="mi">0</span>  <span class="n">impropers</span>
+
+           <span class="mi">1</span>  <span class="n">atom</span> <span class="n">types</span>
+           <span class="mi">1</span>  <span class="n">bond</span> <span class="n">types</span>
+           <span class="mi">0</span>  <span class="n">angle</span> <span class="n">types</span>
+           <span class="mi">0</span>  <span class="n">dihedral</span> <span class="n">types</span>
+           <span class="mi">0</span>  <span class="n">improper</span> <span class="n">types</span>
+
+<span class="o">-</span><span class="mf">19.182747</span> <span class="mf">19.182747</span> <span class="n">xlo</span> <span class="n">xhi</span>
+<span class="o">-</span><span class="mf">19.182747</span> <span class="mf">19.182747</span> <span class="n">ylo</span> <span class="n">yhi</span>
+<span class="o">-</span><span class="mf">19.182747</span> <span class="mf">19.182747</span> <span class="n">zlo</span> <span class="n">zhi</span>
+
+<span class="n">Masses</span>
+
+  <span class="mi">1</span>  <span class="mf">1.0</span>
+
+<span class="n">Atoms</span>
+
+         <span class="mi">1</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">16.1373</span>   <span class="mf">13.9681</span>    <span class="mf">3.6884</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+         <span class="mi">2</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">15.6470</span>   <span class="mf">14.2655</span>    <span class="mf">4.3158</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+         <span class="mi">3</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">15.7395</span>   <span class="mf">15.0630</span>    <span class="mf">4.5950</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+         <span class="mi">4</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">16.4392</span>   <span class="mf">14.9994</span>    <span class="mf">5.0735</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+         <span class="mi">5</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">16.0788</span>   <span class="mf">14.3130</span>    <span class="mf">5.4222</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+         <span class="mi">6</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">15.4238</span>   <span class="mf">13.9461</span>    <span class="mf">5.8208</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+         <span class="mi">7</span>       <span class="mi">1</span>       <span class="mi">1</span>   <span class="mf">15.9124</span>   <span class="mf">13.9886</span>    <span class="mf">6.5151</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span>
+<span class="p">....</span>
+</pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

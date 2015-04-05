@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Equilibrating polymers using physical molecular simulation</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Molecular Simulation Blog </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/misc.html">misc</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/equilibrate_phys.html" rel="bookmark"
+           title="Permalink to Equilibrating polymers using physical molecular simulation">Equilibrating polymers using physical molecular simulation</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-12-23T00:00:00+01:00">
+                Published: Tue 23 December 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
+        </address>
+<p>In <a href="/category/misc.html">misc</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">equilibration</a> </p>
+</footer><!-- /.post-info -->      <p>If we recall the init.data created at the first stage of creating melt it started like this:</p>
+<div class="highlight"><pre><span class="n">LAMMPS</span> <span class="n">FENE</span> <span class="n">chain</span> <span class="n">data</span> <span class="n">file</span>
+
+       <span class="mi">140</span>  <span class="n">atoms</span>
+       <span class="mi">134</span>  <span class="n">bonds</span>
+           <span class="mi">0</span>  <span class="n">angles</span>
+           <span class="mi">0</span>  <span class="n">dihedrals</span>
+           <span class="mi">0</span>  <span class="n">impropers</span>
+<span class="o">...</span>
+</pre></div>
+
+
+<p>So the data file didn't have any information about angle, dihedrals in the systems. Lets now consider possible ways of tackling this problem.</p>
+<div class="highlight"><pre><span class="c1">#!/bin/bash</span>
+
+
+<span class="c1"># here is the main file for creating a polymer melt</span>
+<span class="c1"># input : DATA_file_input = initial melt created by chain.f, or the equil.data - equilibrated melt by in.kremer that has only fene Bonds</span>
+<span class="c1"># output : DATA_file_output = final melt that has angles ( if required dihedrals as well)</span>
+
+<span class="c1">#set input and output</span>
+<span class="n">datain</span><span class="o">=</span><span class="s">&quot;equil.data&quot;</span>
+<span class="n">dataout</span><span class="o">=</span><span class="s">&quot;tmp.data&quot;</span>
+<span class="c1">#get information about number of atoms and number of bonds</span>
+<span class="n">STR</span><span class="o">=</span><span class="nv">$</span><span class="err">(</span><span class="nv">less</span> <span class="nv">$datain</span> <span class="o">|</span> <span class="nb">grep</span> <span class="n">atoms</span><span class="p">)</span>
+<span class="n">LIT</span><span class="o">=</span><span class="nv">$</span><span class="err">(</span><span class="nv">echo</span> <span class="nv">$STR</span> <span class="o">|</span> <span class="nb">grep</span> <span class="o">-</span><span class="n">o</span> <span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">*</span><span class="p">)</span>
+<span class="n">natoms</span><span class="o">=</span><span class="nv">$LIT</span>
+<span class="c1"># calculate number of angles, knowing how many atoms and bonds we have</span>
+<span class="n">STRb</span><span class="o">=</span><span class="nv">$</span><span class="err">(</span><span class="nv">less</span> <span class="nv">$datain</span> <span class="o">|</span> <span class="nb">grep</span> <span class="n">bonds</span><span class="p">)</span>
+<span class="n">LITb</span><span class="o">=</span><span class="nv">$</span><span class="err">(</span><span class="nv">echo</span> <span class="nv">$STRb</span> <span class="o">|</span> <span class="nb">grep</span> <span class="o">-</span><span class="n">o</span> <span class="p">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="p">]</span><span class="o">*</span><span class="p">)</span>
+<span class="n">nbond</span><span class="o">=</span><span class="nv">$LITb</span>
+
+<span class="n">let</span> <span class="n">nangle</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nv">$nbond</span><span class="o">-</span><span class="nv">$natoms</span><span class="p">)</span>
+<span class="n">let</span> <span class="n">ndih</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="c1">#write data file in required format</span>
+<span class="n">cp</span> <span class="nv">$datain</span>  <span class="mi">2</span><span class="o">.</span><span class="n">info</span>
+
+<span class="n">echo</span> <span class="s">&quot;LAMMPS  data file</span>
+
+<span class="s">$natoms  atoms</span>
+<span class="s">$nbond  bonds</span>
+<span class="s">$nangle  angles</span>
+
+<span class="s">1  atom types</span>
+<span class="s">1  bond types</span>
+<span class="s">1  angle types</span>
+<span class="s">&quot;</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">.</span><span class="n">info</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;1,/bond types/d&#39;</span> <span class="mi">2</span><span class="o">.</span><span class="n">info</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;1d&#39;</span> <span class="mi">2</span><span class="o">.</span><span class="n">info</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/Velocities/,/Bonds/{//!d}&#39;</span> <span class="mi">2</span><span class="o">.</span><span class="n">info</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/Velocities/d&#39;</span> <span class="mi">2</span><span class="o">.</span><span class="n">info</span>
+
+<span class="n">cat</span> <span class="o">*.</span><span class="n">info</span> <span class="o">&gt;</span> <span class="n">temprary_file</span>
+<span class="n">rm</span> <span class="o">*.</span><span class="n">info</span>
+
+<span class="c1">#creating additional files for generating angle bond topology</span>
+<span class="n">echo</span> <span class="s">&quot;1  * * *   * * &quot;</span> <span class="o">&gt;</span> <span class="n">angles_by_type</span><span class="o">.</span><span class="n">txt</span>
+
+<span class="c1"># sed -i &#39;/improper/d&#39; result_without.data</span>
+<span class="n">bash</span> <span class="n">gen_all_angles_topo</span><span class="o">.</span><span class="n">sh</span> <span class="n">temprary_file</span>  <span class="nv">$dataout</span>
+<span class="n">rm</span> <span class="n">temprary_file</span>
+<span class="n">rm</span> <span class="n">angles_by_type</span><span class="o">.</span><span class="n">txt</span>
+
+<span class="c1">#replace multiple blanc lines with a single one</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/^$/N;/^\n$/D&#39;</span> <span class="nv">$dataout</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/dihedral/d&#39;</span> <span class="nv">$dataout</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/improper/d&#39;</span> <span class="nv">$dataout</span>
+
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/Bond Coeffs/,/Atoms/{//!d}&#39;</span>  <span class="nv">$dataout</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="s">&#39;/Bond Coeffs/d&#39;</span>  <span class="nv">$dataout</span>
+</pre></div>
+
+
+<p>After applying this script we get the following data file:</p>
+<div class="highlight"><pre><span class="n">LAMMPS</span>  <span class="n">data</span> <span class="n">file</span>
+
+<span class="mi">140</span>  <span class="n">atoms</span>
+<span class="mi">134</span>  <span class="n">bonds</span>
+<span class="mi">128</span>  <span class="n">angles</span>
+
+<span class="mi">1</span>  <span class="n">atom</span> <span class="n">types</span>
+<span class="mi">1</span>  <span class="n">bond</span> <span class="n">types</span>
+<span class="mi">1</span>  <span class="n">angle</span> <span class="n">types</span>
+<span class="o">...</span>
+</pre></div>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
