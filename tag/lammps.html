@@ -14,33 +14,37 @@
         <header id="banner" class="body">
                 <h1><a href="/">Molecular Simulation Blog </a></h1>
                 <nav><ul>
-                    <li><a href="/category/misc.html">misc</a></li>
+                    <li><a href="/category/about.html">About</a></li>
+                    <li><a href="/category/bash.html">bash</a></li>
+                    <li><a href="/category/lammps.html">Lammps</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/analysis.html">How well are the chains equilibrated?</a></h1>
+                    <h1 class="entry-title"><a href="/create_melt.html">Create_melt</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2014-12-23T00:00:00+01:00">
-                Published: Tue 23 December 2014
+        <abbr class="published" title="2015-04-05T17:03:00+02:00">
+                Published: Sun 05 April 2015
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
         </address>
-<p>In <a href="/category/misc.html">misc</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">equilibration</a> <a href="/tag/analysis.html">analysis</a> </p>
-</footer><!-- /.post-info --><p>Imagine we have an equilibrated array, how do we check whether the chains are equilibrated well enough?</p>
-<blockquote>
-<p>Problem: How do we define whether the polymer chains are equilibrated enough?</p>
-<p>Solution:</p>
-</blockquote>
-<ol>
-<li>Chain statistics</li>
-<li>Radial distribution function</li>
-<li>Thermodynamic parameters</li>
-</ol>                </article>
+<p>In <a href="/category/lammps.html">Lammps</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> </p>
+</footer><!-- /.post-info --><p>How to create a data file of a polymer system for Lammps.</p>
+<p>Creating data files for polymer systems appears to be a daunting task.
+The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:</p>
+<ol class="arabic simple">
+<li>Create initial configuration using Monte-Carlo random walk</li>
+<li>Run a Lammps simulation for equilibrating melt</li>
+<li>Analyze chain confirmation, if not satisfactory go to stage 2.</li>
+</ol>
+<p>Creating initial configuration is relatively easy. The Lammps package comes with an tool called chain.f. Very fast Fortran program for creating initial configurations.</p>
+<p>Equilibrating using protocol.</p>
+<p>Analyze chain confirmation lets us to make sure our chains are well-equilibrated.</p>
+                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -49,62 +53,47 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/equilibrate_phys.html" rel="bookmark"
-                           title="Permalink to Equilibrating polymers using physical molecular simulation">Equilibrating polymers using physical molecular simulation</a></h1>
+                    <h1><a href="/equilibrate_melt.html" rel="bookmark"
+                           title="Permalink to Equilibrate_melt">Equilibrate_melt</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-12-23T00:00:00+01:00">
-                Published: Tue 23 December 2014
+        <abbr class="published" title="2015-04-05T16:57:00+02:00">
+                Published: Sun 05 April 2015
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
         </address>
-<p>In <a href="/category/misc.html">misc</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">equilibration</a> </p>
-</footer><!-- /.post-info -->                <p>If we recall the init.data created at the first stage of creating melt it started like this:</p>
-<div class="highlight"><pre><span class="n">LAMMPS</span> <span class="n">FENE</span> <span class="n">chain</span> <span class="n">data</span> <span class="n">file</span>
+<p>In <a href="/category/lammps.html">Lammps</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">Equilibration</a> </p>
+</footer><!-- /.post-info -->                <p class="first last">How to equilibrate a polymer melt?</p>
 
-       <span class="mi">140</span>  <span class="n">atoms</span>
-       <span class="mi">134</span>  <span class="n">bonds</span>
-           <span class="mi">0</span>  <span class="n">angles</span>
-           <span class="mi">0</span>  <span class="n">dihedrals</span>
-           <span class="mi">0</span>  <span class="n">impropers</span>
-<span class="o">...</span>
-</pre></div>
-
-
-<p>So the data file didn't have any information about angle, dihedrals in the systems. Lets now ...</p>
-                <a class="readmore" href="/equilibrate_phys.html">read more</a>
+                <a class="readmore" href="/equilibrate_melt.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/lammps_run.html" rel="bookmark"
-                           title="Permalink to Equilibrating initial configuration">Equilibrating initial configuration</a></h1>
+                    <h1><a href="/lammps_intro.html" rel="bookmark"
+                           title="Permalink to Lammps_intro">Lammps_intro</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-12-23T00:00:00+01:00">
-                Published: Tue 23 December 2014
+        <abbr class="published" title="2015-04-05T16:54:00+02:00">
+                Published: Sun 05 April 2015
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
         </address>
-<p>In <a href="/category/misc.html">misc</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/running.html">running</a> </p>
-</footer><!-- /.post-info -->                <p>To equilibrate polymer melts one may want to consider his polymers to be bead-springs.</p>
-<p>Equilibration included several steps:</p>
-<ol>
-<li>Unphysical Kremer-Grest equilibration using bead-springs. [Equilibrate generated beads with Kremer-Grest model(atoms+bonds)]</li>
-<li>Adding angle/dihedral interactions</li>
-<li>Physical MD run equilibration(Equilibrate in NVE ensemble with Sommer potential (atoms+bonds+angles), Equilibrate ...</li></ol>
-                <a class="readmore" href="/lammps_run.html">read more</a>
+<p>In <a href="/category/lammps.html">Lammps</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> </p>
+</footer><!-- /.post-info -->                <p class="first last">How to run a simples simulation in Lammps</p>
+
+                <a class="readmore" href="/lammps_intro.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->

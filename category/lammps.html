@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Molecular Simulation Blog - Test</title>
+        <title>Molecular Simulation Blog - Lammps</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -14,24 +14,37 @@
         <header id="banner" class="body">
                 <h1><a href="/">Molecular Simulation Blog </a></h1>
                 <nav><ul>
-                    <li class="active"><a href="/category/test.html">Test</a></li>
+                    <li><a href="/category/about.html">About</a></li>
+                    <li><a href="/category/bash.html">bash</a></li>
+                    <li class="active"><a href="/category/lammps.html">Lammps</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/first_post.html">first_post</a></h1>
+                    <h1 class="entry-title"><a href="/create_melt.html">Create_melt</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2014-12-13T18:32:00+01:00">
-                Published: Sat 13 December 2014
+        <abbr class="published" title="2015-04-05T17:03:00+02:00">
+                Published: Sun 05 April 2015
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
         </address>
-<p>In <a href="/category/test.html">Test</a>. </p>
-
-</footer><!-- /.post-info --><p>Hello world from Pelican!</p>                </article>
+<p>In <a href="/category/lammps.html">Lammps</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> </p>
+</footer><!-- /.post-info --><p>How to create a data file of a polymer system for Lammps.</p>
+<p>Creating data files for polymer systems appears to be a daunting task.
+The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:</p>
+<ol class="arabic simple">
+<li>Create initial configuration using Monte-Carlo random walk</li>
+<li>Run a Lammps simulation for equilibrating melt</li>
+<li>Analyze chain confirmation, if not satisfactory go to stage 2.</li>
+</ol>
+<p>Creating initial configuration is relatively easy. The Lammps package comes with an tool called chain.f. Very fast Fortran program for creating initial configurations.</p>
+<p>Equilibrating using protocol.</p>
+<p>Analyze chain confirmation lets us to make sure our chains are well-equilibrated.</p>
+                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -40,23 +53,47 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="/hahah_interesting.html" rel="bookmark"
-                           title="Permalink to hahah_interesting">hahah_interesting</a></h1>
+                    <h1><a href="/equilibrate_melt.html" rel="bookmark"
+                           title="Permalink to Equilibrate_melt">Equilibrate_melt</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2014-12-13T18:32:00+01:00">
-                Published: Sat 13 December 2014
+        <abbr class="published" title="2015-04-05T16:57:00+02:00">
+                Published: Sun 05 April 2015
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
         </address>
-<p>In <a href="/category/test.html">Test</a>. </p>
+<p>In <a href="/category/lammps.html">Lammps</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">Equilibration</a> </p>
+</footer><!-- /.post-info -->                <p class="first last">How to equilibrate a polymer melt?</p>
 
-</footer><!-- /.post-info -->                <p>this is a new post</p>
-                <a class="readmore" href="/hahah_interesting.html">read more</a>
+                <a class="readmore" href="/equilibrate_melt.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/lammps_intro.html" rel="bookmark"
+                           title="Permalink to Lammps_intro">Lammps_intro</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-04-05T16:54:00+02:00">
+                Published: Sun 05 April 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
+        </address>
+<p>In <a href="/category/lammps.html">Lammps</a>. </p>
+<p>tags: <a href="/tag/lammps.html">Lammps</a> </p>
+</footer><!-- /.post-info -->                <p class="first last">How to run a simples simulation in Lammps</p>
+
+                <a class="readmore" href="/lammps_intro.html">read more</a>
                 </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->

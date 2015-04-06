@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
         <meta charset="utf-8" />
-        <title>Molecular Simulation Blog - Equilibration</title>
+        <title>Equilibrate_melt</title>
         <link rel="stylesheet" href="/theme/css/main.css" />
 
         <!--[if IE]>
@@ -16,13 +16,18 @@
                 <nav><ul>
                     <li><a href="/category/about.html">About</a></li>
                     <li><a href="/category/bash.html">bash</a></li>
-                    <li><a href="/category/lammps.html">Lammps</a></li>
+                    <li class="active"><a href="/category/lammps.html">Lammps</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/equilibrate_melt.html" rel="bookmark"
+           title="Permalink to Equilibrate_melt">Equilibrate_melt</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/equilibrate_melt.html">Equilibrate_melt</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2015-04-05T16:57:00+02:00">
                 Published: Sun 05 April 2015
@@ -33,7 +38,7 @@
         </address>
 <p>In <a href="/category/lammps.html">Lammps</a>. </p>
 <p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">Equilibration</a> </p>
-</footer><!-- /.post-info --><p>Creating</p>
+</footer><!-- /.post-info -->      <p>Creating</p>
 <p>The initial melts were created using self-avoiding random walk in open-source tool def.chain that comes with Lammps.
 Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run.  Fortunately there are several methods that help achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods readers are en- coureged to the paper of.
 Here is a snapshot of lammps implementation of this algorithm. When run long enough even long polymer chains entangle and correspond to well relaxed state. A reasonable question may follow this algorithm. How long is long enough, and how to understand whether the structures are well equilibrated or not. To answer that questions one may consider the parameter&lt; R2(N)&gt; /Nwhich is mean square distance between the beads of the polymer per bead. In a well- equilibrated melt chains obey Gaussian statistics and for some N they reach saturation corresonding to the rigid- ity of the molecule [11].</p>
@@ -199,11 +204,11 @@ Here is a snapshot of lammps implementation of this algorithm. When run long eno
 <span class="mi">1</span>  <span class="n">angle</span> <span class="n">types</span>
 <span class="o">...</span>
 </pre></div>
-                </article>
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </aside><!-- /#featured -->
+
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
