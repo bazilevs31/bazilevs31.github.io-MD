@@ -1,216 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Molecular Simulation Blog - bash</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+        <title>bash category // Molecular Simulation Blog // </title>
+
+    <link href="/home/bazilevs/blog/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../theme/css/pure.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">Molecular Simulation Blog </a></h1>
-                <nav><ul>
-                    <li><a href="/category/about.html">About</a></li>
-                    <li class="active"><a href="/category/bash.html">bash</a></li>
-                    <li><a href="/category/lammps.html">Lammps</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/bash_intro.html">bash_intro</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T16:31:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/bash.html">bash</a>. </p>
-<p>tags: <a href="/tag/bash.html">bash</a> </p>
-</footer><!-- /.post-info --><div class="section" id="how-to-work-in-unix-bash">
-<h2>How to work in Unix Bash</h2>
-<p>--</p>
-<p>Imagine you have 10 files with two columns of data in each file. You want to load them and take an average of all second columns. Sounds like an easy Excell program. But it is not. When you have not 10 but 10 000 files, it will take ages for Excell to load them, also Excell is not free and is not installed everywhere. Fortunatelly there is an amazing tool that you may use : Bash shell. It is available by default in Linux/Mac OS , it can be installed via CygWin on Windows machine. It takes a couple of hours to learn, couple of days/weeks to master, and it will save you couple of years in future. Interested? So lets get started …</p>
-<p>Plan:</p>
-<ul class="simple">
-<li>What we need to know</li>
-<li>Elementary operations</li>
-<li>Secrets of mastering bash</li>
-<li>Useful links</li>
-<li>Here is how the linux console looks on Ubuntu 14.04</li>
-</ul>
-<div class="section" id="elementary-introduction">
-<h3>Elementary Introduction</h3>
-<p>==</p>
-<p>In a nutshell we see computer memmory as a bunch of files and folders. When we use computer in our daily routine we navigate between different files and folders. Even when we surf the web we navigate between webpages which are the files on remote servers.
-So the most “intersting” command would be ls</p>
-<ol class="arabic simple">
-<li>List all files and folders</li>
-</ol>
-<div class="highlight"><pre><span class="nv">$ </span>ls
-    empty_file1  empty_folder1
-    Here empty_folder1 is a directory, and empty_file1 is a text file.
-</pre></div>
-<ol class="arabic simple" start="2">
-<li>Navigate to directory</li>
-</ol>
-<div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>empty_folder1
-Now we are in empty_folder1 directory. To <span class="nb">test </span>that we use
-</pre></div>
-<ol class="arabic simple" start="3">
-<li>Show current directory</li>
-</ol>
-<div class="highlight"><pre><span class="nv">$ </span><span class="nb">pwd</span>
-/home/vasiliy/tests
-</pre></div>
-<p>To navigate back in the parent directory we use cd ..
-Now lets use this 4 commands together</p>
-<div class="highlight"><pre>vasiliy@vasiliy-office:~/tests/empty_folder1<span class="nv">$ </span><span class="nb">pwd</span>
-/home/vasiliy/tests/empty_folder1
-vasiliy@vasiliy-office:~/tests/empty_folder1<span class="nv">$ </span><span class="nb">cd</span> ..
-vasiliy@vasiliy-office:~/tests<span class="nv">$ </span><span class="nb">pwd</span>
-/home/vasiliy/tests
-vasiliy@vasiliy-office:~/tests<span class="nv">$ </span>ls
-empty_file1  empty_folder1
-vasiliy@vasiliy-office:~/tests<span class="nv">$ </span><span class="nb">cd </span>empty_folder1/
-</pre></div>
-<p>To create a file we may use any text editor we like. I myself am a big fan of Sublime-Text.. To copy file <tt class="docutils literal">file1</tt> to <tt class="docutils literal">file2</tt> we use cp <tt class="docutils literal">file1</tt> <tt class="docutils literal">file2</tt> command. To remove files we use rm filename command. To create an empty directory we use mkdir mynewcooldirectory.</p>
-<ol class="arabic simple" start="4">
-<li>Creating/Copying/Removing files</li>
-</ol>
-<div class="highlight"><pre><span class="nv">$ </span>ls
-<span class="nv">$ </span>subl empty_file2 <span class="c"># edit file and save it</span>
-<span class="nv">$ </span>ls
-empty_file2
-<span class="nv">$ </span>cp empty_file2 empty_file2_copy
-<span class="nv">$ </span>ls
-empty_file2 empty_file2_copy
-<span class="nv">$ </span>rm empty_file2_copy <span class="c">#delete the copy file</span>
-<span class="nv">$ </span>ls
-empty_file2
-</pre></div>
-<p>If we want to rename file, we could copy it and consequently remove it, or use a move mv <tt class="docutils literal">file1</tt> <tt class="docutils literal">file2</tt> command which combines this procedures.</p>
-</div>
-<div class="section" id="must-know-commands">
-<h3>Must-know commands</h3>
-<p>==</p>
-<p>So here is a little cheat sheet of required operations:</p>
-<ol class="arabic simple">
-<li>LiSt files and folders ls</li>
-<li>Current directory pwd</li>
-<li>Navigate to directory(ChangeDirectory) cd foldername, cd ..</li>
-<li>CoPy/MoVe/ReMove files <tt class="docutils literal">cp file1 file2</tt>, <tt class="docutils literal">mv file1 file2</tt>, <tt class="docutils literal">rm file1</tt>.</li>
-</ol>
-</div>
-<div class="section" id="a-project">
-<h3>A Project</h3>
-<p>==</p>
-<p>Problem:</p>
-<p>Create a binary bash script(a file that can be executed by linux shell) that:</p>
-<ol class="arabic simple">
-<li>lists all files in the directory</li>
-<li>creates a set of files file1, file2, file3, … file10</li>
-<li>copies file1 to file1_copy, list all files</li>
-<li>removes file1, list all files</li>
-<li>removes all files in the directory</li>
-</ol>
-<p>Additional information:</p>
-<p>The files on computer are of two types human-readable - ASCII, and computer readable - binary. We (humans:)) can’t understand computer code because it is all 1s and 0s, at the same time computers can’t understand ASCII files unless we explain them how to transfer ASCII files into binary ones.
-To create dummy empty file one may use touch <tt class="docutils literal">file1</tt> command.
-To create a executable file we use: <tt class="docutils literal">chmod +x bashscript.sh</tt>, to delete all files in the directory we use <tt class="docutils literal">*</tt> wildcard so to delete all files it will be <tt class="docutils literal">rm *.</tt> But be very careful because it will delete all files in directory even some that you may need in future.</p>
-<p>algorithm:</p>
-<ol class="arabic simple">
-<li>list all files in the directory ls</li>
-<li>create a list with for command</li>
-<li><tt class="docutils literal">cp file1 file1_copy</tt>, <tt class="docutils literal">ls</tt></li>
-<li><tt class="docutils literal">rm file1</tt>, <tt class="docutils literal">ls</tt></li>
-<li>delete all files in the directory <tt class="docutils literal">rm *</tt></li>
-</ol>
-<p>Solution:</p>
-<div class="highlight"><pre><span class="c">#!/bin/bash</span>
-<span class="nb">echo</span> <span class="s2">&quot;listing the files in the directory&quot;</span> <span class="c"># use echo command to print information in the terminal</span>
-ls
-<span class="nb">echo</span> <span class="s2">&quot;starting the loop&quot;</span>
-<span class="k">for</span> <span class="o">((</span> <span class="nv">i</span> <span class="o">=</span> 1<span class="p">;</span> i &lt;<span class="o">=</span> 10<span class="p">;</span> i++ <span class="o">))</span><span class="p">;</span> <span class="k">do</span>
-    <span class="nb">echo</span> <span class="s2">&quot;doing loop on iteration # = </span><span class="nv">$i</span><span class="s2">&quot;</span>
-    touch file<span class="nv">$i</span>
-<span class="k">done</span>
-<span class="nb">echo</span> <span class="s2">&quot;done with the loop&quot;</span>
-ls
-<span class="nb">echo</span> <span class="s2">&quot;copy ``file1`` in file1_copy&quot;</span>
-cp file1 file1_copy
-ls
-<span class="nb">echo</span> <span class="s2">&quot;remove file1&quot;</span>
-rm file1
-ls
-</pre></div>
-<p>OUTPUT:</p>
-<div class="highlight"><pre><span class="nv">$~</span>/tests<span class="nv">$ </span>bash simple_prog.sh
-listing the files in the directory
-simple_prog.sh
-starting the loop
-doing loop on iteration <span class="c"># = 1</span>
-doing loop on iteration <span class="c"># = 2</span>
-doing loop on iteration <span class="c"># = 3</span>
-doing loop on iteration <span class="c"># = 4</span>
-doing loop on iteration <span class="c"># = 5</span>
-doing loop on iteration <span class="c"># = 6</span>
-doing loop on iteration <span class="c"># = 7</span>
-doing loop on iteration <span class="c"># = 8</span>
-doing loop on iteration <span class="c"># = 9</span>
-doing loop on iteration <span class="c"># = 10</span>
-<span class="k">done</span> with the loop
-file1  file10  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
-copy file1 in file1_copy
-file1  file10  file1_copy  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
-remove file1
-file10  file1_copy  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
-</pre></div>
-<p>If we change the mode to executable <tt class="docutils literal">chmod +x simple_prog.sh</tt>,
-then we may run the program the following way <tt class="docutils literal">./simple_prog.sh</tt></p>
-<p>Secrets of mastering Bash</p>
-<p>There is only one secret of becoming good with bash - practice, you may need to spend a little bit of energy now, but it will save you tons of time in the future.</p>
-<p>Useful links</p>
-</div>
-</div>
-                </article>
-<p class="paginator">
-    Page 1 / 1
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href="..">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">
+Posts in 'bash'                </h1>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../bash_intro.html">bash_intro</a></h3>
+                            <p class="post-meta"><p class="first last">How to work with bash</p>
 </p>
-            </aside><!-- /#featured -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
+                            <p class="post-meta">
+                                in <a href="../category/bash.html">bash</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+<div class="pagination-wrapper content-subhead">
+</div><footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 
 </body>
 </html>

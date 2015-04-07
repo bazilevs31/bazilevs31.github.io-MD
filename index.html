@@ -1,179 +1,138 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Molecular Simulation Blog</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+        <title>Molecular Simulation Blog // </title>
+
+    <link href="/home/bazilevs/blog/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">Molecular Simulation Blog </a></h1>
-                <nav><ul>
-                    <li><a href="/category/about.html">About</a></li>
-                    <li><a href="/category/bash.html">bash</a></li>
-                    <li><a href="/category/lammps.html">Lammps</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/create_melt.html">Create_melt</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T17:03:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/lammps.html">Lammps</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> </p>
-</footer><!-- /.post-info --><p>How to create a data file of a polymer system for Lammps.</p>
-<p>Creating data files for polymer systems appears to be a daunting task.
-The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:</p>
-<ol class="arabic simple">
-<li>Create initial configuration using Monte-Carlo random walk</li>
-<li>Run a Lammps simulation for equilibrating melt</li>
-<li>Analyze chain confirmation, if not satisfactory go to stage 2.</li>
-</ol>
-<p>Creating initial configuration is relatively easy. The Lammps package comes with an tool called chain.f. Very fast Fortran program for creating initial configurations.</p>
-<p>Equilibrating using protocol.</p>
-<p>Analyze chain confirmation lets us to make sure our chains are well-equilibrated.</p>
-                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/equilibrate_melt.html" rel="bookmark"
-                           title="Permalink to Equilibrate_melt">Equilibrate_melt</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T16:57:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/lammps.html">Lammps</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">Equilibration</a> </p>
-</footer><!-- /.post-info -->                <p class="first last">How to equilibrate a polymer melt?</p>
-
-                <a class="readmore" href="/equilibrate_melt.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/lammps_intro.html" rel="bookmark"
-                           title="Permalink to Lammps_intro">Lammps_intro</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T16:54:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/lammps.html">Lammps</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> </p>
-</footer><!-- /.post-info -->                <p class="first last">How to run a simples simulation in Lammps</p>
-
-                <a class="readmore" href="/lammps_intro.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/bash_intro.html" rel="bookmark"
-                           title="Permalink to bash_intro">bash_intro</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T16:31:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/bash.html">bash</a>. </p>
-<p>tags: <a href="/tag/bash.html">bash</a> </p>
-</footer><!-- /.post-info -->                <p class="first last">How to work with bash</p>
-
-                <a class="readmore" href="/bash_intro.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="/introduction.html" rel="bookmark"
-                           title="Permalink to Introduction">Introduction</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T15:08:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/about.html">About</a>. </p>
-<p>tags: <a href="/tag/about.html">About</a> </p>
-</footer><!-- /.post-info -->                <p class="first last">Why do I write this blog?</p>
-
-                <a class="readmore" href="/introduction.html">read more</a>
-                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 1
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">
+                            Latest posts
+                </h1>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="./test.html">test</a></h3>
+                            <p class="post-meta"></p>
+                            <p class="post-meta">
+                                in <a href="./category/test.html">test</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="./create_melt.html">Create_melt</a></h3>
+                            <p class="post-meta"><p class="first last">How to create a polymer melt?</p>
 </p>
-                </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
+                            <p class="post-meta">
+                                in <a href="./category/lammps.html">Lammps</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="./equilibrate_melt.html">Equilibrate_melt</a></h3>
+                            <p class="post-meta"><p class="first last">How to equilibrate a polymer melt?</p>
+</p>
+                            <p class="post-meta">
+                                in <a href="./category/lammps.html">Lammps</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="./lammps_intro.html">Lammps_intro</a></h3>
+                            <p class="post-meta"><p class="first last">How to run a simples simulation in Lammps</p>
+</p>
+                            <p class="post-meta">
+                                in <a href="./category/lammps.html">Lammps</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="./bash_intro.html">bash_intro</a></h3>
+                            <p class="post-meta"><p class="first last">How to work with bash</p>
+</p>
+                            <p class="post-meta">
+                                in <a href="./category/bash.html">bash</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="./introduction.html">Introduction</a></h3>
+                            <p class="post-meta"><p class="first last">Why do I write this blog?</p>
+</p>
+                            <p class="post-meta">
+                                in <a href="./category/about.html">About</a> &middot; Sunday 05 April 2015
+                            </p>
+                        </header>
+                    </section>
+<div class="pagination-wrapper content-subhead">
+</div><footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 
 </body>
 </html>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>test // Molecular Simulation Blog // </title>
+
+    <link href="/home/bazilevs/blog/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>test</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-test.html">test</a>
+                        </p>
+                </header>
+            </section>
+            <p>Embed syntax highlighted code blocks directly in your reST documents:</p>
+<pre class="code Python literal-block">
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="k">def</span> <span class="nf">resetDefaults</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">func_defaults</span>
+    <span class="k">def</span> <span class="nf">resetter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">func_defaults</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="n">resetter</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">__name__</span>
+    <span class="k">return</span> <span class="n">resetter</span>
+</pre>
+<p>You can also embed an existing snippet:</p>
+<!-- .. snippet:: 1 -->
+<!-- Use :help:`math` like, :math:`E=mc^2` or : -->
+<div class="formula">
+<i>align</i>
+</div>
+<div class="formula">
+<span class="environment"><span class="arrayrow">
+<span class="arraycell align-r">
+∇⋅<i>E</i>
+</span>
+<span class="arraycell align-l">
+ = <span class="fraction"><span class="ignored">(</span><span class="numerator">1</span><span class="ignored">)/(</span><span class="denominator"><i>ϵ</i><sub>0</sub></span><span class="ignored">)</span></span><i>ρ</i>
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+ 
+</span>
+<span class="arraycell align-l">
+ 
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+∇⋅<i>B</i>
+</span>
+<span class="arraycell align-l">
+ = 0
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+ 
+</span>
+<span class="arraycell align-l">
+ 
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+∇ × <i>E</i>
+</span>
+<span class="arraycell align-l">
+ =  − <span class="fraction"><span class="ignored">(</span><span class="numerator">∂<i>B</i></span><span class="ignored">)/(</span><span class="denominator">∂<i>t</i></span><span class="ignored">)</span></span>
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+ 
+</span>
+<span class="arraycell align-l">
+ 
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+∇ × <i>B</i>
+</span>
+<span class="arraycell align-l">
+ = <i>μ</i><sub>0</sub><i>J</i> + <i>μ</i><sub>0</sub><i>ϵ</i><sub>0</sub><span class="fraction"><span class="ignored">(</span><span class="numerator">∂<i>E</i></span><span class="ignored">)/(</span><span class="denominator">∂<i>t</i></span><span class="ignored">)</span></span>
+</span>
+
+</span>
+</span>
+</div>
+<p>Or create flow graphs</p>
+<!-- .. graph:: -->
+<!-- digraph foo { -->
+<!-- rankdir=LR; -->
+<!-- size="2.5,2.5" -->
+<!-- node [shape = circle]; -->
+<!-- A [fillcolor = cornflowerblue]; -->
+<!-- B [fillcolor = red]; -->
+<!-- C [fillcolor = gold]; -->
+<!-- A -> C [ label = "A-C" color = cornflowerblue]; -->
+<!-- A -> B [ label = "A-B" color = red]; -->
+<!-- A -> A [ label = "WTF?"]; -->
+<!-- C -> B; -->
+<!-- } -->
+<div class="warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">I am a warning. Be Warned!!!</p>
+</div>
+<p>Create tables</p>
+<table border="1" class="docutils">
+<caption>Frozen Delights!</caption>
+<colgroup>
+<col width="27%" />
+<col width="18%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Treat</th>
+<th class="head">Quantity</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Albatross</td>
+<td>2.99</td>
+<td>On a stick!</td>
+</tr>
+<tr><td>Crunchy Frog</td>
+<td>1.49</td>
+<td>If we took the bones out, it wouldn't be
+crunchy, now would it?</td>
+</tr>
+<tr><td>Gannet Ripple</td>
+<td>1.99</td>
+<td>On a stick!</td>
+</tr>
+</tbody>
+</table>
+<p>Another table</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Header row, column 1</th>
+<th class="head">Header 2</th>
+<th class="head">Header 3</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>body row 1, column 1</td>
+<td>column 2</td>
+<td>column 3</td>
+</tr>
+<tr><td>body row 2</td>
+<td colspan="2">Cells may span columns</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>This is a paragraph.  It's quite
+short.</p>
+<blockquote>
+This paragraph will result in an indented block of
+text, typically used for quoting other text.</blockquote>
+<p>This is another one.</p>
+<p>For <em>italics</em> surround the text with asterisk, like <tt class="docutils literal">*italics*</tt>.</p>
+<p>For <strong>bold</strong> surround the text with double asterisk, like <tt class="docutils literal">**bold**</tt></p>
+<p>For inline literals, surround the text with double backticks (`), like <tt class="docutils literal">``literal``</tt></p>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>

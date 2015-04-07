@@ -1,44 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-        <meta charset="utf-8" />
-        <title>Equilibrate_melt</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+        <title>Equilibrate_melt // Molecular Simulation Blog // </title>
+
+    <link href="/home/bazilevs/blog/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">Molecular Simulation Blog </a></h1>
-                <nav><ul>
-                    <li><a href="/category/about.html">About</a></li>
-                    <li><a href="/category/bash.html">bash</a></li>
-                    <li class="active"><a href="/category/lammps.html">Lammps</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="/equilibrate_melt.html" rel="bookmark"
-           title="Permalink to Equilibrate_melt">Equilibrate_melt</a></h1>
-    </header>
-
-    <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-04-05T16:57:00+02:00">
-                Published: Sun 05 April 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/vasiliy-triandafilidi.html">Vasiliy Triandafilidi</a>
-        </address>
-<p>In <a href="/category/lammps.html">Lammps</a>. </p>
-<p>tags: <a href="/tag/lammps.html">Lammps</a> <a href="/tag/equilibration.html">Equilibration</a> </p>
-</footer><!-- /.post-info -->      <p>Creating</p>
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Equilibrate_melt</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag/lammps.html">Lammps</a>
+                                <a class="post-category" href="./tag/equilibration.html">Equilibration</a>
+                        </p>
+                </header>
+            </section>
+            <p>Creating</p>
 <p>The initial melts were created using self-avoiding random walk in open-source tool def.chain that comes with Lammps.
 Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run.  Fortunately there are several methods that help achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods readers are en- coureged to the paper of.
 Here is a snapshot of lammps implementation of this algorithm. When run long enough even long polymer chains entangle and correspond to well relaxed state. A reasonable question may follow this algorithm. How long is long enough, and how to understand whether the structures are well equilibrated or not. To answer that questions one may consider the parameter&lt; R2(N)&gt; /Nwhich is mean square distance between the beads of the polymer per bead. In a well- equilibrated melt chains obey Gaussian statistics and for some N they reach saturation corresonding to the rigid- ity of the molecule [11].</p>
@@ -205,37 +218,39 @@ Here is a snapshot of lammps implementation of this algorithm. When run long eno
 <span class="o">...</span>
 </pre></div>
 
-    </div><!-- /.entry-content -->
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
-
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 
 </body>
 </html>
