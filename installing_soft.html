@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>installing_soft // Molecular Simulation Blog // </title>
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>installing_soft</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-lammps.html">Lammps</a>
+                                <a class="post-category" href="./tag-vmd.html">VMD</a>
+                                <a class="post-category" href="./tag-mdanalysis.html">MDAnalysis</a>
+                                <a class="post-category" href="./tag-software.html">Software</a>
+                                <a class="post-category" href="./tag-python.html">Python</a>
+                        </p>
+                </header>
+            </section>
+            <div class="section" id="what-do-we-need">
+<h2>What do we need?</h2>
+<p>--</p>
+<p>In order to do Molecular Dynamics one needs to install essential software.</p>
+<p>We'll need to install several packages in order to be fully ready for our simulations:</p>
+<ol class="arabic simple">
+<li>Molecular Dynamics package <a class="citation-reference" href="#lammps" id="id1">[lammps]</a></li>
+<li>Python installation with all essential packages <a class="citation-reference" href="#anaconda" id="id2">[anaconda]</a></li>
+<li>Molecular Trajectory Analysis package <a class="citation-reference" href="#mdanalysis" id="id3">[mdanalysis]</a> , <a class="citation-reference" href="#pizza" id="id4">[pizza]</a> , <a class="citation-reference" href="#moltemplate" id="id5">[moltemplate]</a></li>
+<li>Tool to visualize your trajectory <a class="citation-reference" href="#vmd" id="id6">[vmd]</a></li>
+</ol>
+</div>
+<div class="section" id="how-to-install-lammps">
+<h2>How to install Lammps?</h2>
+<p>--</p>
+<p>To install Lammps one may follow one of these <a class="reference external" href="http://lammps.sandia.gov/doc/Section_start.html#start_2_5">tutorials</a></p>
+<p>The easiest way to install <a class="citation-reference" href="#lammps" id="id7">[lammps]</a> on Ubuntu machines would be :</p>
+<div class="highlight"><pre>sudo add-apt-repository ppa:gladky-anton/lammps
+sudo apt-get update
+sudo apt-get install lammps-daily
+
+<span class="c">#it builds with FFTW3 and OpenMPI.</span>
+
+lammps-daily -in in.lj
+
+<span class="c">#To get a copy of the current documentation and examples:</span>
+<span class="c">#which will download the doc files in /usr/share/doc/lammps-daily-doc/doc and example problems in /usr/share/doc/lammps-doc/examples.</span>
+sudo apt-get install lammps-daily-doc
+</pre></div>
+<p>On my mac it was very straight-forward as well:</p>
+<div class="highlight"><pre>brew tap homebrew/science
+brew install lammps
+<span class="c">#brew install lammps --HEAD --with-mpi</span>
+</pre></div>
+<p>On Windows one may download a setup file and install it, or install it using <a class="reference external" href="http://sjbyrnes.com/LAMMPStutorial.html">lammps_cygwin</a></p>
+</div>
+<div class="section" id="how-to-install-anaconda-python-distribution">
+<h2>How to install Anaconda Python distribution?</h2>
+<p>I love Python, i think it is arguably the easiest &quot;heavyweight&quot; programming language to learn, it has enormous potential for your tasks, and a wonderful community.
+For scientific use one may download an open-source distribution called <cite>Anaconda</cite> which has everything a scientist may need.
+On any <cite>*nix</cite> machine one may install it by downloading <cite>.sh</cite> file, and running <cite>bash Anaconda*.sh</cite></p>
+<p>Installing any other Python packages will be as easy as: <cite>pip install &lt;name of the package&gt;</cite></p>
+<p>So to install Molecular Dynamics trajectory Analysis program one can install <a class="citation-reference" href="#mdanalysis" id="id8">[mdanalysis]</a>, which is a Python based program, with an easy interface and good community.</p>
+<p>To install it one simply needs to:</p>
+<div class="highlight"><pre>pip install MDAnalysis
+</pre></div>
+<p>To install <a class="citation-reference" href="#pizza" id="id9">[pizza]</a> and <a class="citation-reference" href="#moltemplate" id="id10">[moltemplate]</a> one simply needs to download the .tar files, extract them and add to the path
+To do that we need to add this lines to ~/.bashrc file</p>
+<div class="highlight"><pre><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PATH</span><span class="s2">:/path_to_moltempalate/moltemplate/src&quot;</span>
+<span class="nb">export </span><span class="nv">MOLTEMPLATE_PATH</span><span class="o">=</span><span class="s2">&quot;/path_to_moltempalate/moltemplate/common&quot;</span>
+<span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PYTHONPATH</span><span class="s2">:/path_to_pizza/pizza-2Jul14/src&quot;</span>
+</pre></div>
+</div>
+<div class="section" id="visualizing-molecular-dynamics-trajectory">
+<h2>Visualizing Molecular Dynamics Trajectory</h2>
+<p>To visualize MD trajectories, we need to install <a class="citation-reference" href="#vmd" id="id11">[vmd]</a>. To do that on Linux systems, we need to go to their website and download a .tar file.</p>
+<div class="highlight"><pre>tar -xzvf vmd.tar.gz
+<span class="nb">cd </span>vmd/
+</pre></div>
+<p>After downloading and untaring the archive it is all gravy:
+We just need <cite>vim configure</cite>, and change <cite>home_bin_dir=..</cite>,`home_library_dir` to where we want VMD to be.</p>
+<table class="docutils citation" frame="void" id="moltemplate" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[moltemplate]</td><td><em>(<a class="fn-backref" href="#id5">1</a>, <a class="fn-backref" href="#id10">2</a>)</em> Moltemplate: <a class="reference external" href="http://www.moltemplate.org/">http://www.moltemplate.org/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="pizza" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[pizza]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id9">2</a>)</em> Pizza: <a class="reference external" href="http://www.sandia.gov/~sjplimp/download.html">http://www.sandia.gov/~sjplimp/download.html</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="vmd" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[vmd]</td><td><em>(<a class="fn-backref" href="#id6">1</a>, <a class="fn-backref" href="#id11">2</a>)</em> Visual Molecular Dynamics: <a class="reference external" href="http://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD">http://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="mdanalysis" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[mdanalysis]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> MD: <a class="reference external" href="https://code.google.com/p/mdanalysis/">https://code.google.com/p/mdanalysis/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="anaconda" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[anaconda]</a></td><td>Anaconda Python Installation: <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">https://store.continuum.io/cshop/anaconda/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="lammps" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[lammps]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id7">2</a>)</em> lammps: <a class="reference external" href="http://lammps.sandia.gov/">http://lammps.sandia.gov/</a></td></tr>
+</tbody>
+</table>
+</div>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
