@@ -8,6 +8,7 @@
 
         <title>installing_soft // Molecular Simulation Blog // </title>
 
+    <link href="images/s.jpg" rel="icon">
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
@@ -116,6 +117,13 @@ To do that we need to add this lines to ~/.bashrc file</p>
 </pre></div>
 <p>After downloading and untaring the archive it is all gravy:
 We just need <cite>vim configure</cite>, and change <cite>home_bin_dir=..</cite>,`home_library_dir` to where we want VMD to be.</p>
+<p>On mac systems just needs to download a .dmg file and install it by just clicking it. Sometimes we also need to specify the location of the executable:</p>
+<div class="highlight"><pre><span class="nv">vmdappdir</span><span class="o">=</span><span class="s1">&#39;/Applications/VMD 1.9.2.app/Contents&#39;</span>
+<span class="c"># vmdappdir=&#39;/Applications/VMD1.8.5.app/Contents&#39;</span>
+    <span class="c"># (change it to where vmd lies, obviously ;))</span>
+<span class="nb">alias </span><span class="nv">vmd</span><span class="o">=</span><span class="s1">&#39;&quot;$vmdappdir/Resources/VMD.app/Contents/MacOS/VMD&quot; $\*&#39;</span>
+<span class="nb">alias </span><span class="nv">textvmd</span><span class="o">=</span><span class="s2">&quot;vmd -dispdev text </span><span class="nv">$\</span><span class="s2">*&quot;</span>
+</pre></div>
 <table class="docutils citation" frame="void" id="moltemplate" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">

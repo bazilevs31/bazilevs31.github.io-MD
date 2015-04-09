@@ -1,5 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Molecular Simulation Blog</title><link>/</link><description></description><atom:link href="/feeds/vasiliy-triandafilidi.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 08 Apr 2015 13:54:00 -0700</lastBuildDate><item><title>installing_soft</title><link>/installing_soft.html</link><description>&lt;div class="section" id="what-do-we-need"&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Molecular Simulation Blog</title><link>/</link><description></description><atom:link href="/feeds/vasiliy-triandafilidi.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 08 Apr 2015 14:53:00 -0700</lastBuildDate><item><title>MDAnalysis_advanced</title><link>/mdanalysis_advanced.html</link><description>&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
+package:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;matplotlib&lt;/span&gt; &lt;span class="n"&gt;inline&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Universe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;poly.psf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;poly.pdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+&amp;lt;Universe with 12000 atoms and 11700 bonds&amp;gt;
+&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atoms&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+&amp;lt;AtomGroup with 12000 atoms&amp;gt;
+&lt;/pre&gt;
+&lt;p&gt;Now we have imported a universe, which has all of our frames and
+information of our system. Accessing it becomes pretty straightforward:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;selectAtoms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;all&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+array([[-11.71399975,  -8.36999989,  21.4810009 ],
+       [-11.65499973,  -8.65400028,  20.80699921],
+       [-11.21700001,  -9.38300037,  21.23900032],
+       ...,
+       [  8.22000027,  -6.82600021,   1.65400004],
+       [  8.67800045,  -7.45300007,   1.37300003],
+       [  8.41399956,  -7.28299999,   0.65499997]], dtype=float32)
+&lt;/pre&gt;
+&lt;p&gt;Now imagine we want to find something in our selection, lets say center
+of mass, vous a la:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;centerOfMass&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+array([ 0.27253684,  1.12546084,  1.68031492])
+&lt;/pre&gt;
+&lt;p&gt;MDanalysis allows you to access some other fields rather than just
+atoms:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bonds&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+&amp;lt;TopologyGroup containing 11700 Bonds&amp;gt;
+&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;b1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bonds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atom1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;b2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bonds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atom2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;bonds_vectors&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;b1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;bonds_vectors&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+array([[ 0.05900002, -0.2840004 , -0.67400169],
+       [ 0.43799973, -0.72900009,  0.43200111],
+       [ 0.6960001 , -0.99399948, -0.7159996 ],
+       ...,
+       [-0.43400002, -0.8380003 , -1.17799997],
+       [ 0.45800018, -0.62699986, -0.28100002],
+       [-0.26400089,  0.17000008, -0.71800005]], dtype=float32)
+&lt;/pre&gt;
+&lt;p&gt;This way we can write a function that takes a Universe as an input and
+produces a normalized bond_vector list as an output:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_bondlist_coords&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    input: Universe&lt;/span&gt;
+&lt;span class="sd"&gt;    output: bonds (that are in the domain, normalized)&lt;/span&gt;
+
+&lt;span class="sd"&gt;    generate normalized coordinates of bond vectors&lt;/span&gt;
+&lt;span class="sd"&gt;    get universe , return bonds(coordinates)&lt;/span&gt;
+&lt;span class="sd"&gt;    generate coor of all bonds(bond = chord i-1 - i+1 ), normalize it&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;bonds&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bonds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atom2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bonds&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atom1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt;
+    &lt;span class="c"&gt;# angles = u.angles&lt;/span&gt;
+    &lt;span class="c"&gt;# bonds = angles.atom3.positions - angles.atom1.positions&lt;/span&gt;
+    &lt;span class="c"&gt;# coords = angles.atom2.positions&lt;/span&gt;
+    &lt;span class="n"&gt;norm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linalg&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;norm&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bonds&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;axis&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;bonds&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;norm&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="c"&gt;#the norm vector is a (nx1) and we have to create dummy directions -&amp;gt; (n,3)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;bonds&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;get_bondlist_coords&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+array([[ 0.08040691, -0.38704386, -0.91854876],
+       [ 0.45917124, -0.76423758,  0.45288265],
+       [ 0.49398914, -0.70549554, -0.5081839 ],
+       ...,
+       [-0.28753173, -0.55518818, -0.78044319],
+       [ 0.5546512 , -0.7593146 , -0.34029898],
+       [-0.33688259,  0.21693134, -0.91621554]], dtype=float32)
+&lt;/pre&gt;
+&lt;div class="section" id="interesting-project"&gt;
+&lt;h2&gt;Interesting project:&lt;/h2&gt;
+&lt;p&gt;Lets calculate something more interesting, say Mean Square Internal
+Difference parameter for the trajectory. Our script will be able to
+consider polydisperse chains as well as monodisperse ones. Imagine we
+have a polymer of the size 2*N atoms per chain. So by definition :&lt;/p&gt;
+&lt;div class="formula"&gt;
+&lt;i&gt;R&lt;/i&gt;&lt;sub&gt;&lt;i&gt;ij&lt;/i&gt;&lt;/sub&gt; = (&lt;i&gt;r&lt;/i&gt;&lt;sub&gt;&lt;i&gt;i&lt;/i&gt;&lt;/sub&gt; − &lt;i&gt;r&lt;/i&gt;&lt;sub&gt;&lt;i&gt;j&lt;/i&gt;&lt;/sub&gt;)
+&lt;/div&gt;
+&lt;div class="formula"&gt;
+&lt;i&gt;MSID&lt;/i&gt; =  &amp;lt; &lt;span class="fullfraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;&lt;i&gt;R&lt;/i&gt;&lt;span class="scripts"&gt;&lt;sub class="script"&gt;&lt;i&gt;ij&lt;/i&gt;&lt;/sub&gt;&lt;sup class="script"&gt;2&lt;/sup&gt;&lt;/span&gt;(&lt;i&gt;i&lt;/i&gt; − &lt;i&gt;j&lt;/i&gt;)&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;|&lt;i&gt;i&lt;/i&gt; − &lt;i&gt;j&lt;/i&gt;|&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt; &amp;gt; 
+&lt;/div&gt;
+&lt;p&gt;, where &lt;span class="formula"&gt;&lt;i&gt;i&lt;/i&gt; = 0, .., &lt;i&gt;N&lt;/i&gt; ⁄  ⁄ 2, &lt;i&gt;j&lt;/i&gt; = &lt;i&gt;N&lt;/i&gt; − &lt;i&gt;i&lt;/i&gt; − 1&lt;/span&gt;, averaging is being done over
+all chains&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;max_chain&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    input: MDAnalysis universe&lt;/span&gt;
+&lt;span class="sd"&gt;    output: maximum length of all of the chains present(integer)&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;maxlen&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;residues&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;reslen&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;maxlen&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;reslen&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;maxlen&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;reslen&lt;/span&gt;
+    &lt;span class="c"&gt;# print &amp;quot;maxlen = %f&amp;quot; % maxlen&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt;  &lt;span class="n"&gt;maxlen&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;save_plot_r2n&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;psffile&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;logplot&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    input: n_array - array of n&amp;#39;s, R2_array - array of R_n, psffile - name of future files, frame, logplot&lt;/span&gt;
+&lt;span class="sd"&gt;    saves a frame of r2_n&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="c"&gt;# plt.cla()&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ylabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;r&amp;#39;$\mathrm{\frac{R^2(n)}{n}}$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;logplot&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;xlogscale&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xscale&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;log&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;r&amp;#39;$\mathrm{log(N)}$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;regular xscale&amp;quot;&lt;/span&gt;
+        &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;r&amp;#39;$\mathrm{N}$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;r&amp;#39;$\mathrm{\frac{R^2(n)}{n} evolution, frame = &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s"&gt;} $&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;--&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c"&gt;#     plt.savefig(&amp;#39;R2%s_%.5d.png&amp;#39; % (psffile,frame))&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_r2n&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;psffile&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;Noff&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;logplot&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    create a list of&lt;/span&gt;
+&lt;span class="sd"&gt;    R2_array - array of distances&lt;/span&gt;
+&lt;span class="sd"&gt;    n_array - array of number of bonds between atoms&lt;/span&gt;
+&lt;span class="sd"&gt;    k_array - array of number of atoms with this bonds&lt;/span&gt;
+&lt;span class="sd"&gt;    start looping in residues&lt;/span&gt;
+&lt;span class="sd"&gt;    for every residue:&lt;/span&gt;
+&lt;span class="sd"&gt;        start from the middle of it&lt;/span&gt;
+&lt;span class="sd"&gt;            calculate the closest atom_i - atom_-i&lt;/span&gt;
+&lt;span class="sd"&gt;            if it is the first time we have the number of bonds so big, we expand our lists by appending&lt;/span&gt;
+&lt;span class="sd"&gt;            else: we just put it to the nth position&lt;/span&gt;
+&lt;span class="sd"&gt;    then the last elements of the array will be deleted, since there is not enough statistics for this chains&lt;/span&gt;
+
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;R2_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="n"&gt;n_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="n"&gt;k_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;residues&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;chainlen&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chainlen&lt;/span&gt;&lt;span class="p"&gt;)[::&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="n"&gt;ag1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ag2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atoms&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pos&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;res&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atoms&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pos&lt;/span&gt;
+            &lt;span class="n"&gt;tmpdiff&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ag1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ag2&lt;/span&gt;
+            &lt;span class="n"&gt;r2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmpdiff&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;tmpdiff&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;chainlen&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="c"&gt;# print n&lt;/span&gt;
+
+            &lt;span class="c"&gt;# calc n&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;k_array&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;r2&lt;/span&gt;
+                &lt;span class="n"&gt;k_array&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+                &lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+
+    &lt;span class="n"&gt;R2_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;n_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;k_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k_array&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;R2_array&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;k_array&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;n_array&lt;/span&gt;
+    &lt;span class="n"&gt;R2_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Noff&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;n_array&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Noff&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;save_plot_r2n&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_array&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;R2_array&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;psffile&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;frame&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;logplot&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+
+&lt;span class="n"&gt;get_r2n&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;myfile&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;Noff&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;logplot&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="literal-block"&gt;
+regular xscale
+&lt;/pre&gt;
+&lt;img alt="" src="./images/output_20_1.png" /&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 14:53:00 -0700</pubDate><guid>tag:,2015-04-08:mdanalysis_advanced.html</guid><category>mdanalysis</category><category>Python</category></item><item><title>installing_soft</title><link>/installing_soft.html</link><description>&lt;div class="section" id="what-do-we-need"&gt;
 &lt;h2&gt;What do we need?&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
 &lt;p&gt;In order to do Molecular Dynamics one needs to install essential software.&lt;/p&gt;
@@ -60,6 +257,13 @@ To do that we need to add this lines to ~/.bashrc file&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;After downloading and untaring the archive it is all gravy:
 We just need &lt;cite&gt;vim configure&lt;/cite&gt;, and change &lt;cite&gt;home_bin_dir=..&lt;/cite&gt;,`home_library_dir` to where we want VMD to be.&lt;/p&gt;
+&lt;p&gt;On mac systems just needs to download a .dmg file and install it by just clicking it. Sometimes we also need to specify the location of the executable:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;vmdappdir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/Applications/VMD 1.9.2.app/Contents&amp;#39;&lt;/span&gt;
+&lt;span class="c"&gt;# vmdappdir=&amp;#39;/Applications/VMD1.8.5.app/Contents&amp;#39;&lt;/span&gt;
+    &lt;span class="c"&gt;# (change it to where vmd lies, obviously ;))&lt;/span&gt;
+&lt;span class="nb"&gt;alias &lt;/span&gt;&lt;span class="nv"&gt;vmd&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;quot;$vmdappdir/Resources/VMD.app/Contents/MacOS/VMD&amp;quot; $\*&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;alias &lt;/span&gt;&lt;span class="nv"&gt;textvmd&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;vmd -dispdev text &lt;/span&gt;&lt;span class="nv"&gt;$\&lt;/span&gt;&lt;span class="s2"&gt;*&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;table class="docutils citation" frame="void" id="moltemplate" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
@@ -97,173 +301,7 @@ We just need &lt;cite&gt;vim configure&lt;/cite&gt;, and change &lt;cite&gt;home
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 13:54:00 -0700</pubDate><guid>tag:,2015-04-08:installing_soft.html</guid><category>Lammps</category><category>VMD</category><category>MDAnalysis</category><category>Software</category><category>Python</category></item><item><title>test</title><link>/test.html</link><description>&lt;p&gt;Embed syntax highlighted code blocks directly in your reST documents:&lt;/p&gt;
-&lt;pre class="code Python literal-block"&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;copy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;deepcopy&lt;/span&gt;
-
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;resetDefaults&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="n"&gt;defaults&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;func_defaults&lt;/span&gt;
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;resetter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwds&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;func_defaults&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;deepcopy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;defaults&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="n"&gt;resetter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__name__&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;resetter&lt;/span&gt;
-&lt;/pre&gt;
-&lt;p&gt;You can also embed an existing snippet:&lt;/p&gt;
-&lt;!-- .. snippet:: 1 --&gt;
-&lt;!-- Use :help:`math` like, :math:`E=mc^2` or : --&gt;
-&lt;div class="formula"&gt;
-&lt;i&gt;align&lt;/i&gt;
-&lt;/div&gt;
-&lt;div class="formula"&gt;
-&lt;span class="environment"&gt;&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
-∇⋅&lt;i&gt;E&lt;/i&gt;
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- = &lt;span class="fraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;1&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;&lt;i&gt;ϵ&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;i&gt;ρ&lt;/i&gt;
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
- 
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- 
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
-∇⋅&lt;i&gt;B&lt;/i&gt;
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- = 0
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
- 
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- 
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
-∇ × &lt;i&gt;E&lt;/i&gt;
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- =  − &lt;span class="fraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;∂&lt;i&gt;B&lt;/i&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;∂&lt;i&gt;t&lt;/i&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt;
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
- 
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- 
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;span class="arrayrow"&gt;
-&lt;span class="arraycell align-r"&gt;
-∇ × &lt;i&gt;B&lt;/i&gt;
-&lt;/span&gt;
-&lt;span class="arraycell align-l"&gt;
- = &lt;i&gt;μ&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;&lt;i&gt;J&lt;/i&gt; + &lt;i&gt;μ&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;&lt;i&gt;ϵ&lt;/i&gt;&lt;sub&gt;0&lt;/sub&gt;&lt;span class="fraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;∂&lt;i&gt;E&lt;/i&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;∂&lt;i&gt;t&lt;/i&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt;
-&lt;/span&gt;
-
-&lt;/span&gt;
-&lt;/span&gt;
-&lt;/div&gt;
-&lt;p&gt;Or create flow graphs&lt;/p&gt;
-&lt;!-- .. graph:: --&gt;
-&lt;!-- digraph foo { --&gt;
-&lt;!-- rankdir=LR; --&gt;
-&lt;!-- size="2.5,2.5" --&gt;
-&lt;!-- node [shape = circle]; --&gt;
-&lt;!-- A [fillcolor = cornflowerblue]; --&gt;
-&lt;!-- B [fillcolor = red]; --&gt;
-&lt;!-- C [fillcolor = gold]; --&gt;
-&lt;!-- A -&gt; C [ label = "A-C" color = cornflowerblue]; --&gt;
-&lt;!-- A -&gt; B [ label = "A-B" color = red]; --&gt;
-&lt;!-- A -&gt; A [ label = "WTF?"]; --&gt;
-&lt;!-- C -&gt; B; --&gt;
-&lt;!-- } --&gt;
-&lt;div class="warning"&gt;
-&lt;p class="first admonition-title"&gt;Warning&lt;/p&gt;
-&lt;p class="last"&gt;I am a warning. Be Warned!!!&lt;/p&gt;
-&lt;/div&gt;
-&lt;p&gt;Create tables&lt;/p&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;caption&gt;Frozen Delights!&lt;/caption&gt;
-&lt;colgroup&gt;
-&lt;col width="27%" /&gt;
-&lt;col width="18%" /&gt;
-&lt;col width="55%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Treat&lt;/th&gt;
-&lt;th class="head"&gt;Quantity&lt;/th&gt;
-&lt;th class="head"&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;Albatross&lt;/td&gt;
-&lt;td&gt;2.99&lt;/td&gt;
-&lt;td&gt;On a stick!&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Crunchy Frog&lt;/td&gt;
-&lt;td&gt;1.49&lt;/td&gt;
-&lt;td&gt;If we took the bones out, it wouldn't be
-crunchy, now would it?&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Gannet Ripple&lt;/td&gt;
-&lt;td&gt;1.99&lt;/td&gt;
-&lt;td&gt;On a stick!&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;Another table&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;table border="1" class="docutils"&gt;
-&lt;colgroup&gt;
-&lt;col width="50%" /&gt;
-&lt;col width="25%" /&gt;
-&lt;col width="25%" /&gt;
-&lt;/colgroup&gt;
-&lt;thead valign="bottom"&gt;
-&lt;tr&gt;&lt;th class="head"&gt;Header row, column 1&lt;/th&gt;
-&lt;th class="head"&gt;Header 2&lt;/th&gt;
-&lt;th class="head"&gt;Header 3&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td&gt;body row 1, column 1&lt;/td&gt;
-&lt;td&gt;column 2&lt;/td&gt;
-&lt;td&gt;column 3&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;body row 2&lt;/td&gt;
-&lt;td colspan="2"&gt;Cells may span columns&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;This is a paragraph.  It's quite
-short.&lt;/p&gt;
-&lt;blockquote&gt;
-This paragraph will result in an indented block of
-text, typically used for quoting other text.&lt;/blockquote&gt;
-&lt;p&gt;This is another one.&lt;/p&gt;
-&lt;p&gt;For &lt;em&gt;italics&lt;/em&gt; surround the text with asterisk, like &lt;tt class="docutils literal"&gt;*italics*&lt;/tt&gt;.&lt;/p&gt;
-&lt;p&gt;For &lt;strong&gt;bold&lt;/strong&gt; surround the text with double asterisk, like &lt;tt class="docutils literal"&gt;**bold**&lt;/tt&gt;&lt;/p&gt;
-&lt;p&gt;For inline literals, surround the text with double backticks (`), like &lt;tt class="docutils literal"&gt;``literal``&lt;/tt&gt;&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 19:10:00 -0700</pubDate><guid>tag:,2015-04-05:test.html</guid><category>test</category></item><item><title>Create_melt</title><link>/create_melt.html</link><description>&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 13:54:00 -0700</pubDate><guid>tag:,2015-04-08:installing_soft.html</guid><category>Lammps</category><category>VMD</category><category>MDAnalysis</category><category>Software</category><category>Python</category></item><item><title>Create_melt</title><link>/create_melt.html</link><description>&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
 &lt;p&gt;Creating data files for polymer systems appears to be a daunting task.
 The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;

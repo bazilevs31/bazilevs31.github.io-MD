@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>MDAnalysis_advanced // Molecular Simulation Blog // </title>
+
+    <link href="images/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>MDAnalysis_advanced</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-mdanalysis.html">mdanalysis</a>
+                                <a class="post-category" href="./tag-python.html">Python</a>
+                        </p>
+                </header>
+            </section>
+            <p>This is a ipython notebook which demonstrates how to use MDAnalysis
+package:</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&quot;poly.psf&quot;</span><span class="p">,</span> <span class="s">&quot;poly.pdb&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">u</span>
+</pre></div>
+<pre class="literal-block">
+&lt;Universe with 12000 atoms and 11700 bonds&gt;
+</pre>
+<div class="highlight"><pre><span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+</pre></div>
+<pre class="literal-block">
+&lt;AtomGroup with 12000 atoms&gt;
+</pre>
+<p>Now we have imported a universe, which has all of our frames and
+information of our system. Accessing it becomes pretty straightforward:</p>
+<div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;all&quot;</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">a</span><span class="o">.</span><span class="n">positions</span>
+</pre></div>
+<pre class="literal-block">
+array([[-11.71399975,  -8.36999989,  21.4810009 ],
+       [-11.65499973,  -8.65400028,  20.80699921],
+       [-11.21700001,  -9.38300037,  21.23900032],
+       ...,
+       [  8.22000027,  -6.82600021,   1.65400004],
+       [  8.67800045,  -7.45300007,   1.37300003],
+       [  8.41399956,  -7.28299999,   0.65499997]], dtype=float32)
+</pre>
+<p>Now imagine we want to find something in our selection, lets say center
+of mass, vous a la:</p>
+<div class="highlight"><pre><span class="n">a</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span>
+</pre></div>
+<pre class="literal-block">
+array([ 0.27253684,  1.12546084,  1.68031492])
+</pre>
+<p>MDanalysis allows you to access some other fields rather than just
+atoms:</p>
+<div class="highlight"><pre><span class="n">a</span><span class="o">.</span><span class="n">bonds</span>
+</pre></div>
+<pre class="literal-block">
+&lt;TopologyGroup containing 11700 Bonds&gt;
+</pre>
+<div class="highlight"><pre><span class="n">b1</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">positions</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">b2</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">positions</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">bonds_vectors</span> <span class="o">=</span> <span class="p">(</span><span class="n">b2</span><span class="o">-</span><span class="n">b1</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">bonds_vectors</span>
+</pre></div>
+<pre class="literal-block">
+array([[ 0.05900002, -0.2840004 , -0.67400169],
+       [ 0.43799973, -0.72900009,  0.43200111],
+       [ 0.6960001 , -0.99399948, -0.7159996 ],
+       ...,
+       [-0.43400002, -0.8380003 , -1.17799997],
+       [ 0.45800018, -0.62699986, -0.28100002],
+       [-0.26400089,  0.17000008, -0.71800005]], dtype=float32)
+</pre>
+<p>This way we can write a function that takes a Universe as an input and
+produces a normalized bond_vector list as an output:</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">get_bondlist_coords</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    input: Universe</span>
+<span class="sd">    output: bonds (that are in the domain, normalized)</span>
+
+<span class="sd">    generate normalized coordinates of bond vectors</span>
+<span class="sd">    get universe , return bonds(coordinates)</span>
+<span class="sd">    generate coor of all bonds(bond = chord i-1 - i+1 ), normalize it</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bonds</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">positions</span>
+    <span class="c"># angles = u.angles</span>
+    <span class="c"># bonds = angles.atom3.positions - angles.atom1.positions</span>
+    <span class="c"># coords = angles.atom2.positions</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">bonds</span> <span class="o">/=</span> <span class="n">norm</span><span class="p">[:,</span> <span class="bp">None</span><span class="p">]</span> <span class="c">#the norm vector is a (nx1) and we have to create dummy directions -&gt; (n,3)</span>
+    <span class="k">return</span> <span class="n">bonds</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">get_bondlist_coords</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+</pre></div>
+<pre class="literal-block">
+array([[ 0.08040691, -0.38704386, -0.91854876],
+       [ 0.45917124, -0.76423758,  0.45288265],
+       [ 0.49398914, -0.70549554, -0.5081839 ],
+       ...,
+       [-0.28753173, -0.55518818, -0.78044319],
+       [ 0.5546512 , -0.7593146 , -0.34029898],
+       [-0.33688259,  0.21693134, -0.91621554]], dtype=float32)
+</pre>
+<div class="section" id="interesting-project">
+<h2>Interesting project:</h2>
+<p>Lets calculate something more interesting, say Mean Square Internal
+Difference parameter for the trajectory. Our script will be able to
+consider polydisperse chains as well as monodisperse ones. Imagine we
+have a polymer of the size 2*N atoms per chain. So by definition :</p>
+<div class="formula">
+<i>R</i><sub><i>ij</i></sub> = (<i>r</i><sub><i>i</i></sub> − <i>r</i><sub><i>j</i></sub>)
+</div>
+<div class="formula">
+<i>MSID</i> =  &lt; <span class="fullfraction"><span class="ignored">(</span><span class="numerator"><i>R</i><span class="scripts"><sub class="script"><i>ij</i></sub><sup class="script">2</sup></span>(<i>i</i> − <i>j</i>)</span><span class="ignored">)/(</span><span class="denominator">|<i>i</i> − <i>j</i>|</span><span class="ignored">)</span></span> &gt; 
+</div>
+<p>, where <span class="formula"><i>i</i> = 0, .., <i>N</i> ⁄  ⁄ 2, <i>j</i> = <i>N</i> − <i>i</i> − 1</span>, averaging is being done over
+all chains</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="k">def</span> <span class="nf">max_chain</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    input: MDAnalysis universe</span>
+<span class="sd">    output: maximum length of all of the chains present(integer)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+        <span class="n">reslen</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">maxlen</span><span class="o">&lt;</span><span class="n">reslen</span><span class="p">:</span>
+            <span class="n">maxlen</span><span class="o">=</span><span class="n">reslen</span>
+    <span class="c"># print &quot;maxlen = %f&quot; % maxlen</span>
+    <span class="k">return</span>  <span class="n">maxlen</span><span class="o">-</span><span class="mi">1</span>
+
+<span class="k">def</span> <span class="nf">save_plot_r2n</span><span class="p">(</span><span class="n">n_array</span><span class="p">,</span> <span class="n">R2_array</span><span class="p">,</span><span class="n">psffile</span><span class="p">,</span><span class="n">frame</span><span class="p">,</span><span class="n">logplot</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    input: n_array - array of n&#39;s, R2_array - array of R_n, psffile - name of future files, frame, logplot</span>
+<span class="sd">    saves a frame of r2_n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># plt.cla()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">r&#39;$\mathrm{\frac{R^2(n)}{n}}$&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">logplot</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;xlogscale&quot;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xscale</span><span class="p">(</span><span class="s">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\mathrm{log(N)}$&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;regular xscale&quot;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">r&#39;$\mathrm{N}$&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">r&#39;$\mathrm{\frac{R^2(n)}{n} evolution, frame = </span><span class="si">%s</span><span class="s">} $&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n_array</span><span class="p">,</span><span class="n">R2_array</span><span class="p">,</span><span class="s">&#39;--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c">#     plt.savefig(&#39;R2%s_%.5d.png&#39; % (psffile,frame))</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+<span class="k">def</span> <span class="nf">get_r2n</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">psffile</span><span class="p">,</span><span class="n">frame</span><span class="p">,</span><span class="n">Noff</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">logplot</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    create a list of</span>
+<span class="sd">    R2_array - array of distances</span>
+<span class="sd">    n_array - array of number of bonds between atoms</span>
+<span class="sd">    k_array - array of number of atoms with this bonds</span>
+<span class="sd">    start looping in residues</span>
+<span class="sd">    for every residue:</span>
+<span class="sd">        start from the middle of it</span>
+<span class="sd">            calculate the closest atom_i - atom_-i</span>
+<span class="sd">            if it is the first time we have the number of bonds so big, we expand our lists by appending</span>
+<span class="sd">            else: we just put it to the nth position</span>
+<span class="sd">    then the last elements of the array will be deleted, since there is not enough statistics for this chains</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">R2_array</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">n_array</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">k_array</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+        <span class="n">chainlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chainlen</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
+            <span class="n">tmpdiff</span> <span class="o">=</span> <span class="n">ag1</span><span class="o">-</span><span class="n">ag2</span>
+            <span class="n">r2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tmpdiff</span><span class="p">,</span><span class="n">tmpdiff</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">chainlen</span><span class="o">-</span><span class="n">i</span><span class="p">)</span>
+            <span class="c"># print n</span>
+
+            <span class="c"># calc n</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">R2_array</span><span class="p">):</span>
+                <span class="n">R2_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
+                <span class="n">n_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">k_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">R2_array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">r2</span>
+                <span class="n">k_array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">n_array</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">R2_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">R2_array</span><span class="p">)</span>
+    <span class="n">n_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_array</span><span class="p">)</span>
+    <span class="n">k_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">k_array</span><span class="p">)</span>
+    <span class="n">R2_array</span> <span class="o">/=</span> <span class="n">k_array</span><span class="o">*</span><span class="n">n_array</span>
+    <span class="n">R2_array</span> <span class="o">=</span> <span class="n">R2_array</span><span class="p">[:</span><span class="o">-</span><span class="n">Noff</span><span class="p">]</span>
+    <span class="n">n_array</span> <span class="o">=</span> <span class="n">n_array</span><span class="p">[:</span><span class="o">-</span><span class="n">Noff</span><span class="p">]</span>
+    <span class="n">save_plot_r2n</span><span class="p">(</span><span class="n">n_array</span><span class="p">,</span> <span class="n">R2_array</span><span class="p">,</span><span class="n">psffile</span><span class="p">,</span><span class="n">frame</span><span class="p">,</span><span class="n">logplot</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">None</span>
+
+<span class="n">get_r2n</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="s">&quot;myfile&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">Noff</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">logplot</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+<pre class="literal-block">
+regular xscale
+</pre>
+<img alt="" src="./images/output_20_1.png" />
+</div>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
