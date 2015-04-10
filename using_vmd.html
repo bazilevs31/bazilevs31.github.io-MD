@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>Using_vmd // Molecular Simulation Blog // </title>
+
+    <link href="images/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Using_vmd</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-vmd.html">VMD</a>
+                                <a class="post-category" href="./tag-python.html">Python</a>
+                                <a class="post-category" href="./tag-lammps.html">Lammps</a>
+                        </p>
+                </header>
+            </section>
+            <div class="section" id="you-have-run-your-simulation-now-what">
+<h2>You have run your simulation. Now what?</h2>
+<p>So after you managed to get your trajectories from Lammps, or other Simulation packages its time to create nice vizualizations.
+In this blog entry I will cover how do I use VMD and Lammps together.</p>
+</div>
+<div class="section" id="making-lammps-to-output-trajectory-files">
+<h2>Making Lammps to output trajectory files</h2>
+<p>In Lammps I use this command to produce trajectory files:</p>
+<div class="highlight"><pre><span class="nb">dump</span>            <span class="n">dump_traj</span> <span class="n">all</span> <span class="n">dcd</span> <span class="mi">20000</span> <span class="n">traj</span><span class="o">.</span><span class="n">dcd</span>
+<span class="n">dump_modify</span>     <span class="n">dump_traj</span> <span class="nb">sort</span> <span class="n">id</span> <span class="n">unwrap</span> <span class="n">yes</span>
+<span class="n">write_data</span>              <span class="n">traj</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+<p>It will produce a .dcd file which will contain information about position of atoms for each timestep. The best part about .dcd format is that it is already binary, therefore takes about 5 times less space on your hard drive than ASCII files. Also it can be read by almost every MD trajectory processing software packages such as <a class="citation-reference" href="#vmd" id="id1">[vmd]</a> and <a class="citation-reference" href="#mdanalysis" id="id2">[mdanalysis]</a> .</p>
+</div>
+<div class="section" id="vizualizing-your-trajectory">
+<h2>Vizualizing your trajectory:</h2>
+<p>To visualize your trajectory one needs to give VMD information about bonds in the system, by providing VMD with .psf files, i.e bond information files.
+Here comes handy the .data file: traj.data and <a class="citation-reference" href="#topotools" id="id3">[topotools]</a> :</p>
+<div class="highlight"><pre><span class="nv">topo</span> readlammpsdata traj.data molecular
+<span class="nv">animate</span> write psf traj.psf
+</pre></div>
+<p>And now we can use VMD to visualize the results:</p>
+<div class="highlight"><pre><span class="nv">mol</span> load psf traj.psf
+<span class="nv">animate</span> read dcd traj.dcd
+</pre></div>
+<p>I wrote a simple python script to produce .psf file out of data file.</p>
+<div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="k">def</span> <span class="nf">create_psf</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    given data file produce psf file if it doesn&#39;t exist yet</span>
+<span class="sd">    if it does then use it</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">psffile</span><span class="p">)):</span>
+        <span class="n">psffile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">psffile</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">PSF</span> <span class="o">=</span> <span class="n">psffile</span><span class="o">+</span><span class="s">&#39;.psf&#39;</span>
+        <span class="n">DCD</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">traj</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.dcd&#39;</span>
+        <span class="n">DATA</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">datafile</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;.data&#39;</span>
+
+        <span class="n">vmdscript</span> <span class="o">=</span> <span class="s">&quot;create_psf.vmd&quot;</span>
+
+        <span class="c"># write VMD loader script</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;vmdfile&#39;</span><span class="p">:</span> <span class="n">vmdscript</span><span class="p">,</span>
+                      <span class="s">&#39;topology&#39;</span><span class="p">:</span> <span class="n">PSF</span><span class="p">,</span>
+                      <span class="s">&#39;datafile&#39;</span><span class="p">:</span> <span class="n">DATA</span><span class="p">,</span>
+                      <span class="s">&#39;trajectory&#39;</span><span class="p">:</span> <span class="n">DCD</span><span class="p">,</span>
+                      <span class="s">&#39;trajskip&#39;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">trajskip</span><span class="p">}</span>
+
+        <span class="n">script</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s">            package require topotools</span>
+<span class="s">            topo readlammpsdata &quot;{0[datafile]}&quot; angle</span>
+<span class="s">            animate write psf &quot;{0[topology]}&quot;</span>
+<span class="s">        exit</span>
+<span class="s">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">vmdscript</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tcl</span><span class="p">:</span>
+            <span class="n">tcl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">script</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+        <span class="c">#os.system(&quot;vmd -dispdev text -e {0[vmdfile]}&quot;.format(parameters))</span>
+
+        <span class="k">print</span> <span class="s">&quot;Wrote VMD script {0}  &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vmdscript</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;If there is an error with {0}: &#39;source {0}&#39; to load everything manually, then repeat &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vmdscript</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;running the python script with explicict parameters that were generated&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vmdscript</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;the file </span><span class="si">%s</span><span class="s"> already exists&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="o">.</span><span class="n">psffile</span>
+
+
+    <span class="k">return</span> <span class="n">args</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span>\<span class="n">_</span>\<span class="n">_doc</span>\<span class="n">_</span>\<span class="n">_</span><span class="p">,</span>
+                                <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentDefaultsHelpFormatter</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-f&quot;</span><span class="p">,</span> <span class="s">&quot;--psf&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;psffile&quot;</span><span class="p">,</span>
+                     <span class="n">help</span><span class="o">=</span><span class="s">&quot;Name of the future files, all other files will start with FILE&quot;</span><span class="p">,</span>
+                     <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FILE&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-d&quot;</span><span class="p">,</span> <span class="s">&quot;--data&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;datafile&quot;</span><span class="p">,</span>
+                    <span class="n">default</span><span class="o">=</span><span class="s">&quot;./figures/polymer_0.8.data&quot;</span><span class="p">,</span>
+                    <span class="c"># type=lambda x: is_valid_file(parser, x),</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s">&quot;read datafile and if exists then convert it to psf file by invoking a vmd script&quot;</span><span class="p">,</span>
+                    <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FILE&quot;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-t&quot;</span><span class="p">,</span> <span class="s">&quot;--trajectroy&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;traj&quot;</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="s">&quot;quenchsim.dcd&quot;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&quot;Input trajectory file)&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FILE&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-s&quot;</span><span class="p">,</span>  <span class="s">&quot;--trajskip&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;trajskip&quot;</span><span class="p">,</span>
+                    <span class="n">default</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s">&quot;How many steps are to be skipped when trajectory </span><span class="se">\</span>
+<span class="s">                                        file is being red</span><span class="se">\</span>
+<span class="s">                                        (needs to be &gt; 1, &lt; number of frames) </span><span class="se">\</span>
+<span class="s">                                        type (default: </span><span class="si">%(default)s</span><span class="s">)&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-e&quot;</span><span class="p">,</span> <span class="s">&quot;--endframe&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&quot;endframe&quot;</span><span class="p">,</span>
+                    <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s">&quot;End frame of the trajectory file type (default: </span><span class="si">%(default)s</span><span class="s">)&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-st&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;--startframe&quot;</span><span class="p">,</span>
+                    <span class="n">dest</span><span class="o">=</span><span class="s">&quot;startframe&quot;</span><span class="p">,</span>
+                    <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s">&quot;Start frame of the trajectory file type (default: </span><span class="si">%(default)s</span><span class="s">)&quot;</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">create_psf</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">None</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+<p>Just run this commands to run the script:</p>
+<div class="highlight"><pre><span class="nv">$python</span> test.py -h
+usage: test.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-f FILE<span class="o">]</span> <span class="o">[</span>-d FILE<span class="o">]</span> <span class="o">[</span>-t FILE<span class="o">]</span> <span class="o">[</span>-s TRAJSKIP<span class="o">]</span> <span class="o">[</span>-e ENDFRAME<span class="o">]</span>
+               <span class="o">[</span>-st STARTFRAME<span class="o">]</span>
+optional arguments:
+  -h, --help            show this <span class="nb">help </span>message and <span class="nb">exit</span>
+  -f FILE, --psf FILE   Name of the future files, all other files will start
+                        with FILE <span class="o">(</span>default: None<span class="o">)</span>
+  -d FILE, --data FILE  <span class="nb">read </span>datafile and <span class="k">if</span> exists <span class="k">then</span> convert it to psf
+                        file by invoking a vmd script <span class="o">(</span>default:
+                        ./figures/polymer_0.8.data<span class="o">)</span>
+  -t FILE, --trajectroy FILE
+                        Input trajectory file<span class="o">)</span> <span class="o">(</span>default: quenchsim.dcd<span class="o">)</span>
+  -s TRAJSKIP, --trajskip TRAJSKIP
+                        How many steps are to be skipped when trajectory file
+                        is being red <span class="o">(</span>needs to be &gt; 1, &lt; number of frames<span class="o">)</span>
+                        <span class="nb">type</span> <span class="o">(</span>default: 40<span class="o">)</span>
+  -e ENDFRAME, --endframe ENDFRAME
+                        End frame of the trajectory file <span class="nb">type</span> <span class="o">(</span>default: -1<span class="o">)</span>
+  -st STARTFRAME, --startframe STARTFRAME
+                        Start frame of the trajectory file <span class="nb">type</span> <span class="o">(</span>default: 0<span class="o">)</span>
+</pre></div>
+<table class="docutils citation" frame="void" id="topotools" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[topotools]</a></td><td>Topotools: <a class="reference external" href="https://sites.google.com/site/akohlmey/software/topotools">https://sites.google.com/site/akohlmey/software/topotools</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="mdanalysis" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[mdanalysis]</a></td><td>MDAnalysis: <a class="reference external" href="https://code.google.com/p/mdanalysis/">https://code.google.com/p/mdanalysis/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="vmd" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[vmd]</a></td><td>VMD: <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">http://www.ks.uiuc.edu/Research/vmd/</a></td></tr>
+</tbody>
+</table>
+</div>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+
+</body>
+</html>
