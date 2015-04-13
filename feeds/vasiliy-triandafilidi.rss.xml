@@ -359,6 +359,7 @@ array([[ 0.08040691, -0.38704386, -0.91854876],
 &lt;/pre&gt;
 &lt;div class="section" id="interesting-project"&gt;
 &lt;h2&gt;Interesting project:&lt;/h2&gt;
+&lt;img alt="" src="./images/output_1_0.png" /&gt;
 &lt;p&gt;Lets calculate something more interesting, say Mean Square Internal
 Difference parameter for the trajectory. Our script will be able to
 consider polydisperse chains as well as monodisperse ones. Imagine we
