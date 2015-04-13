@@ -152,7 +152,7 @@ optional arguments:
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</summary><category term="VMD"></category><category term="Python"></category><category term="Lammps"></category></entry><entry><title>MDAnalysis_advanced</title><link href="/mdanalysis_advanced.html" rel="alternate"></link><updated>2015-04-08T14:53:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-08:mdanalysis_advanced.html</id><summary type="html">&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
+</summary><category term="VMD"></category><category term="Python"></category><category term="Lammps"></category><category term="Software"></category></entry><entry><title>MDAnalysis_advanced</title><link href="/mdanalysis_advanced.html" rel="alternate"></link><updated>2015-04-08T14:53:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-08:mdanalysis_advanced.html</id><summary type="html">&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
@@ -250,12 +250,30 @@ array([[ 0.08040691, -0.38704386, -0.91854876],
 &lt;p&gt;Lets calculate something more interesting, say Mean Square Internal
 Difference parameter for the trajectory. Our script will be able to
 consider polydisperse chains as well as monodisperse ones. Imagine we
-have a polymer of the size 2*N atoms per chain. So by definition :&lt;/p&gt;
+have a polymer of the size 2N atoms per chain. So by definition :&lt;/p&gt;
 &lt;div class="formula"&gt;
 &lt;i&gt;R&lt;/i&gt;&lt;sub&gt;&lt;i&gt;ij&lt;/i&gt;&lt;/sub&gt; = (&lt;i&gt;r&lt;/i&gt;&lt;sub&gt;&lt;i&gt;i&lt;/i&gt;&lt;/sub&gt; − &lt;i&gt;r&lt;/i&gt;&lt;sub&gt;&lt;i&gt;j&lt;/i&gt;&lt;/sub&gt;)
 &lt;/div&gt;
 &lt;div class="formula"&gt;
-&lt;i&gt;MSID&lt;/i&gt; =  &amp;lt; &lt;span class="fullfraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;&lt;i&gt;R&lt;/i&gt;&lt;span class="scripts"&gt;&lt;sub class="script"&gt;&lt;i&gt;ij&lt;/i&gt;&lt;/sub&gt;&lt;sup class="script"&gt;2&lt;/sup&gt;&lt;/span&gt;(&lt;i&gt;i&lt;/i&gt; − &lt;i&gt;j&lt;/i&gt;)&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;|&lt;i&gt;i&lt;/i&gt; − &lt;i&gt;j&lt;/i&gt;|&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt; &amp;gt; 
+&lt;span class="environment"&gt;&lt;span class="arrayrow"&gt;
+&lt;span class="arraycell align-r"&gt;
+&lt;i&gt;MSID&lt;/i&gt; =  &amp;lt; 
+&lt;/span&gt;
+
+&lt;/span&gt;
+&lt;span class="arrayrow"&gt;
+&lt;span class="arraycell align-r"&gt;
+ 
+&lt;/span&gt;
+
+&lt;/span&gt;
+&lt;span class="arrayrow"&gt;
+&lt;span class="arraycell align-r"&gt;
+&lt;i&gt;dfrac&lt;/i&gt;&lt;i&gt;R&lt;/i&gt;&lt;span class="scripts"&gt;&lt;sub class="script"&gt;&lt;i&gt;ij&lt;/i&gt;&lt;/sub&gt;&lt;sup class="script"&gt;2&lt;/sup&gt;&lt;/span&gt;(&lt;i&gt;i&lt;/i&gt; − &lt;i&gt;j&lt;/i&gt;)|&lt;i&gt;i&lt;/i&gt; − &lt;i&gt;j&lt;/i&gt;| &amp;gt; 
+&lt;/span&gt;
+
+&lt;/span&gt;
+&lt;/span&gt;
 &lt;/div&gt;
 &lt;p&gt;, where &lt;span class="formula"&gt;&lt;i&gt;i&lt;/i&gt; = 0, .., &lt;i&gt;N&lt;/i&gt; ⁄  ⁄ 2, &lt;i&gt;j&lt;/i&gt; = &lt;i&gt;N&lt;/i&gt; − &lt;i&gt;i&lt;/i&gt; − 1&lt;/span&gt;, averaging is being done over
 all chains&lt;/p&gt;
@@ -349,7 +367,7 @@ regular xscale
 &lt;/pre&gt;
 &lt;img alt="" src="./images/output_20_1.png" /&gt;
 &lt;/div&gt;
-</summary><category term="mdanalysis"></category><category term="Python"></category></entry><entry><title>installing_soft</title><link href="/installing_soft.html" rel="alternate"></link><updated>2015-04-08T13:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-08:installing_soft.html</id><summary type="html">&lt;div class="section" id="what-do-we-need"&gt;
+</summary><category term="mdanalysis"></category><category term="Python"></category><category term="Analysis"></category></entry><entry><title>installing_soft</title><link href="/installing_soft.html" rel="alternate"></link><updated>2015-04-08T13:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-08:installing_soft.html</id><summary type="html">&lt;div class="section" id="what-do-we-need"&gt;
 &lt;h2&gt;What do we need?&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
 &lt;p&gt;In order to do Molecular Dynamics one needs to install essential software.&lt;/p&gt;
@@ -465,17 +483,54 @@ The process of creating a data file includes three stages. One of possible ways 
 &lt;p&gt;Creating initial configuration is relatively easy. The Lammps package comes with an tool called chain.f. Very fast Fortran program for creating initial configurations.&lt;/p&gt;
 &lt;p&gt;Equilibrating using protocol.&lt;/p&gt;
 &lt;p&gt;Analyze chain confirmation lets us to make sure our chains are well-equilibrated.&lt;/p&gt;
-</summary><category term="Lammps"></category></entry><entry><title>Equilibrate_melt</title><link href="/equilibrate_melt.html" rel="alternate"></link><updated>2015-04-05T16:57:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:equilibrate_melt.html</id><summary type="html">&lt;p&gt;Creating&lt;/p&gt;
-&lt;p&gt;The initial melts were created using self-avoiding random walk in open-source tool def.chain that comes with Lammps.
-Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run.  Fortunately there are several methods that help achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods readers are en- coureged to the paper of.
-Here is a snapshot of lammps implementation of this algorithm. When run long enough even long polymer chains entangle and correspond to well relaxed state. A reasonable question may follow this algorithm. How long is long enough, and how to understand whether the structures are well equilibrated or not. To answer that questions one may consider the parameter&amp;lt; R2(N)&amp;gt; /Nwhich is mean square distance between the beads of the polymer per bead. In a well- equilibrated melt chains obey Gaussian statistics and for some N they reach saturation corresonding to the rigid- ity of the molecule [11].&lt;/p&gt;
-&lt;p&gt;To equilibrate polymer melts one may want to consider his polymers to be bead-springs.&lt;/p&gt;
-&lt;p&gt;Equilibration included several steps:&lt;/p&gt;
+</summary><category term="Lammps"></category><category term="Simulation"></category></entry><entry><title>Equilibrate_melt</title><link href="/equilibrate_melt.html" rel="alternate"></link><updated>2015-04-05T16:57:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:equilibrate_melt.html</id><summary type="html">&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title first"&gt;Table of contents&lt;/p&gt;
+&lt;ul class="auto-toc simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#quantifying-equilibration" id="id4"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Quantifying equilibration:&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#what-algorithm-to-use-to-prepare-equilibrated-melts" id="id5"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;What algorithm to use, to prepare equilibrated melts?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#how-to-use-equilibrated-melt-datafile-with-an-actual-simulation" id="id6"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;How to use equilibrated_melt_datafile with an actual simulation?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;p&gt;Creating polymer structures using self-avoiding random walk was pretty easy, which is not the case for equilibration.
+Equilibrating polymer melts can be considered as an art itself.&lt;/p&gt;
+&lt;p&gt;There are several key questions we are answering in this post:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
+&lt;li&gt;What melts can be considered equilibrated?&lt;/li&gt;
+&lt;li&gt;What algorithm to use, to prepare equilibrated melts?&lt;/li&gt;
+&lt;li&gt;How to use equilibrated_melt_datafile with an actual simulation?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Lets answer this questions:&lt;/p&gt;
+&lt;div class="section" id="quantifying-equilibration"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id4"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Quantifying equilibration:&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Imagine we have equilibrated our polymer melt, how do we check whether the chains are equilibrated well enough?&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;To understand whether our melt is equilibrated enough we need to consider 4 following parameters:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="loweralpha simple"&gt;
+&lt;li&gt;Chain statistics&lt;/li&gt;
+&lt;li&gt;Radial distribution function (RDF)&lt;/li&gt;
+&lt;li&gt;Thermodynamic parameters&lt;/li&gt;
+&lt;li&gt;MSD&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lets start with second and third items in our list, they are pretty obvious: if there is any time evolution of your thermodynamic parameters (for example Energy) then,obviously, your melt is not equilibrated enough. The same applies to the RDF.&lt;/p&gt;
+&lt;p&gt;Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run. Fortunately there are several methods that can help you with achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods there are couple of must read papers.
+One of them is &lt;a class="citation-reference" href="#auhl" id="id1"&gt;[auhl]&lt;/a&gt;. For me personally this paper was also very helpful &lt;a class="citation-reference" href="#sliozberg" id="id2"&gt;[sliozberg]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As for the chain statistics it has to be gaussian, i.e should be a &lt;a class="citation-reference" href="#randomcoil" id="id3"&gt;[randomcoil]&lt;/a&gt;. In a gaussian chain, chain is randomly coiled, and exhibits a certain relation between end-to-end distance (average distance between the last and the first atom in chain) and gyration radius(a quantity that shows how coiled the structure is) also it is regulated by the Mean Square Difference paramter &lt;span class="formula"&gt;&lt;i&gt;MSD&lt;/i&gt;(&lt;i&gt;n&lt;/i&gt;) =  &amp;lt; &lt;i&gt;R&lt;/i&gt;&lt;sup&gt;2&lt;/sup&gt;(&lt;i&gt;N&lt;/i&gt;) &amp;gt;  ⁄ &lt;i&gt;N&lt;/i&gt;&lt;/span&gt;. When chains are equilibrated they exhibit gaussian properties, i.e &lt;span class="formula"&gt;&lt;span class="fraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;&lt;i&gt;MSD&lt;/i&gt;(&lt;i&gt;N&lt;/i&gt;)&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;&lt;i&gt;R&lt;/i&gt;&lt;span class="scripts"&gt;&lt;sub class="script"&gt;&lt;i&gt;g&lt;/i&gt;&lt;/sub&gt;&lt;sup class="script"&gt;2&lt;/sup&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt; = 6&lt;/span&gt; and MSD(n) behaviour starts with linear part and then saturates.&lt;/p&gt;
+&lt;div class="figure"&gt;
+&lt;img alt="" src="./images/output_20_1.png" style="width: 400.0pt;" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-algorithm-to-use-to-prepare-equilibrated-melts"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id5"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;What algorithm to use, to prepare equilibrated melts?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Equilibration included several steps:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="loweralpha simple"&gt;
 &lt;li&gt;Unphysical Kremer-Grest equilibration using bead-springs. [Equilibrate generated beads with Kremer-Grest model(atoms+bonds)]&lt;/li&gt;
 &lt;li&gt;Adding angle/dihedral interactions&lt;/li&gt;
-&lt;li&gt;Physical MD run equilibration(Equilibrate in NVE ensemble with Sommer potential (atoms+bonds+angles), Equilibrate at 1 atm and 800 K)&lt;/li&gt;
+&lt;li&gt;Physical MD run equilibration(Equilibrate in a Physical (NVE, NPT) ensemble&lt;/li&gt;
 &lt;/ol&gt;
+&lt;/blockquote&gt;
 &lt;p&gt;Kremer-Grest. This is the main part of the equilibration, after this the chains need to be fully relaxed, have gaussian chain statistics, adequate radial distribution function.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# Kremer-Grest model.&lt;/span&gt;
 
@@ -538,14 +593,11 @@ Here is a snapshot of lammps implementation of this algorithm. When run long eno
 
 &lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;equil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Imagine we have an equilibrated array, how do we check whether the chains are equilibrated well enough?&lt;/p&gt;
-&lt;p&gt;Problem: How do we define whether the polymer chains are equilibrated enough?&lt;/p&gt;
-&lt;p&gt;Solution:&lt;/p&gt;
-&lt;ol class="arabic simple"&gt;
-&lt;li&gt;Chain statistics&lt;/li&gt;
-&lt;li&gt;Radial distribution function&lt;/li&gt;
-&lt;li&gt;Thermodynamic parameters&lt;/li&gt;
-&lt;/ol&gt;
+&lt;!-- ==================================================== --&gt;
+&lt;!-- modifying data files --&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-use-equilibrated-melt-datafile-with-an-actual-simulation"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id6"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;How to use equilibrated_melt_datafile with an actual simulation?&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;If we recall the init.data created at the first stage of creating melt it started like this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt; &lt;span class="n"&gt;LAMMPS&lt;/span&gt; &lt;span class="n"&gt;FENE&lt;/span&gt; &lt;span class="n"&gt;chain&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;
 
@@ -631,7 +683,26 @@ Here is a snapshot of lammps implementation of this algorithm. When run long eno
 &lt;span class="mi"&gt;1&lt;/span&gt;  &lt;span class="n"&gt;angle&lt;/span&gt; &lt;span class="n"&gt;types&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</summary><category term="Lammps"></category><category term="Equilibration"></category></entry><entry><title>Lammps_intro</title><link href="/lammps_intro.html" rel="alternate"></link><updated>2015-04-05T16:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:lammps_intro.html</id><summary type="html">&lt;p&gt;How to create atoms and run simulation:&lt;/p&gt;
+&lt;table class="docutils citation" frame="void" id="randomcoil" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[randomcoil]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Random Coil: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Random_coil"&gt;http://en.wikipedia.org/wiki/Random_coil&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="auhl" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id1"&gt;[auhl]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670"&gt;http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="sliozberg" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[sliozberg]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Sliozberg: &lt;a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf"&gt;http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf&lt;/a&gt; &amp;lt;&lt;a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf"&gt;http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf&lt;/a&gt;&amp;gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+</summary><category term="Lammps"></category><category term="Equilibration"></category><category term="Simulation"></category></entry><entry><title>Lammps_intro</title><link href="/lammps_intro.html" rel="alternate"></link><updated>2015-04-05T16:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:lammps_intro.html</id><summary type="html">&lt;p&gt;How to create atoms and run simulation:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 3d Lennard-Jones melt&lt;/span&gt;
 &lt;span class="n"&gt;units&lt;/span&gt;       &lt;span class="n"&gt;real&lt;/span&gt;
 &lt;span class="c1"&gt;#Angstroms, T kelvins,&lt;/span&gt;
@@ -705,7 +776,7 @@ Here is a snapshot of lammps implementation of this algorithm. When run long eno
 &lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
 &lt;span class="c1"&gt;# initial - &amp;gt; result.data -&amp;gt; result2.data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</summary><category term="Lammps"></category></entry><entry><title>bash_intro</title><link href="/bash_intro.html" rel="alternate"></link><updated>2015-04-05T16:31:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:bash_intro.html</id><summary type="html">&lt;div class="section" id="how-to-work-in-unix-bash"&gt;
+</summary><category term="Lammps"></category><category term="Simulation"></category></entry><entry><title>bash_intro</title><link href="/bash_intro.html" rel="alternate"></link><updated>2015-04-05T16:31:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:bash_intro.html</id><summary type="html">&lt;div class="section" id="how-to-work-in-unix-bash"&gt;
 &lt;h2&gt;How to work in Unix Bash&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
 &lt;p&gt;Imagine you have 10 files with two columns of data in each file. You want to load them and take an average of all second columns. Sounds like an easy Excell program. But it is not. When you have not 10 but 10 000 files, it will take ages for Excell to load them, also Excell is not free and is not installed everywhere. Fortunatelly there is an amazing tool that you may use : Bash shell. It is available by default in Linux/Mac OS , it can be installed via CygWin on Windows machine. It takes a couple of hours to learn, couple of days/weeks to master, and it will save you couple of years in future. Interested? So lets get started …&lt;/p&gt;
@@ -851,7 +922,7 @@ then we may run the program the following way &lt;tt class="docutils literal"&gt
 &lt;p&gt;Useful links&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-</summary><category term="bash"></category></entry><entry><title>Introduction</title><link href="/introduction.html" rel="alternate"></link><updated>2015-04-05T15:08:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:introduction.html</id><summary type="html">&lt;div class="section" id="about-me"&gt;
+</summary><category term="bash"></category><category term="Analysis"></category></entry><entry><title>Introduction</title><link href="/introduction.html" rel="alternate"></link><updated>2015-04-05T15:08:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:introduction.html</id><summary type="html">&lt;div class="section" id="about-me"&gt;
 &lt;h2&gt;About me&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
 &lt;!-- .. figure:: ~/blog/images/me.jpg --&gt;

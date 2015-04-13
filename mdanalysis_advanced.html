@@ -33,8 +33,11 @@
                         <hgroup>
                             <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
                             <p class="tagline"></p>
-                                <p class="links"><a href="./archives.html">Archives</a></p>
                                 <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./tag-simulation.html">Simulation</a></p>
+                                <p class="links"><a href="./tag-analysis.html">Analysis</a></p>
+                                <p class="links"><a href="./tag-software.html">Software</a></p>
                                 <p class="social">
                                 </p>
                         </hgroup>
@@ -50,6 +53,7 @@
                         <p class="post-meta">
                             // under                                 <a class="post-category" href="./tag-mdanalysis.html">mdanalysis</a>
                                 <a class="post-category" href="./tag-python.html">Python</a>
+                                <a class="post-category" href="./tag-analysis.html">Analysis</a>
                         </p>
                 </header>
             </section>
@@ -151,12 +155,30 @@ array([[ 0.08040691, -0.38704386, -0.91854876],
 <p>Lets calculate something more interesting, say Mean Square Internal
 Difference parameter for the trajectory. Our script will be able to
 consider polydisperse chains as well as monodisperse ones. Imagine we
-have a polymer of the size 2*N atoms per chain. So by definition :</p>
+have a polymer of the size 2N atoms per chain. So by definition :</p>
 <div class="formula">
 <i>R</i><sub><i>ij</i></sub> = (<i>r</i><sub><i>i</i></sub> − <i>r</i><sub><i>j</i></sub>)
 </div>
 <div class="formula">
-<i>MSID</i> =  &lt; <span class="fullfraction"><span class="ignored">(</span><span class="numerator"><i>R</i><span class="scripts"><sub class="script"><i>ij</i></sub><sup class="script">2</sup></span>(<i>i</i> − <i>j</i>)</span><span class="ignored">)/(</span><span class="denominator">|<i>i</i> − <i>j</i>|</span><span class="ignored">)</span></span> &gt; 
+<span class="environment"><span class="arrayrow">
+<span class="arraycell align-r">
+<i>MSID</i> =  &lt; 
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+ 
+</span>
+
+</span>
+<span class="arrayrow">
+<span class="arraycell align-r">
+<i>dfrac</i><i>R</i><span class="scripts"><sub class="script"><i>ij</i></sub><sup class="script">2</sup></span>(<i>i</i> − <i>j</i>)|<i>i</i> − <i>j</i>| &gt; 
+</span>
+
+</span>
+</span>
 </div>
 <p>, where <span class="formula"><i>i</i> = 0, .., <i>N</i> ⁄  ⁄ 2, <i>j</i> = <i>N</i> − <i>i</i> − 1</span>, averaging is being done over
 all chains</p>
