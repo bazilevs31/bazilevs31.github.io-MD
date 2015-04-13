@@ -156,32 +156,23 @@ array([[ 0.08040691, -0.38704386, -0.91854876],
 Difference parameter for the trajectory. Our script will be able to
 consider polydisperse chains as well as monodisperse ones. Imagine we
 have a polymer of the size 2N atoms per chain. So by definition :</p>
-<div class="formula">
-<i>R</i><sub><i>ij</i></sub> = (<i>r</i><sub><i>i</i></sub> − <i>r</i><sub><i>j</i></sub>)
+<div class="math">
+\begin{equation*}
+R_{ij} = (r_i - r_j)
+\end{equation*}
 </div>
-<div class="formula">
-<span class="environment"><span class="arrayrow">
-<span class="arraycell align-r">
-<i>MSID</i> =  &lt; 
-</span>
-
-</span>
-<span class="arrayrow">
-<span class="arraycell align-r">
- 
-</span>
-
-</span>
-<span class="arrayrow">
-<span class="arraycell align-r">
-<i>dfrac</i><i>R</i><span class="scripts"><sub class="script"><i>ij</i></sub><sup class="script">2</sup></span>(<i>i</i> − <i>j</i>)|<i>i</i> − <i>j</i>| &gt; 
-</span>
-
-</span>
-</span>
+<div class="math">
+\begin{equation*}
+MSID = &lt; \dfrac{R^2_{ij}(i-j)}{|i-j|} &gt;
+\end{equation*}
 </div>
-<p>, where <span class="formula"><i>i</i> = 0, .., <i>N</i> ⁄  ⁄ 2, <i>j</i> = <i>N</i> − <i>i</i> − 1</span>, averaging is being done over
-all chains</p>
+<p>, where :</p>
+<div class="math">
+\begin{equation*}
+i = 0,..,N//2, j = N-i-1
+\end{equation*}
+</div>
+<p>averaging is being done over all chains</p>
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
 <span class="k">def</span> <span class="nf">max_chain</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
@@ -308,4 +299,25 @@ regular xscale
     </script>
 
 </body>
+
+<!-- I added this -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  "HTML-CSS": {
+  styles: {
+  ".MathJax .mo, .MathJax .mi": {color: "black ! important"}}
+  },
+  tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']],processEscapes: true}
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
 </html>
+
+
