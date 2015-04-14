@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Molecular Simulation Blog</title><link href="/" rel="alternate"></link><link href="/feeds/tag/simulation.atom.xml" rel="self"></link><id>/</id><updated>2015-04-05T17:03:00-07:00</updated><entry><title>Create_melt</title><link href="/create_melt.html" rel="alternate"></link><updated>2015-04-05T17:03:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:create_melt.html</id><summary type="html">&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
+&lt;p&gt;Creating data files for polymer systems appears to be a daunting task.
+The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Create initial configuration using Monte-Carlo random walk&lt;/li&gt;
+&lt;li&gt;Run a Lammps simulation for equilibrating melt&lt;/li&gt;
+&lt;li&gt;Analyze chain confirmation, if not satisfactory go to stage 2.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Creating initial configuration is relatively easy. The Lammps package comes with an tool called chain.f. Very fast Fortran program for creating initial configurations.&lt;/p&gt;
+&lt;p&gt;Equilibrating using protocol.&lt;/p&gt;
+&lt;p&gt;Analyze chain confirmation lets us to make sure our chains are well-equilibrated.&lt;/p&gt;
+</summary><category term="Lammps"></category><category term="Simulation"></category></entry><entry><title>Equilibrate_melt</title><link href="/equilibrate_melt.html" rel="alternate"></link><updated>2015-04-05T16:57:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:equilibrate_melt.html</id><summary type="html">&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title first"&gt;Table of contents&lt;/p&gt;
+&lt;ul class="auto-toc simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#quantifying-equilibration" id="id4"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Quantifying equilibration:&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#what-algorithm-to-use-to-prepare-equilibrated-melts" id="id5"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;What algorithm to use, to prepare equilibrated melts?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#how-to-use-equilibrated-melt-datafile-with-an-actual-simulation" id="id6"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;How to use equilibrated_melt_datafile with an actual simulation?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;p&gt;Creating polymer structures using self-avoiding random walk was pretty easy, which is not the case for equilibration.
+Equilibrating polymer melts can be considered as an art itself.&lt;/p&gt;
+&lt;p&gt;There are several key questions we are answering in this post:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;What melts can be considered equilibrated?&lt;/li&gt;
+&lt;li&gt;What algorithm to use, to prepare equilibrated melts?&lt;/li&gt;
+&lt;li&gt;How to use equilibrated_melt_datafile with an actual simulation?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Lets answer this questions:&lt;/p&gt;
+&lt;div class="section" id="quantifying-equilibration"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id4"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Quantifying equilibration:&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Imagine we have equilibrated our polymer melt, how do we check whether the chains are equilibrated well enough?&lt;/p&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;p&gt;To understand whether our melt is equilibrated enough we need to consider 4 following parameters:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="loweralpha simple"&gt;
+&lt;li&gt;Chain statistics&lt;/li&gt;
+&lt;li&gt;Radial distribution function (RDF)&lt;/li&gt;
+&lt;li&gt;Thermodynamic parameters&lt;/li&gt;
+&lt;li&gt;MSD&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Lets start with second and third items in our list, they are pretty obvious: if there is any time evolution of your thermodynamic parameters (for example Energy) then,obviously, your melt is not equilibrated enough. The same applies to the RDF.&lt;/p&gt;
+&lt;p&gt;Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run. Fortunately there are several methods that can help you with achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods there are couple of must read papers.
+One of them is &lt;a class="citation-reference" href="#auhl" id="id1"&gt;[auhl]&lt;/a&gt;. For me personally this paper was also very helpful &lt;a class="citation-reference" href="#sliozberg" id="id2"&gt;[sliozberg]&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As for the chain statistics it has to be gaussian, i.e should be a &lt;a class="citation-reference" href="#randomcoil" id="id3"&gt;[randomcoil]&lt;/a&gt;. In a gaussian chain, chain is randomly coiled, and exhibits a certain relation between end-to-end distance (average distance between the last and the first atom in chain) and gyration radius(a quantity that shows how coiled the structure is) also it is regulated by the Mean Square Difference paramter &lt;span class="formula"&gt;&lt;i&gt;MSD&lt;/i&gt;(&lt;i&gt;n&lt;/i&gt;) =  &amp;lt; &lt;i&gt;R&lt;/i&gt;&lt;sup&gt;2&lt;/sup&gt;(&lt;i&gt;N&lt;/i&gt;) &amp;gt;  ⁄ &lt;i&gt;N&lt;/i&gt;&lt;/span&gt;. When chains are equilibrated they exhibit gaussian properties, i.e &lt;span class="formula"&gt;&lt;span class="fraction"&gt;&lt;span class="ignored"&gt;(&lt;/span&gt;&lt;span class="numerator"&gt;&lt;i&gt;MSD&lt;/i&gt;(&lt;i&gt;N&lt;/i&gt;)&lt;/span&gt;&lt;span class="ignored"&gt;)/(&lt;/span&gt;&lt;span class="denominator"&gt;&lt;i&gt;R&lt;/i&gt;&lt;span class="scripts"&gt;&lt;sub class="script"&gt;&lt;i&gt;g&lt;/i&gt;&lt;/sub&gt;&lt;sup class="script"&gt;2&lt;/sup&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="ignored"&gt;)&lt;/span&gt;&lt;/span&gt; = 6&lt;/span&gt; and MSD(n) behaviour starts with linear part and then saturates.&lt;/p&gt;
+&lt;div class="figure"&gt;
+&lt;img alt="" src="./images/output_20_1.png" style="width: 400.0pt;" /&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-algorithm-to-use-to-prepare-equilibrated-melts"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id5"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;What algorithm to use, to prepare equilibrated melts?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Equilibration included several steps:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="loweralpha simple"&gt;
+&lt;li&gt;Unphysical Kremer-Grest equilibration using bead-springs. [Equilibrate generated beads with Kremer-Grest model(atoms+bonds)]&lt;/li&gt;
+&lt;li&gt;Adding angle/dihedral interactions&lt;/li&gt;
+&lt;li&gt;Physical MD run equilibration(Equilibrate in a Physical (NVE, NPT) ensemble&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Kremer-Grest. This is the main part of the equilibration, after this the chains need to be fully relaxed, have gaussian chain statistics, adequate radial distribution function.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# Kremer-Grest model.&lt;/span&gt;
+
+&lt;span class="n"&gt;units&lt;/span&gt; &lt;span class="n"&gt;lj&lt;/span&gt;
+&lt;span class="n"&gt;atom_style&lt;/span&gt; &lt;span class="n"&gt;bond&lt;/span&gt;
+&lt;span class="n"&gt;special_bonds&lt;/span&gt; &lt;span class="n"&gt;lj&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;coul&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="n"&gt;read_data&lt;/span&gt; &lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+&lt;span class="n"&gt;neighbor&lt;/span&gt; &lt;span class="mf"&gt;0.4&lt;/span&gt; &lt;span class="n"&gt;bin&lt;/span&gt;
+&lt;span class="n"&gt;neigh_modify&lt;/span&gt; &lt;span class="n"&gt;every&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;delay&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="n"&gt;comm_modify&lt;/span&gt; &lt;span class="n"&gt;vel&lt;/span&gt; &lt;span class="n"&gt;yes&lt;/span&gt;
+&lt;span class="n"&gt;bond_style&lt;/span&gt; &lt;span class="n"&gt;fene&lt;/span&gt;
+&lt;span class="n"&gt;bond_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;30.0&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
+&lt;span class="nb"&gt;dump&lt;/span&gt;            &lt;span class="n"&gt;mydump&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;dcd&lt;/span&gt; &lt;span class="mi"&gt;50000&lt;/span&gt; &lt;span class="n"&gt;equil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dcd&lt;/span&gt;
+&lt;span class="n"&gt;timestep&lt;/span&gt; &lt;span class="mf"&gt;0.01&lt;/span&gt;
+&lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;span class="n"&gt;thermo_modify&lt;/span&gt; &lt;span class="n"&gt;norm&lt;/span&gt; &lt;span class="nb"&gt;no&lt;/span&gt;
+&lt;span class="n"&gt;pair_style&lt;/span&gt; &lt;span class="n"&gt;dpd&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;122347&lt;/span&gt;   &lt;span class="c1"&gt;# very soft pair-potential&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
+
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;17786140&lt;/span&gt;
+
+&lt;span class="c1"&gt;# bonds in init.data are unphysicaly close&lt;/span&gt;
+&lt;span class="c1"&gt;# fix nve/limit doesn&amp;#39;t let the system to explode&lt;/span&gt;
+&lt;span class="c1"&gt;# during the equilibration run&lt;/span&gt;
+
+&lt;span class="n"&gt;fix&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="mf"&gt;0.001&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;
+&lt;span class="n"&gt;fix&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="mf"&gt;0.05&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;
+&lt;span class="n"&gt;fix&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;
+&lt;span class="n"&gt;unfix&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="n"&gt;fix&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;50000&lt;/span&gt;
+
+&lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;restart_dpd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;50.0&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;15086120&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;100.0&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;15786120&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt;
+&lt;span class="c1"&gt;#......&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;1000.0&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;15086189&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;restart_dpd1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+
+&lt;span class="n"&gt;pair_style&lt;/span&gt; &lt;span class="n"&gt;hybrid&lt;/span&gt;&lt;span class="sr"&gt;/overlay lj/c&lt;/span&gt;&lt;span class="n"&gt;ut&lt;/span&gt; &lt;span class="mf"&gt;1.122462&lt;/span&gt; &lt;span class="n"&gt;dpd&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;tstat&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mf"&gt;1.122462&lt;/span&gt; &lt;span class="mi"&gt;122347&lt;/span&gt;
+&lt;span class="n"&gt;pair_modify&lt;/span&gt; &lt;span class="nb"&gt;shift&lt;/span&gt; &lt;span class="n"&gt;yes&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;lj&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;cut&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mf"&gt;1.122462&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;dpd&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;tstat&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt; &lt;span class="mf"&gt;1.122462&lt;/span&gt;
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;1508612013&lt;/span&gt;   &lt;span class="c1"&gt;# this velocity reset is repeated 10 times&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt;
+&lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;restart_push&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt; &lt;span class="mi"&gt;15086125&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;2000000&lt;/span&gt;
+
+&lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;equil&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- ==================================================== --&gt;
+&lt;!-- modifying data files --&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-use-equilibrated-melt-datafile-with-an-actual-simulation"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id6"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;How to use equilibrated_melt_datafile with an actual simulation?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;If we recall the init.data created at the first stage of creating melt it started like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt; &lt;span class="n"&gt;LAMMPS&lt;/span&gt; &lt;span class="n"&gt;FENE&lt;/span&gt; &lt;span class="n"&gt;chain&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;
+
+&lt;span class="mi"&gt;140&lt;/span&gt;  &lt;span class="n"&gt;atoms&lt;/span&gt;
+&lt;span class="mi"&gt;134&lt;/span&gt;  &lt;span class="n"&gt;bonds&lt;/span&gt;
+&lt;span class="mi"&gt;0&lt;/span&gt;  &lt;span class="n"&gt;angles&lt;/span&gt;
+&lt;span class="mi"&gt;0&lt;/span&gt;  &lt;span class="n"&gt;dihedrals&lt;/span&gt;
+&lt;span class="mi"&gt;0&lt;/span&gt;  &lt;span class="n"&gt;impropers&lt;/span&gt;
+ &lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So the data file didn't have any information about angle, dihedrals in the systems. Lets now consider possible ways of tackling this problem.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;#!/bin/bash&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# here is the main file for creating a polymer melt&lt;/span&gt;
+&lt;span class="c1"&gt;# input : DATA_file_input = initial melt created by chain.f, or the equil.data - equilibrated melt by in.kremer that has only fene Bonds&lt;/span&gt;
+&lt;span class="c1"&gt;# output : DATA_file_output = final melt that has angles ( if required dihedrals as well)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#set input and output&lt;/span&gt;
+&lt;span class="n"&gt;datain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;equil.data&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;dataout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;tmp.data&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;#get information about number of atoms and number of bonds&lt;/span&gt;
+&lt;span class="n"&gt;STR&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$&lt;/span&gt;&lt;span class="err"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;less&lt;/span&gt; &lt;span class="nv"&gt;$datain&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;grep&lt;/span&gt; &lt;span class="n"&gt;atoms&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;LIT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$&lt;/span&gt;&lt;span class="err"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$STR&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;grep&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;natoms&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$LIT&lt;/span&gt;
+&lt;span class="c1"&gt;# calculate number of angles, knowing how many atoms and bonds we have&lt;/span&gt;
+&lt;span class="n"&gt;STRb&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$&lt;/span&gt;&lt;span class="err"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;less&lt;/span&gt; &lt;span class="nv"&gt;$datain&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;grep&lt;/span&gt; &lt;span class="n"&gt;bonds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;LITb&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$&lt;/span&gt;&lt;span class="err"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$STRb&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nb"&gt;grep&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;nbond&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$LITb&lt;/span&gt;
+
+&lt;span class="n"&gt;let&lt;/span&gt; &lt;span class="n"&gt;nangle&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nv"&gt;$nbond&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nv"&gt;$natoms&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;let&lt;/span&gt; &lt;span class="n"&gt;ndih&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="c1"&gt;#write data file in required format&lt;/span&gt;
+&lt;span class="n"&gt;cp&lt;/span&gt; &lt;span class="nv"&gt;$datain&lt;/span&gt;  &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+
+&lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;LAMMPS  data file&lt;/span&gt;
+
+&lt;span class="s"&gt;$natoms  atoms&lt;/span&gt;
+&lt;span class="s"&gt;$nbond  bonds&lt;/span&gt;
+&lt;span class="s"&gt;$nangle  angles&lt;/span&gt;
+
+&lt;span class="s"&gt;1  atom types&lt;/span&gt;
+&lt;span class="s"&gt;1  bond types&lt;/span&gt;
+&lt;span class="s"&gt;1  angle types&lt;/span&gt;
+&lt;span class="s"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;1,/bond types/d&amp;#39;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;1d&amp;#39;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/Velocities/,/Bonds/{//!d}&amp;#39;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/Velocities/d&amp;#39;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+
+&lt;span class="n"&gt;cat&lt;/span&gt; &lt;span class="o"&gt;*.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;temprary_file&lt;/span&gt;
+&lt;span class="n"&gt;rm&lt;/span&gt; &lt;span class="o"&gt;*.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;
+
+&lt;span class="c1"&gt;#creating additional files for generating angle bond topology&lt;/span&gt;
+&lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;1  * * *   * * &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;angles_by_type&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;txt&lt;/span&gt;
+
+&lt;span class="c1"&gt;# sed -i &amp;#39;/improper/d&amp;#39; result_without.data&lt;/span&gt;
+&lt;span class="n"&gt;bash&lt;/span&gt; &lt;span class="n"&gt;gen_all_angles_topo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="n"&gt;temprary_file&lt;/span&gt;  &lt;span class="nv"&gt;$dataout&lt;/span&gt;
+&lt;span class="n"&gt;rm&lt;/span&gt; &lt;span class="n"&gt;temprary_file&lt;/span&gt;
+&lt;span class="n"&gt;rm&lt;/span&gt; &lt;span class="n"&gt;angles_by_type&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;txt&lt;/span&gt;
+
+&lt;span class="c1"&gt;#replace multiple blanc lines with a single one&lt;/span&gt;
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/^$/N;/^\n$/D&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$dataout&lt;/span&gt;
+
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/dihedral/d&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$dataout&lt;/span&gt;
+
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/improper/d&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$dataout&lt;/span&gt;
+
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/Bond Coeffs/,/Atoms/{//!d}&amp;#39;&lt;/span&gt;  &lt;span class="nv"&gt;$dataout&lt;/span&gt;
+&lt;span class="n"&gt;sed&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;/Bond Coeffs/d&amp;#39;&lt;/span&gt;  &lt;span class="nv"&gt;$dataout&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;After applying this script we get the following data file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;LAMMPS&lt;/span&gt;  &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt;
+
+&lt;span class="mi"&gt;140&lt;/span&gt;  &lt;span class="n"&gt;atoms&lt;/span&gt;
+&lt;span class="mi"&gt;134&lt;/span&gt;  &lt;span class="n"&gt;bonds&lt;/span&gt;
+&lt;span class="mi"&gt;128&lt;/span&gt;  &lt;span class="n"&gt;angles&lt;/span&gt;
+
+&lt;span class="mi"&gt;1&lt;/span&gt;  &lt;span class="n"&gt;atom&lt;/span&gt; &lt;span class="n"&gt;types&lt;/span&gt;
+&lt;span class="mi"&gt;1&lt;/span&gt;  &lt;span class="n"&gt;bond&lt;/span&gt; &lt;span class="n"&gt;types&lt;/span&gt;
+&lt;span class="mi"&gt;1&lt;/span&gt;  &lt;span class="n"&gt;angle&lt;/span&gt; &lt;span class="n"&gt;types&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;table class="docutils citation" frame="void" id="randomcoil" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[randomcoil]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Random Coil: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Random_coil"&gt;http://en.wikipedia.org/wiki/Random_coil&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="auhl" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id1"&gt;[auhl]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670"&gt;http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="sliozberg" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[sliozberg]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Sliozberg: &lt;a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf"&gt;http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf&lt;/a&gt; &amp;lt;&lt;a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf"&gt;http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf&lt;/a&gt;&amp;gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+</summary><category term="Lammps"></category><category term="Equilibration"></category><category term="Simulation"></category></entry><entry><title>Lammps_intro</title><link href="/lammps_intro.html" rel="alternate"></link><updated>2015-04-05T16:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:lammps_intro.html</id><summary type="html">&lt;p&gt;How to create atoms and run simulation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 3d Lennard-Jones melt&lt;/span&gt;
+&lt;span class="n"&gt;units&lt;/span&gt;       &lt;span class="n"&gt;real&lt;/span&gt;
+&lt;span class="c1"&gt;#Angstroms, T kelvins,&lt;/span&gt;
+
+&lt;span class="n"&gt;boundary&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;
+&lt;span class="c1"&gt;#periodic boundary conds&lt;/span&gt;
+
+&lt;span class="n"&gt;atom_style&lt;/span&gt;  &lt;span class="n"&gt;atomic&lt;/span&gt;
+&lt;span class="n"&gt;lattice&lt;/span&gt;     &lt;span class="n"&gt;bcc&lt;/span&gt; &lt;span class="mf"&gt;3.82&lt;/span&gt;
+&lt;span class="c1"&gt;#10 times x , 10 times y , 10 times z #size&lt;/span&gt;
+&lt;span class="n"&gt;region&lt;/span&gt;      &lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;
+
+&lt;span class="n"&gt;create_box&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;
+&lt;span class="n"&gt;create_atoms&lt;/span&gt;    &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;
+&lt;span class="n"&gt;mass&lt;/span&gt;        &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;20.0&lt;/span&gt;
+
+&lt;span class="c1"&gt;#potential&lt;/span&gt;
+&lt;span class="n"&gt;pair_style&lt;/span&gt;  &lt;span class="n"&gt;lj&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;cut&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;0.11&lt;/span&gt; &lt;span class="mf"&gt;4.11&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
+
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;273.3&lt;/span&gt; &lt;span class="mi"&gt;50007878&lt;/span&gt;
+
+&lt;span class="c1"&gt;# neighbor  0.3 bin&lt;/span&gt;
+&lt;span class="c1"&gt;# neigh_modify  every 20 delay 0 check no&lt;/span&gt;
+&lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;span class="c1"&gt;#how often we want to dump list&lt;/span&gt;
+
+&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;
+&lt;span class="n"&gt;unfix&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;
+
+&lt;span class="nb"&gt;dump&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt; &lt;span class="nb"&gt;dump&lt;/span&gt;&lt;span class="o"&gt;.*.&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="n"&gt;mass&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="n"&gt;xs&lt;/span&gt; &lt;span class="n"&gt;ys&lt;/span&gt; &lt;span class="n"&gt;zs&lt;/span&gt;
+&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
+
+&lt;span class="n"&gt;thermo&lt;/span&gt;      &lt;span class="mi"&gt;50&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt;     &lt;span class="mi"&gt;10000&lt;/span&gt;
+&lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;How to run a simulation from a saved snapshot:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;    &lt;span class="c1"&gt;#LAMMPS&lt;/span&gt;
+&lt;span class="n"&gt;units&lt;/span&gt; &lt;span class="n"&gt;real&lt;/span&gt;
+&lt;span class="n"&gt;boundary&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;
+&lt;span class="n"&gt;atom_style&lt;/span&gt; &lt;span class="n"&gt;atomic&lt;/span&gt;
+
+&lt;span class="n"&gt;pair_style&lt;/span&gt;    &lt;span class="n"&gt;lj&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;cut&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
+&lt;span class="c1"&gt;# use this pair style , ljcut means that we have 12/6 potential Van-der-Vaals, and 10.5 is its cutoff&lt;/span&gt;
+&lt;span class="n"&gt;read_data&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;         &lt;span class="c1"&gt;# read data from a saved state&lt;/span&gt;
+&lt;span class="n"&gt;pair_coeff&lt;/span&gt;    &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;0.11&lt;/span&gt; &lt;span class="mf"&gt;4.11&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt; &lt;span class="c1"&gt;# read parameters&lt;/span&gt;
+
+&lt;span class="c1"&gt;#set particles velocity to 0 C&lt;/span&gt;
+&lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;273.3&lt;/span&gt; &lt;span class="mi"&gt;50007878&lt;/span&gt;
+
+&lt;span class="c1"&gt;# list thermodynamic output every 100 steps&lt;/span&gt;
+&lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+
+&lt;span class="c1"&gt;# dump images that would be vizualized by the AtomEye program&lt;/span&gt;
+&lt;span class="c1"&gt;# They all have cfg format&lt;/span&gt;
+&lt;span class="c1"&gt;# 1 is a name of our dump&lt;/span&gt;
+&lt;span class="c1"&gt;# all - is that we dump all atoms&lt;/span&gt;
+&lt;span class="c1"&gt;# cfg is format&lt;/span&gt;
+&lt;span class="c1"&gt;# 50 - is how often we dumping&lt;/span&gt;
+&lt;span class="c1"&gt;# name.*.cfg , where * means that when we dump these files they are going to be saved in this format&lt;/span&gt;
+&lt;span class="c1"&gt;# step=0 myrun.0.cfg, step=50 myrun.50.cfg and etc&lt;/span&gt;
+&lt;span class="c1"&gt;# we are dumping mass, type of the particles and x , y , z coordinates&lt;/span&gt;
+&lt;span class="nb"&gt;dump&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt; &lt;span class="n"&gt;myrun&lt;/span&gt;&lt;span class="o"&gt;.*.&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="n"&gt;mass&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="n"&gt;xs&lt;/span&gt; &lt;span class="n"&gt;ys&lt;/span&gt; &lt;span class="n"&gt;zs&lt;/span&gt;
+&lt;span class="c1"&gt;#use this fix file&lt;/span&gt;
+&lt;span class="n"&gt;fix&lt;/span&gt;        &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
+&lt;span class="c1"&gt;#run for these many steps&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt;        &lt;span class="mi"&gt;2000&lt;/span&gt;
+&lt;span class="c1"&gt;#write output into result2.data (if we want to simulate it later)&lt;/span&gt;
+&lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
+&lt;span class="c1"&gt;# initial - &amp;gt; result.data -&amp;gt; result2.data&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+</summary><category term="Lammps"></category><category term="Simulation"></category></entry></feed>
