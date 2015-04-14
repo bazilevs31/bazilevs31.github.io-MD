@@ -127,6 +127,9 @@ In this blog entry I will cover how do I use VMD and Lammps together.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="vizualizing-your-trajectory"&gt;
 &lt;h2&gt;Vizualizing your trajectory:&lt;/h2&gt;
+&lt;img alt="" src="./images/polymer_amor.png" style="width: 200pt;" /&gt;
+&lt;img alt="" src="./images/polymer100.png" style="width: 200pt;" /&gt;
+&lt;img alt="" src="./images/polymer_cryst.png" style="width: 200pt;" /&gt;
 &lt;p&gt;To visualize your trajectory one needs to give VMD information about bonds in the system, by providing VMD with .psf files, i.e bond information files.
 Here comes handy the .data file: traj.data and &lt;a class="citation-reference" href="#topotools" id="id3"&gt;[topotools]&lt;/a&gt; :&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;topo&lt;/span&gt; readlammpsdata traj.data molecular
