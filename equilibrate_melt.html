@@ -59,7 +59,7 @@
                 </header>
             </section>
             <div class="contents topic" id="table-of-contents">
-<p class="topic-title first">Table of contents</p>
+<p class="topic-title first">Table of contents:</p>
 <ul class="auto-toc simple">
 <li><a class="reference internal" href="#quantifying-equilibration" id="id4">1&nbsp;&nbsp;&nbsp;Quantifying equilibration:</a></li>
 <li><a class="reference internal" href="#what-algorithm-to-use-to-prepare-equilibrated-melts" id="id5">2&nbsp;&nbsp;&nbsp;What algorithm to use, to prepare equilibrated melts?</a></li>
@@ -91,7 +91,7 @@ Equilibrating polymer melts can be considered as an art itself.</p>
 <p>Lets start with second and third items in our list, they are pretty obvious: if there is any time evolution of your thermodynamic parameters (for example Energy) then,obviously, your melt is not equilibrated enough. The same applies to the RDF.</p>
 <p>Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run. Fortunately there are several methods that can help you with achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods there are couple of must read papers.
 One of them is <a class="citation-reference" href="#auhl" id="id1">[auhl]</a>. For me personally this paper was also very helpful <a class="citation-reference" href="#sliozberg" id="id2">[sliozberg]</a></p>
-<p>As for the chain statistics it has to be gaussian, i.e should be a <a class="citation-reference" href="#randomcoil" id="id3">[randomcoil]</a>. In a gaussian chain, chain is randomly coiled, and exhibits a certain relation between end-to-end distance (average distance between the last and the first atom in chain) and gyration radius(a quantity that shows how coiled the structure is) also it is regulated by the Mean Square Difference paramter <span class="formula"><i>MSD</i>(<i>n</i>) =  &lt; <i>R</i><sup>2</sup>(<i>N</i>) &gt;  ⁄ <i>N</i></span>. When chains are equilibrated they exhibit gaussian properties, i.e <span class="formula"><span class="fraction"><span class="ignored">(</span><span class="numerator"><i>MSD</i>(<i>N</i>)</span><span class="ignored">)/(</span><span class="denominator"><i>R</i><span class="scripts"><sub class="script"><i>g</i></sub><sup class="script">2</sup></span></span><span class="ignored">)</span></span> = 6</span> and MSD(n) behaviour starts with linear part and then saturates.</p>
+<p>As for the chain statistics it has to be gaussian, i.e should be a <a class="citation-reference" href="#randomcoil" id="id3">[randomcoil]</a>. In a gaussian chain, chain is randomly coiled, and exhibits a certain relation between end-to-end distance (average distance between the last and the first atom in chain) and gyration radius(a quantity that shows how coiled the structure is) also it is regulated by the Mean Square Difference paramter $MSID(n) = \frac{&lt;R^2(n)&gt;}{n}$. When chains are equilibrated they exhibit gaussian properties, i.e $\frac{MSID(N)}{R^2_g} = 6$ and MSID(n) behaviour starts with linear part and then saturates.</p>
 <div class="figure">
 <img alt="" src="./images/output_20_1.png" style="width: 400.0pt;" />
 </div>
