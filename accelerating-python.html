@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>Accelerating Python // Molecular Simulation Blog // </title>
+
+    <link href="images/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./tag-simulation.html">Simulation</a></p>
+                                <p class="links"><a href="./tag-analysis.html">Analysis</a></p>
+                                <p class="links"><a href="./tag-software.html">Software</a></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Accelerating Python</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-python.html">Python</a>
+                                <a class="post-category" href="./tag-mdanalysis.html">MDAnalysis</a>
+                                <a class="post-category" href="./tag-perfomance.html">Perfomance</a>
+                                <a class="post-category" href="./tag-analysis.html">Analysis</a>
+                        </p>
+                </header>
+            </section>
+            <p>Python is great, Python is easy to learn, easy to write in, but sometimes we need our code to run fast. This is where pure Python falls short. Just as many other languages with dynamical variable typing - it is very slow. For example consider this code snippet:</p>
+<div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">i</span>
+</pre></div>
+<p>For every loop Python analyzes the type of i, sets a new variable a of i.
+This is where such languages as C or Fortran come handy, they are arguably the fastest languages in the game today.
+Luckily there are several ways of improving performance of our Python code:</p>
+<ol class="arabic simple">
+<li>Numpy</li>
+<li>Cython</li>
+<li>ff2</li>
+<li>Numba</li>
+</ol>
+<p>Numpy - <a class="citation-reference" href="#numpy" id="id1">[numpy]</a> - is an extension to the Python programming language, adding support for large, multi-dimensional arrays and matrices, along with a large library of high-level mathematical functions to operate on these arrays. Basically, people tried to make Python a scientific language, to do that you need to be Matlab-like, i.e focus on arrays as your main structure in the code. That was done in <cite>Numpy</cite>. It is a key library to all scientific programming on Python.</p>
+<p><a class="citation-reference" href="#cython" id="id2">[cython]</a> -  is an optimising static compiler for both the Python programming language and the extended Cython programming language (based on Pyrex). It makes writing C extensions for Python as easy as Python itself. In other words you find something very slow in your code(a bottleneck) write a something that looks like Python and C at the same time, compile it and use it in your code. This time your bottleneck will(supposedly) run very fast.</p>
+<p>f2py (<a class="citation-reference" href="#fortran" id="id3">[fortran]</a>) - is a project which aims to provide a connection between Python and Fortran languages. The idea is similar to Cython, but the connection is done with Fortran.</p>
+<p>Finally, if you are a lazy person just like me, you may want to try <a class="citation-reference" href="#numba" id="id4">[numba]</a>. If you recally the example in the begging of this page where Python was dynamicaly setting type <cite>int</cite> to variable <cite>a</cite>. You find slow parts in your code, put them into function, add numba directive <cite>&#64;jit</cite> and run your program. Numba takes care of the rest. Sounds good eh?
+Lets have a closer look on it:</p>
+<p>The most frequent code snippet used to demonstrate numba is this:</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">pairwise_python</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                <span class="n">d</span> <span class="o">+=</span> <span class="n">tmp</span> \<span class="o">*</span> <span class="n">tmp</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">D</span>
+<span class="o">%</span><span class="n">timeit</span> <span class="n">pairwise_python</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+<pre class="code python literal-block">
+<span class="mi">1</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">13.4</span> <span class="n">s</span> <span class="n">per</span> <span class="n">loop</span>
+</pre>
+<p>Now if we add a <cite>&#64;autojit</cite> Numba directive to the top:</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">double</span>
+<span class="kn">from</span> <span class="nn">numba.decorators</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">autojit</span>
+
+<span class="n">pairwise_numba</span> <span class="o">=</span> <span class="n">autojit</span><span class="p">(</span><span class="n">pairwise_python</span><span class="p">)</span>
+
+<span class="o">%</span><span class="n">timeit</span> <span class="n">pairwise_numba</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+<pre class="code python literal-block">
+<span class="mi">1</span> <span class="n">loops</span><span class="p">,</span> <span class="n">best</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">9.12</span> <span class="n">ms</span> <span class="n">per</span> <span class="n">loop</span>
+</pre>
+<p>Impressive isn't it? Now lets take an interesting problem for Molecular Simulation and write a program using Numba library.
+Calculating g(r) - Radial Distribution Function <a class="citation-reference" href="#rdf" id="id5">[rdf]</a> .</p>
+<img alt="" src="./images/rdf_atoms.jpeg" style="width: 200pt;" />
+<img alt="" src="./images/rdf.png" style="width: 330pt;" />
+<!-- Radial Distribution Function Explanation -->
+<!-- Radial Distribution Function -->
+<p>In order to analyze the structure of a solid or fluid one often looks
+at the radial pair distribution function (<cite>RDF</cite>)</p>
+<div class="math">
+\begin{equation*}
+g(r) = \frac{V}{N^{2}}\left\langle \sum_{i=1}^{N}\sum_{j\neq i}\delta(\vec{r} - \vec{r}_{ij})\right\rangle \quad\text{with}\vec{r}_{ij}:= \vec{r}_{j} - \vec{r}_{i}$
+\end{equation*}
+</div>
+<p>What this really means is that $g(r)dr$ is the number of atoms at
+distance $r$ from one arbitrary atom in a thin shell of thickness
+$dr$, relative to the number at the same distance in an ideal gas at the
+same (constant!) density</p>
+<p>So lets write the algorithm for the program:</p>
+<ol class="arabic simple">
+<li>loop over all atoms</li>
+<li>for ever atoms loop over the rest</li>
+<li>get the distance(consider pbc) histogramm it</li>
+<li>normalize the histogramm so the r-&gt;inf it -&gt; 1.0</li>
+</ol>
+<div class="highlight"><pre><span class="c"># Purpose: Calculate radial distribution function  using Python and Numba library</span>
+<span class="c"># Author:  Triandafilidi Vasiliy , MSc student at CHBE UBC, Vancouver</span>
+<span class="c"># e-mail:  vtriandafilidi(at)chbe(dot)ubc(dot)ca</span>
+<span class="c"># Syntax:  python  python_numba_rdf.py</span>
+<span class="c"># Requires: poly.psf poly.pdb, numba library</span>
+
+<span class="c"># Theory:</span>
+<span class="c"># http:\//en.wikipedia.org/wiki/Radial_distribution_function</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c"># Copyright (c) 2014 Vasiliy Triandafilidi</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">autojit</span><span class="p">,</span><span class="n">njit</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> \<span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="nd">@jit</span><span class="p">(</span><span class="s">&#39;f8(f8)&#39;</span><span class="p">,</span><span class="n">nopython</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">CUB</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span>\<span class="o">*</span>\<span class="o">*</span><span class="mf">3.</span>
+
+
+<span class="c">#loop over all atoms</span>
+<span class="c">#for ever atoms loop over the rest</span>
+<span class="c">#get the distance(consider pbc) histogramm it</span>
+<span class="nd">@jit</span><span class="p">(</span><span class="s">&#39;void(float32[:,:],float32[:],float32,float32,float32)&#39;</span><span class="p">,</span><span class="n">nopython</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">pairwise_python</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">smax</span><span class="p">,</span><span class="n">db</span><span class="p">):</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">nbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smax</span><span class="o">/</span><span class="n">db</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c"># print &quot; atom &quot; , i</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">numbatrunc</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span><span class="n">L</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">+=</span> <span class="n">tmp</span> \<span class="o">*</span> <span class="n">tmp</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">smax</span><span class="p">):</span>
+                <span class="n">g</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="o">/</span><span class="n">db</span><span class="p">)]</span> <span class="o">+=</span> <span class="mf">2.0</span>
+
+
+<span class="c">#normalize the histogramm so the r-&gt;inf it -&gt; 1.0</span>
+<span class="nd">@jit</span><span class="p">(</span><span class="s">&#39;void(float32[:],float32,float32,int32)&#39;</span><span class="p">,</span><span class="n">nopython</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">normalise</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">db</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># pairs = float(N)\*(float(N)-1.0)/float(2)</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>\<span class="o">*</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span>\<span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>\<span class="o">*</span><span class="n">pairs</span><span class="o">/</span><span class="n">CUB</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="n">CUB</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">factor</span>\<span class="o">*</span><span class="p">(</span><span class="n">CUB</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">CUB</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>\<span class="o">*</span><span class="n">CUB</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&quot;poly.psf&quot;</span><span class="p">,</span><span class="s">&quot;poly.pdb&quot;</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;all&quot;</span><span class="p">)</span>
+<span class="n">aa</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">positions</span>
+<span class="n">box</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">smax</span> <span class="o">=</span> <span class="mf">10.0</span>
+<span class="n">db</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">nbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">smax</span><span class="o">/</span><span class="n">db</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">smax</span><span class="p">,</span><span class="n">nbins</span><span class="p">)</span>
+
+<span class="n">pairwise_python</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">smax</span><span class="p">,</span><span class="n">db</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">aa</span><span class="p">))</span>
+<span class="n">normalise</span><span class="p">(</span><span class="n">D</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">db</span><span class="p">)</span>
+</pre></div>
+<table class="docutils citation" frame="void" id="rdf" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[rdf]</a></td><td>RDF: <a class="reference external" href="http://en.wikipedia.org/wiki/Radial_distribution_function">http://en.wikipedia.org/wiki/Radial_distribution_function</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="numba" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[numba]</a></td><td>Numba: <a class="reference external" href="http://numba.pydata.org/">http://numba.pydata.org/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="fortran" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[fortran]</a></td><td>Fortran: <a class="reference external" href="http://docs.scipy.org/doc/numpy-dev/f2py/">http://docs.scipy.org/doc/numpy-dev/f2py/</a>, <a class="reference external" href="https://github.com/thehackerwithin/PyTrieste/wiki/F2Py">https://github.com/thehackerwithin/PyTrieste/wiki/F2Py</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="cython" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[cython]</a></td><td>Cython: <a class="reference external" href="http://en.wikipedia.org/wiki/Cython">http://en.wikipedia.org/wiki/Cython</a>, <a class="reference external" href="http://cython.org/#about">http://cython.org/#about</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="numpy" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[numpy]</a></td><td>Numpy: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a>, <a class="reference external" href="http://en.wikipedia.org/wiki/NumPy">http://en.wikipedia.org/wiki/NumPy</a></td></tr>
+</tbody>
+</table>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-61838189-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+
+<!-- I added this -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  "HTML-CSS": {
+  styles: {
+  ".MathJax .mo, .MathJax .mi": {color: "black ! important"}}
+  },
+  tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']],processEscapes: true}
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+</html>
+
+

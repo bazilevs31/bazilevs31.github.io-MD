@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>Static Structure Factor // Molecular Simulation Blog // </title>
+
+    <link href="images/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./tag-simulation.html">Simulation</a></p>
+                                <p class="links"><a href="./tag-analysis.html">Analysis</a></p>
+                                <p class="links"><a href="./tag-software.html">Software</a></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Static Structure Factor</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-mdanalysis.html">MDAnalysis</a>
+                                <a class="post-category" href="./tag-python.html">Python</a>
+                                <a class="post-category" href="./tag-analysis.html">Analysis</a>
+                        </p>
+                </header>
+            </section>
+            <p>Applications</p>
+<ol class="arabic simple" start="2">
+<li>Math Theory</li>
+<li>Sq theory</li>
+<li>Implementation</li>
+<li>Verification</li>
+</ol>
+<p>Applications of Sq. Molecular dynamics simulations gives us a enormous possibility to analyze behavior on atomic level</p>
+<p>but systems too small to compare with experimental results. it would be good to have something to compare with -&gt; static structure factor which can be directly compared with x-ray diffraction
+<a class="reference external" href="http://journals.aps.org/prb/abstract/10.1103/PhysRevB.60.3169">kob_et_al</a> , <a class="reference external" href="http://www.lehigh.edu/imi/teched/AtModel/Lecture_5_Micoulaut_Atomistics_Glass_Course.pdf">presentation</a></p>
+<img alt="" src="./images/sq/Sq2.png" style="width: 60%;" />
+<p>2.math theory</p>
+<p>it is very based on fourier transform
+$$f(x) = \Sigma (a_n cos(\omega_n x) + b_n sin(\omega_n x)) $$</p>
+<p>this a_n and b_n are called Fourier coefficients. There is another version of Fourier series that utilizes complex exponent
+$$f(x) = \Sigma c_n e^{-i \omega_n x}$$
+which is to be discussed in further detail below
+In many physical applications only absolute value plays important role, because it represents intensity of physical value, and experiments in physical world can measure only intensity, rather than fields.
+$\mid c_n \mid^2 = \mid a_n \mid^2 +  \mid b_n \mid^2$</p>
+<p>Lets consider an example :</p>
+<img alt="" src="./images/sq/fourier.png" style="width: 60%;" />
+<p>Fourier series of a simple function $f(x) = cos(x)$ is the function itself. Therefore
+$ a_1 = 1 $, $a_i = 0$ for every $ i \neq 1 $, $b_i = 0$ for every $i$.
+So an infinite curve can be represented by a single value.</p>
+<p>Talk about Fourier transforms .
+wikipedia link
+Note:
+Infinite curve after fourier transform becomes a single value, whereas a peak becomes and infinite curve. This has very deep and fundamental consequences and is directly related to uncertainty principal</p>
+<p>Interested reader might already noticed that the bigger the period is by x, the smaller is the $k$ value - the wave vector .</p>
+<p>3.sq theory</p>
+<img alt="" src="./images/sq/RdfSqExplained.png" style="width: 60%;" />
+<p>Lets look at the Fig. 2. It is obvious that we see a periodic structure on the left side and a random structure on the right side.
+If we look at the radial distribution function which is to be defined below. But for now it will be just the average number of atoms on the distance $r$ from a given atom, averaged by all atoms.
+We see a clear periodicity on the plot, which corresponds to the periodicity of the structure.</p>
+<p>If we recall our Fourier series whenever we had something periodic in distance space we will have a peak in the reciprocal space.</p>
+<p>And that is what we want - an easy way to track positions of atoms.</p>
+<p>If we have a structure with two characteristic distances we will be represented by two peaks in the reciprocal space.</p>
+<img alt="" src="./images/sq/Sq.png" style="width: 60%;" />
+<p>Now lets do a rigorous definition:
+If we have a system of atoms with positions $ \mathbf{r}_{j} $, then</p>
+<p>Radial distribution function:</p>
+<p>$$g(r) = \frac{V}{N^{2}}\left\langle \sum_{i=1}^{N}\sum_{j\neq i}\delta(\vec{r} - \vec{r}_{ij})\right\rangle \quad\text{with}
+\vec{r}_{ij}:= \vec{r}_{j} - \vec{r}_{i} $$</p>
+<p>, the static structure factor by definition is:</p>
+<p>$$ S(\mathbf{q}) = \frac{1}{N} \left | \sum_{j=1}^{N} \mathrm{e}^{-i \mathbf{q} \mathbf{r}_{j}} \right | ^2$$</p>
+<p>Which is an absolute value of fourier coefficient squared.
+It can equally expressed the following way:
+$$  S(\mathbf{q}) = 1 + \frac{1}{N} \left \langle \int_V \mathrm{d} \mathbf{r} \, \mathrm{e}^{-i \mathbf{q} \mathbf{r}} \sum_{i \neq j} \delta \left [ \mathbf{r} - (\mathbf{r}_i - \mathbf{r}_j) \right ] \right \rangle  $$</p>
+<p>Which is the definition we will work with.</p>
+<ol class="arabic simple" start="5">
+<li>Implementation:</li>
+</ol>
+<p>Now several points need to be clarified:
+how to evaluate integral
+how to deal with delta function</p>
+<p>Evaluating integral with exponent would be performing a Fourier transform, therefore we can use tools available for that : FFT - fast fourier transform.
+Delta function will be considered by binning and histgramming our atomic positions $\mathbf{r}_{j}$
+Which will be demonstrated on 2D example for convenience.</p>
+<img alt="" src="./images/sq/histogram.png" style="width: 40%;" />
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> \<span class="o">*</span>
+<span class="kn">from</span> <span class="nn">read_parameters</span> <span class="kn">import</span> <span class="n">read_traj_vmd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">save_plots</span>
+<span class="kn">from</span> <span class="nn">numpy.fft</span> <span class="kn">import</span> <span class="n">fftn</span><span class="p">,</span> <span class="n">fftshift</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">quad</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s">&#39;Agg&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</pre></div>
+<div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">psffile</span><span class="o">+</span><span class="s">&#39;.psf&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">traj</span><span class="p">)</span>
+<span class="n">Ndiv</span> <span class="o">=</span> <span class="mi">201</span>
+<span class="c"># create arrays of positions, get the box dimenstions</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+<span class="n">box</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">length_x</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c"># be careful here</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">length_x</span><span class="p">,</span> <span class="n">length_x</span><span class="p">,</span> <span class="n">Ndiv</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c"># binning and histogramming</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">(</span><span class="n">Ndiv</span><span class="p">,</span> <span class="n">Ndiv</span><span class="p">,</span> <span class="n">Ndiv</span><span class="p">))</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+<p>FFT</p>
+<div class="highlight"><pre><span class="n">ftk</span> <span class="o">=</span> <span class="p">(</span><span class="n">fftshift</span><span class="p">(</span><span class="n">fftn</span><span class="p">(</span><span class="n">fftshift</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>\<span class="o">*</span><span class="n">delta</span><span class="p">))</span>
+<span class="n">sk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ftk</span>\<span class="o">*</span>\<span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">Natoms</span><span class="p">)</span>
+<span class="c"># basis in reciporal space</span>
+<span class="n">omega</span> <span class="o">=</span> <span class="mi">2</span>\<span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>\<span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Ndiv</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">length_x</span><span class="p">)</span>
+<span class="n">omega</span> <span class="o">-=</span> <span class="n">omega</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">Ndiv</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+<p>normalizing (radial symmetry averaging)</p>
+<div class="highlight"><pre><span class="n">C</span> <span class="o">=</span> <span class="n">norm_sq</span><span class="p">(</span><span class="n">sk</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">k3</span><span class="p">,</span> <span class="n">Ndiv</span><span class="p">,</span> <span class="n">kmax</span><span class="p">)</span>
+</pre></div>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">norm_sq</span><span class="p">(</span><span class="n">sk</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">k3</span><span class="p">,</span> <span class="n">Ndiv</span><span class="p">,</span> <span class="n">kmax</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculates normk = norm of each vector in grid=|k1,k2,k3|</span>
+<span class="sd">    bins in, calculating average sq of each bin</span>
+<span class="sd">    output: C[Nbins,3] = binindex, kval = normk, sq</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Nbins = int(Ndiv\*1)</span>
+    <span class="n">normk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k1</span>\<span class="o">*</span><span class="n">k1</span> <span class="o">+</span> <span class="n">k2</span>\<span class="o">*</span><span class="n">k2</span> <span class="o">+</span> <span class="n">k3</span>\<span class="o">*</span><span class="n">k3</span><span class="p">)</span>
+    <span class="c"># array to histogram - dk,kmax,Nbins</span>
+    <span class="n">Nbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.5</span>\<span class="o">*</span><span class="n">Ndiv</span><span class="p">)</span>
+    <span class="n">dk</span> <span class="o">=</span> <span class="n">kmax</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">Nbins</span><span class="p">)</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">Nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndiv</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndiv</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Ndiv</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">kval</span> <span class="o">=</span> <span class="n">normk</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+                <span class="n">bindex</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kval</span><span class="o">/</span><span class="n">dk</span><span class="p">)</span>
+                <span class="n">C</span><span class="p">[</span><span class="n">bindex</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">C</span><span class="p">[</span><span class="n">bindex</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">kval</span>
+                <span class="n">C</span><span class="p">[</span><span class="n">bindex</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sk</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+    <span class="n">C</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">/=</span> <span class="n">C</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">C</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">/=</span> <span class="n">C</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># plt.plot(C[:,1], C[:,2])</span>
+    <span class="c"># plt.show()</span>
+    <span class="c"># print C[:,1]</span>
+    <span class="c"># print C[:,2]</span>
+    <span class="c"># plt.savefig(&#39;lala.pdf&#39;)</span>
+    <span class="k">return</span> <span class="n">C</span>
+</pre></div>
+<p>Special thanks for Amanda Parker.</p>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-61838189-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+
+<!-- I added this -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  "HTML-CSS": {
+  styles: {
+  ".MathJax .mo, .MathJax .mi": {color: "black ! important"}}
+  },
+  tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']],processEscapes: true}
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+</html>
+
+

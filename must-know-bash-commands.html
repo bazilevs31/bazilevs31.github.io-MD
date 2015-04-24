@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molecular Simulation Blog, ">
+
+
+        <title>Must Know Bash Commands // Molecular Simulation Blog // </title>
+
+    <link href="images/s.jpg" rel="icon">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./theme/css/pure.css">
+    <link rel="stylesheet" href="./theme/css/pygments.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" style="background-image: url('images/sidebarimage.jpg')">
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <h1 class="brand-main"><a href=".">Molecular Simulation Blog</a></h1>
+                            <p class="tagline"></p>
+                                <p class="links"><a href="./introduction.html">About me</a></p>
+                                <p class="links"><a href="./archives.html">Archives</a></p>
+                                <p class="links"><a href="./tag-simulation.html">Simulation</a></p>
+                                <p class="links"><a href="./tag-analysis.html">Analysis</a></p>
+                                <p class="links"><a href="./tag-software.html">Software</a></p>
+                                <p class="social">
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Must Know Bash Commands</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="./tag-bash.html">Bash</a>
+                                <a class="post-category" href="./tag-software.html">Software</a>
+                        </p>
+                </header>
+            </section>
+            <p>What are the most useful and tricky bash commands.</p>
+<p>i divide everything into 5 categories:</p>
+<ol class="arabic simple">
+<li>different ls,rm, grep stuff</li>
+<li>find and other</li>
+<li>sed/awk -ing</li>
+<li>miscilanneious</li>
+<li>alias</li>
+</ol>
+<div class="section" id="different-ls-rm-grep-stuff">
+<h2>1.different ls,rm, grep stuff</h2>
+<div class="highlight"><pre>ls file <span class="c"># does the file exist?</span>
+ls -l file <span class="c"># info about file</span>
+ls -lt  <span class="c">#  list files in time order with info</span>
+ls -ltr  <span class="c">#  list files in reverse time order with info</span>
+ls -a <span class="c"># list files including hidden files</span>
+ls - R <span class="nv">$ </span>show <span class="nb">dirs </span>and subdirs
+
+ls <span class="p">|</span> grep something <span class="c"># prints something, that matches something</span>
+less file1 <span class="p">|</span> grep something <span class="c"># looks for something in the file</span>
+grep <span class="s2">&quot;hi there&quot;</span> file1 <span class="c"># look for hi there in the file1</span>
+
+rm !<span class="o">(</span>u<span class="p">|</span>p<span class="o">)</span> <span class="c"># delete everything but</span>
+ls <span class="p">|</span> grep something <span class="p">|</span> xargs rm <span class="c"># removes everything that matches something in the directory</span>
+</pre></div>
+</div>
+<div class="section" id="find-and-other">
+<h2>2.Find and other:</h2>
+<p>Here are a few ways to use find:</p>
+<div class="highlight"><pre><span class="nv">$ </span>find / -name <span class="s1">&#39;program.c&#39;</span> 2&gt;/dev/null
+<span class="nv">$ </span>find / -name <span class="s1">&#39;program.c&#39;</span> 2&gt;errors.txt
+</pre></div>
+<p><cite>/</cite></p>
+<pre class="code bash literal-block">
+Start searching from the root directory <span class="o">(</span>i.e / directory<span class="o">)</span>
+</pre>
+<p><cite>-name</cite></p>
+<pre class="code bash literal-block">
+Given search text is the filename rather than any other attribute of a file
+</pre>
+<p><cite>'program.c'</cite></p>
+<pre class="code bash literal-block">
+Search text that we have entered. Always enclose the filename in single quotes.. why to <span class="k">do</span> this is complex.. so simply <span class="k">do</span> so.
+</pre>
+<pre class="code bash literal-block">
+Note : 2&gt;/dev/null is not related to find tool as such. <span class="m">2</span> indicates the error stream in Linux, and /dev/null is the device where anything you send simply disappears. So 2&gt;/dev/null in this <span class="k">case</span> means that <span class="k">while</span> finding <span class="k">for</span> the files, in <span class="k">case</span> any error messages pop up simply send them to /dev/null i.e. simply discard all error messages.
+</pre>
+<p>Alternatively you could use 2&gt;error.txt where after the search is completed you would have a file named error.txt in the current directory with all the error messages in it.</p>
+<div class="highlight"><pre><span class="nv">$ </span>find /home/david -name <span class="s1">&#39;index\*&#39;</span>
+<span class="nv">$ </span>find /home/david -iname <span class="s1">&#39;index\*&#39;</span>
+</pre></div>
+<p>The 1st command would find files having the letters index as the beginning of the file name. The search would be started in the directory /home/david and carry on within that directory and its subdirectories only.
+The 2nd command would search for the same, but the case of the filename wouldn't be considered. So all files starting with any combination of letters in upper and lower case such as INDEX or indEX or index would be returned.</p>
+</div>
+<div class="section" id="sed-awk">
+<h2>2.Sed/awk:</h2>
+<div class="highlight"><pre>sed -e <span class="s1">&#39;/^$/d&#39;</span> <span class="nv">$filename</span>
+<span class="c"># The -e option causes the next string to be interpreted as an editing instruction.</span>
+<span class="c">#  (If passing only a single instruction to sed, the &quot;-e&quot; is optional.)</span>
+<span class="c">#  The &quot;strong&quot; quotes (&#39;&#39;) protect the RE characters in the instruction</span>
+<span class="c">#+ from reinterpretation as special characters by the body of the script.</span>
+<span class="c"># (This reserves RE expansion of the instruction for sed.)</span>
+<span class="c">#</span>
+<span class="c"># Operates on the text contained in file $filename.</span>
+
+
+8d  <span class="c">#Delete 8th line of input.</span>
+/^<span class="nv">$/</span>d   <span class="c">#Delete all blank lines.</span>
+1,/^<span class="nv">$/</span>d <span class="c">#Delete from beginning of input up to, and including first blank line.</span>
+
+/Jones/p  <span class="c">#  Print only lines containing &quot;Jones&quot; (with -n option).</span>
+s/Windows/Linux/   <span class="c"># Substitute &quot;Linux&quot; for first instance of &quot;Windows&quot; found in each input line.</span>
+s/BSOD/stability/g  <span class="c">#Substitute &quot;stability&quot; for every instance of &quot;BSOD&quot; found in each input line.</span>
+
+s/ <span class="se">\*</span><span class="nv">$/</span>/ <span class="c">#Delete all spaces at the end of every line.</span>
+s/00<span class="se">\*</span>/0/g   <span class="c">#Compress all consecutive sequences of zeroes into a single zero.</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Working on it.&quot;</span> <span class="p">|</span> sed -e <span class="s1">&#39;1i How far are you along?&#39;</span>  <span class="c">#Prints &quot;How far are you along?&quot; as first line, &quot;Working on it&quot; as second.</span>
+5i <span class="s1">&#39;Linux is great.&#39;</span> file.txt   <span class="c">#Inserts &#39;Linux is great.&#39; at line 5 of the file file.txt.</span>
+/GUI/d  <span class="c">#Delete all lines containing &quot;GUI&quot;.</span>
+s/GUI//g    <span class="c">#Delete all instances of &quot;GUI&quot;, leaving the remainder of each line intact.</span>
+</pre></div>
+</div>
+<div class="section" id="miscilanneious">
+<h2>4. Miscilanneious</h2>
+</div>
+<div class="section" id="aliasing">
+<h2>5. Aliasing</h2>
+<p>The <cite>alias</cite> command makes it possible to launch any command or group of commands (inclusive of any options, arguments and redirection) by entering a pre-set string (i.e., sequence of characters). In other words you find some command that you use a lot, say go to certain directory, or <cite>ssh</cite> to certain server give it a nickname (alias) and use it.</p>
+<p>For example I know that I go to certain folder a lot, it has all my libraries in it - <cite>/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt</cite>
+So I just add the following line to ~/.bashrc (~/bash_profile), source it <cite>source ~/.bashrc</cite> and use it.</p>
+<div class="highlight"><pre><span class="nb">alias </span><span class="nv">createmelt</span><span class="o">=</span><span class="s1">&#39;cd ~/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt&#39;</span>
+</pre></div>
+<p>For now on, whenever I need to go to the <cite>/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt</cite> directory I use</p>
+<div class="highlight"><pre><span class="nv">$ </span>~/blog @ Vasiliys-MacBook-Pro <span class="o">(</span>bazilevs<span class="o">)</span>
+<span class="nv">$ </span><span class="o">=</span>&gt; <span class="nb">pwd</span>
+/Users/bazilevs/blog
+
+<span class="nv">$ </span>~/blog @ Vasiliys-MacBook-Pro <span class="o">(</span>bazilevs<span class="o">)</span>
+<span class="nv">$ </span><span class="o">=</span>&gt; createmelt
+
+<span class="nv">$ </span>~/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt @ Vasiliys-MacBook-Pro <span class="o">(</span>bazilevs<span class="o">)</span>
+
+<span class="nv">$ </span><span class="o">=</span>&gt; <span class="nb">pwd</span>
+    /Users/bazilevs/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt
+
+
+<span class="nb">source</span>
+</pre></div>
+<div class="highlight"><pre><span class="c"># very handy tool to go any number of directories up</span>
+up<span class="o">(){</span>
+  <span class="nb">local </span><span class="nv">d</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+  <span class="nv">limit</span><span class="o">=</span><span class="nv">$1</span>
+  <span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span><span class="m">1</span> <span class="p">;</span> i &lt;<span class="o">=</span> limit <span class="p">;</span> i++<span class="o">))</span>
+    <span class="k">do</span>
+      <span class="nv">d</span><span class="o">=</span><span class="nv">$d</span>/..
+    <span class="k">done</span>
+  <span class="nv">d</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$d</span> <span class="p">|</span> sed <span class="s1">&#39;s/^\///&#39;</span><span class="k">)</span>
+  <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="nv">$d</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nv">d</span><span class="o">=</span>..
+  <span class="k">fi</span>
+  <span class="nb">cd</span> <span class="nv">$d</span>
+<span class="o">}</span>
+
+<span class="c"># very handy tool to extract files</span>
+extract <span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">[</span> -f <span class="nv">$1</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
+      <span class="k">case</span> <span class="nv">$1</span> in
+        <span class="se">\*</span>.tar.bz2<span class="o">)</span>   tar xjf <span class="nv">$1</span>     <span class="p">;;</span>
+        <span class="se">\*</span>.tar.gz<span class="o">)</span>    tar xzf <span class="nv">$1</span>     <span class="p">;;</span>
+        <span class="se">\*</span>.bz2<span class="o">)</span>       bunzip2 <span class="nv">$1</span>     <span class="p">;;</span>
+        <span class="se">\*</span>.rar<span class="o">)</span>       unrar e <span class="nv">$1</span>     <span class="p">;;</span>
+        <span class="se">\*</span>.gz<span class="o">)</span>        gunzip <span class="nv">$1</span>      <span class="p">;;</span>
+        <span class="se">\*</span>.tar<span class="o">)</span>       tar xf <span class="nv">$1</span>      <span class="p">;;</span>
+        <span class="se">\*</span>.tbz2<span class="o">)</span>      tar xjf <span class="nv">$1</span>     <span class="p">;;</span>
+        <span class="se">\*</span>.tgz<span class="o">)</span>       tar xzf <span class="nv">$1</span>     <span class="p">;;</span>
+        <span class="se">\*</span>.zip<span class="o">)</span>       unzip <span class="nv">$1</span>       <span class="p">;;</span>
+        <span class="se">\*</span>.Z<span class="o">)</span>         uncompress <span class="nv">$1</span>  <span class="p">;;</span>
+        <span class="se">\*</span>.7z<span class="o">)</span>        7z x <span class="nv">$1</span>        <span class="p">;;</span>
+        <span class="se">\*</span><span class="o">)</span>     <span class="nb">echo</span> <span class="s2">&quot;&#39;</span><span class="nv">$1</span><span class="s2">&#39; cannot be extracted via extract()&quot;</span> <span class="p">;;</span>
+         <span class="k">esac</span>
+     <span class="k">else</span>
+         <span class="nb">echo</span> <span class="s2">&quot;&#39;</span><span class="nv">$1</span><span class="s2">&#39; is not a valid file&quot;</span>
+     <span class="k">fi</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Vasiliy Triandafilidi &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+    <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        try {
+            var pageTracker = _gat._getTracker("UA-61838189-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+    </script>
+
+</body>
+
+<!-- I added this -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<!-- Using MathJax, with the delimiters $ -->
+<!-- Conflict with pygments for the .mo and .mi -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  "HTML-CSS": {
+  styles: {
+  ".MathJax .mo, .MathJax .mi": {color: "black ! important"}}
+  },
+  tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']],processEscapes: true}
+  });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+</html>
+
+
