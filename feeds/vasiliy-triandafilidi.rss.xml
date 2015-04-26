@@ -1,63 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Molecular Simulation Blog</title><link>/</link><description></description><atom:link href="/feeds/vasiliy-triandafilidi.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 20 Apr 2015 17:25:00 -0700</lastBuildDate><item><title>Static Structure Factor</title><link>/static-structure-factor.html</link><description>&lt;p&gt;Applications&lt;/p&gt;
-&lt;ol class="arabic simple" start="2"&gt;
-&lt;li&gt;Math Theory&lt;/li&gt;
-&lt;li&gt;Sq theory&lt;/li&gt;
-&lt;li&gt;Implementation&lt;/li&gt;
-&lt;li&gt;Verification&lt;/li&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Molecular Simulation Blog</title><link>/</link><description></description><atom:link href="/feeds/vasiliy-triandafilidi.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 20 Apr 2015 17:25:00 -0700</lastBuildDate><item><title>Static Structure Factor</title><link>/static-structure-factor.html</link><description>&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
+&lt;ul class="auto-toc simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#applications-why-do-we-need-it" id="id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Applications. Why do we need it?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#mathematical-background" id="id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;Mathematical background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#theoretical-background" id="id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Theoretical background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#implementation" id="id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Implementation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="applications-why-do-we-need-it"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Applications. Why do we need it?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Molecular Dynamics (MD) simulations provides is with a great tool that can  analyze behavior on atomic level.
+It predicts motion of atoms on the scale not reachable to experimental techniques. A natural question arises how does one builds a bridge between MD simulations and experimental results. One way of doing that would be to obtain integrated quantities such Pressure, Temperature or Static Structure Factor(SSF), which can be directly seen from the experiment. For example SSF is proportional to intensity of the diffracted light in the x-ray diffraction experiment. Interested readers are encouraged to find more about SF in the following &lt;a class="reference external" href="http://www.lehigh.edu/imi/teched/AtModel/Lecture_5_Micoulaut_Atomistics_Glass_Course.pdf"&gt;presentation&lt;/a&gt;, and this paper &lt;a class="reference external" href="http://journals.aps.org/prb/abstract/10.1103/PhysRevB.60.3169"&gt;kob_et_al&lt;/a&gt;.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/Sq_diffract.jpg" style="width: 80%;" /&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mathematical-background"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;Mathematical background&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;To be able to understand certain physical phenomena one needs to be familiar with its mathematical background. For example Static Structure Factor is impossible to understand without the prior knowledge of Fourier Transform(FT).&lt;/p&gt;
+&lt;p&gt;Let us start from a definition of Fourier Series.&lt;/p&gt;
+&lt;blockquote class="epigraph"&gt;
+&lt;blockquote&gt;
+a Fourier series - is a way to represent a wave-like function as the sum of simple sine waves&lt;/blockquote&gt;
+&lt;p class="attribution"&gt;&amp;mdash;wikipedia.org&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In other words: for every function $f(x)$ (mathematically good enough) coefficients ($a_n$, $b_n$, $\omega_n$) can be found which will fit this function.&lt;/p&gt;
+&lt;p&gt;$$f(x) = \Sigma (a_n cos(\omega_n x) + b_n sin(\omega_n x)) $$&lt;/p&gt;
+&lt;p&gt;These: $a_n$ and $b_n$ are called Fourier coefficients, $cos (\omega_n x)$, $sin(\omega_nx)$ are called Fourier harmonics.&lt;/p&gt;
+&lt;p&gt;If we rewrite our Fourier Transform using complex numbers it will look like this:
+$$f(x) = \Sigma c_n e^{-i \omega_n x}$$&lt;/p&gt;
+&lt;p&gt;In many physical applications only absolute value squared plays role, because it represents intensity of physical value, and experiments in physical world can measure only intensity, rather than fields. For example Static Structure Factor, which is to be discussed in further detail below.
+Therefore value which we are interested in is:&lt;/p&gt;
+&lt;p&gt;$$ I = \Sigma \mid c_n \mid^2 =  \Sigma (\mid a_n \mid^2 +  \mid b_n \mid^2)$$&lt;/p&gt;
+&lt;p&gt;For better understanding let us consider following example:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Fourier series of a simple function $f(x) = cos(x)$ is the function itself. Therefore: $ a_1 = 1 $, $a_i = 0$ for every $ i \neq 1 $, $b_i = 0$ for every $i$. So an infinite curve can be represented by a single value.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Applications of Sq. Molecular dynamics simulations gives us a enormous possibility to analyze behavior on atomic level&lt;/p&gt;
-&lt;p&gt;but systems too small to compare with experimental results. it would be good to have something to compare with -&amp;gt; static structure factor which can be directly compared with x-ray diffraction
-&lt;a class="reference external" href="http://journals.aps.org/prb/abstract/10.1103/PhysRevB.60.3169"&gt;kob_et_al&lt;/a&gt; , &lt;a class="reference external" href="http://www.lehigh.edu/imi/teched/AtModel/Lecture_5_Micoulaut_Atomistics_Glass_Course.pdf"&gt;presentation&lt;/a&gt;&lt;/p&gt;
-&lt;img alt="" src="./images/sq/Sq2.png" style="width: 60%;" /&gt;
-&lt;p&gt;2.math theory&lt;/p&gt;
-&lt;p&gt;it is very based on fourier transform
-$$f(x) = \Sigma (a_n cos(\omega_n x) + b_n sin(\omega_n x)) $$&lt;/p&gt;
-&lt;p&gt;this a_n and b_n are called Fourier coefficients. There is another version of Fourier series that utilizes complex exponent
-$$f(x) = \Sigma c_n e^{-i \omega_n x}$$
-which is to be discussed in further detail below
-In many physical applications only absolute value plays important role, because it represents intensity of physical value, and experiments in physical world can measure only intensity, rather than fields.
-$\mid c_n \mid^2 = \mid a_n \mid^2 +  \mid b_n \mid^2$&lt;/p&gt;
-&lt;p&gt;Lets consider an example :&lt;/p&gt;
-&lt;img alt="" src="./images/sq/fourier.png" style="width: 60%;" /&gt;
-&lt;p&gt;Fourier series of a simple function $f(x) = cos(x)$ is the function itself. Therefore
-$ a_1 = 1 $, $a_i = 0$ for every $ i \neq 1 $, $b_i = 0$ for every $i$.
-So an infinite curve can be represented by a single value.&lt;/p&gt;
-&lt;p&gt;Talk about Fourier transforms .
-wikipedia link
-Note:
-Infinite curve after fourier transform becomes a single value, whereas a peak becomes and infinite curve. This has very deep and fundamental consequences and is directly related to uncertainty principal&lt;/p&gt;
+&lt;p&gt;To read about Fourier Series in greater detail interested reader is encouraged to read the following sources : &lt;a class="reference external" href="http://math.stackexchange.com/questions/1002/fourier-transform-for-dummies"&gt;Fourier_expalained&lt;/a&gt;, &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Fourier_series"&gt;wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Fourier Transform is very based on Fourier Series &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Fourier_transform"&gt;Fourier_transform&lt;/a&gt;. For every function in the regular space we find a number in the reciprocal space. In other words we define an operator which maps functions onto numbers. Therefore we analyze function by their image, which we call spectrum.
+For example in the figure below we have a $cos$ function of certain period, this period corresponds to spectrum of the function in reciprocal space.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/fourier.jpg" style="width: 80%;" /&gt;
+&lt;p&gt;Note:
+Infinite curve after Fourier Transform becomes a single value, whereas a peak becomes and infinite curve. This has very deep and fundamental consequences and is directly related to uncertainty principal&lt;/p&gt;
 &lt;p&gt;Interested reader might already noticed that the bigger the period is by x, the smaller is the $k$ value - the wave vector .&lt;/p&gt;
-&lt;p&gt;3.sq theory&lt;/p&gt;
-&lt;img alt="" src="./images/sq/RdfSqExplained.png" style="width: 60%;" /&gt;
-&lt;p&gt;Lets look at the Fig. 2. It is obvious that we see a periodic structure on the left side and a random structure on the right side.
-If we look at the radial distribution function which is to be defined below. But for now it will be just the average number of atoms on the distance $r$ from a given atom, averaged by all atoms.
-We see a clear periodicity on the plot, which corresponds to the periodicity of the structure.&lt;/p&gt;
-&lt;p&gt;If we recall our Fourier series whenever we had something periodic in distance space we will have a peak in the reciprocal space.&lt;/p&gt;
-&lt;p&gt;And that is what we want - an easy way to track positions of atoms.&lt;/p&gt;
-&lt;p&gt;If we have a structure with two characteristic distances we will be represented by two peaks in the reciprocal space.&lt;/p&gt;
-&lt;img alt="" src="./images/sq/Sq.png" style="width: 60%;" /&gt;
-&lt;p&gt;Now lets do a rigorous definition:
-If we have a system of atoms with positions $ \mathbf{r}_{j} $, then&lt;/p&gt;
-&lt;p&gt;Radial distribution function:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="theoretical-background"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Theoretical background&lt;/a&gt;&lt;/h2&gt;
+&lt;img alt="" src="./images/sq/RdfSqExplained.jpg" style="width: 90%;" /&gt;
+&lt;p&gt;Let us look at the Fig. 2.. Visually we can identify periodic structure on the left side and a random structure on the right side. How can one quantify this order?&lt;/p&gt;
+&lt;p&gt;To be able to quantify this order may use Radial Distribution Function(RDF) &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Radial_distribution_function"&gt;RDF&lt;/a&gt; . By now we will define RDF as an average number of atoms on the distance $r$ from a given atom, averaged by all atoms. Later we will define RDF in more rigorous way.&lt;/p&gt;
+&lt;dl class="docutils"&gt;
+&lt;dt&gt;We see a clear periodicity on the plot, which corresponds to the periodicity of the structure. Although Radial Distribution Function seems to provide us with important information about system structure it is still not very convenient to use. Things get even more complicated when we have to periodic structures (structure within other structure) like in the Fig. 3.&lt;/dt&gt;
+&lt;dd&gt;So we are not there yet. We want to be able to identify a periodic structure by just a number, not a function.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;If we recall our Fourier series whenever we had something periodic in distance space we will have a peak in the reciprocal space. And that is what we want - an easy way to track positions of atoms!&lt;/p&gt;
+&lt;p&gt;Now, if we have a structure with two characteristic distances we will be represented by two peaks in the reciprocal space.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/Sq.jpg" style="width: 60%;" /&gt;
+&lt;p&gt;Now lets formulate statements above in a mathematically sound way:&lt;/p&gt;
+&lt;p&gt;If we have a system of atoms with positions $ \mathbf{r}_{j} $, then&lt;/p&gt;
+&lt;p&gt;Radial distribution function $g(r)$:&lt;/p&gt;
 &lt;p&gt;$$g(r) = \frac{V}{N^{2}}\left\langle \sum_{i=1}^{N}\sum_{j\neq i}\delta(\vec{r} - \vec{r}_{ij})\right\rangle \quad\text{with}
 \vec{r}_{ij}:= \vec{r}_{j} - \vec{r}_{i} $$&lt;/p&gt;
-&lt;p&gt;, the static structure factor by definition is:&lt;/p&gt;
+&lt;p&gt;, the static structure factor is defined as:&lt;/p&gt;
 &lt;p&gt;$$ S(\mathbf{q}) = \frac{1}{N} \left | \sum_{j=1}^{N} \mathrm{e}^{-i \mathbf{q} \mathbf{r}_{j}} \right | ^2$$&lt;/p&gt;
-&lt;p&gt;Which is an absolute value of fourier coefficient squared.
-It can equally expressed the following way:
-$$  S(\mathbf{q}) = 1 + \frac{1}{N} \left \langle \int_V \mathrm{d} \mathbf{r} \, \mathrm{e}^{-i \mathbf{q} \mathbf{r}} \sum_{i \neq j} \delta \left [ \mathbf{r} - (\mathbf{r}_i - \mathbf{r}_j) \right ] \right \rangle  $$&lt;/p&gt;
+&lt;p&gt;Which is an absolute value of Fourier coefficient squared.
+It can equally expressed the following way:&lt;/p&gt;
+&lt;p&gt;$$  S(\mathbf{q}) = 1 + \frac{1}{N} \left \langle \int_V \mathrm{d} \mathbf{r} \, \mathrm{e}^{-i \mathbf{q} \mathbf{r}} \sum_{i \neq j} \delta \left [ \mathbf{r} - (\mathbf{r}_i - \mathbf{r}_j) \right ] \right \rangle  $$&lt;/p&gt;
 &lt;p&gt;Which is the definition we will work with.&lt;/p&gt;
-&lt;ol class="arabic simple" start="5"&gt;
-&lt;li&gt;Implementation:&lt;/li&gt;
+&lt;/div&gt;
+&lt;div class="section" id="implementation"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Implementation&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Now several points need to be clarified:&lt;/p&gt;
+&lt;p&gt;To implement the algorithm above we need to figure out how to :&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;to evaluate integral&lt;/li&gt;
+&lt;li&gt;to deal with delta function&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Now several points need to be clarified:
-how to evaluate integral
-how to deal with delta function&lt;/p&gt;
-&lt;p&gt;Evaluating integral with exponent would be performing a Fourier transform, therefore we can use tools available for that : FFT - fast fourier transform.
-Delta function will be considered by binning and histgramming our atomic positions $\mathbf{r}_{j}$
-Which will be demonstrated on 2D example for convenience.&lt;/p&gt;
-&lt;img alt="" src="./images/sq/histogram.png" style="width: 40%;" /&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Evaluating integral with exponent would be performing a Fourier transform, therefore we can use tools available for that : FFT - fast fourier transform.&lt;/p&gt;
+&lt;p&gt;Delta function will be considered by binning and histograming our atomic positions $\mathbf{r}_{j}$, which will be demonstrated on 2D example for convenience.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/histogram.jpg" style="width: 100%;" /&gt;
+&lt;p&gt;To start with lets import everything that we will need for our program:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; \&lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;read_parameters&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;read_traj_vmd&lt;/span&gt;
@@ -70,6 +93,7 @@ Which will be demonstrated on 2D example for convenience.&lt;/p&gt;
 &lt;span class="n"&gt;matplotlib&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Agg&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Lets define some necessary variables and bin the data:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Universe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psffile&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;.psf&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;traj&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;Ndiv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;201&lt;/span&gt;
 &lt;span class="c"&gt;# create arrays of positions, get the box dimenstions&lt;/span&gt;
@@ -81,14 +105,14 @@ Which will be demonstrated on 2D example for convenience.&lt;/p&gt;
 &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edges&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;histogramdd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bins&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;span class="n"&gt;delta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;FFT&lt;/p&gt;
+&lt;p&gt;Ok, now we are all set to do Fourier Transform and &amp;quot;go&amp;quot; to reciprocal space&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;ftk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fftshift&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fftn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fftshift&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;delta&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;span class="n"&gt;sk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ftk&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Natoms&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="c"&gt;# basis in reciporal space&lt;/span&gt;
 &lt;span class="n"&gt;omega&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pi&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length_x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;omega&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="n"&gt;omega&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;normalizing (radial symmetry averaging)&lt;/p&gt;
+&lt;p&gt;We are almost all set, the only thing is that we need to radially average our data, since we are interested only in the $|q|$&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;C&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;norm_sq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;kmax&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;norm_sq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;kmax&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
@@ -97,7 +121,6 @@ Which will be demonstrated on 2D example for convenience.&lt;/p&gt;
 &lt;span class="sd"&gt;    bins in, calculating average sq of each bin&lt;/span&gt;
 &lt;span class="sd"&gt;    output: C[Nbins,3] = binindex, kval = normk, sq&lt;/span&gt;
 &lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
-    &lt;span class="c"&gt;# Nbins = int(Ndiv\*1)&lt;/span&gt;
     &lt;span class="n"&gt;normk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k1&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;k1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k2&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;k2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k3&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;k3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="c"&gt;# array to histogram - dk,kmax,Nbins&lt;/span&gt;
     &lt;span class="n"&gt;Nbins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -113,25 +136,28 @@ Which will be demonstrated on 2D example for convenience.&lt;/p&gt;
                 &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;bindex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;sk&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
     &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
     &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-    &lt;span class="c"&gt;# plt.plot(C[:,1], C[:,2])&lt;/span&gt;
-    &lt;span class="c"&gt;# plt.show()&lt;/span&gt;
-    &lt;span class="c"&gt;# print C[:,1]&lt;/span&gt;
-    &lt;span class="c"&gt;# print C[:,2]&lt;/span&gt;
-    &lt;span class="c"&gt;# plt.savefig(&amp;#39;lala.pdf&amp;#39;)&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Special thanks for Amanda Parker.&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Mon, 20 Apr 2015 17:25:00 -0700</pubDate><guid>tag:,2015-04-20:static-structure-factor.html</guid><category>MDAnalysis</category><category>Python</category><category>Analysis</category></item><item><title>Must Know Bash Commands</title><link>/must-know-bash-commands.html</link><description>&lt;p&gt;What are the most useful and tricky bash commands.&lt;/p&gt;
-&lt;p&gt;i divide everything into 5 categories:&lt;/p&gt;
-&lt;ol class="arabic simple"&gt;
-&lt;li&gt;different ls,rm, grep stuff&lt;/li&gt;
-&lt;li&gt;find and other&lt;/li&gt;
-&lt;li&gt;sed/awk -ing&lt;/li&gt;
-&lt;li&gt;miscilanneious&lt;/li&gt;
-&lt;li&gt;alias&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class="section" id="different-ls-rm-grep-stuff"&gt;
-&lt;h2&gt;1.different ls,rm, grep stuff&lt;/h2&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Mon, 20 Apr 2015 17:25:00 -0700</pubDate><guid>tag:,2015-04-20:static-structure-factor.html</guid><category>MDAnalysis</category><category>Python</category><category>Analysis</category></item><item><title>Must Know Bash Commands</title><link>/must-know-bash-commands.html</link><description>&lt;p&gt;What are tricky bash commands that I consider useful:&lt;/p&gt;
+&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
+&lt;ul class="auto-toc simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#basic-ls-rm-grep-commands" id="id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic ls, rm, grep commands&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#how-to-find-files" id="id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;How to find files?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#parsing-through-text-files-using-sed-awk" id="id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Parsing through text files using sed/awk&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#aliasing" id="id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Aliasing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#github-basic-commands" id="id5"&gt;5&amp;nbsp;&amp;nbsp;&amp;nbsp;Github basic commands:&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;!-- 1. Basic ls,rm, grep --&gt;
+&lt;!-- 2. find and other --&gt;
+&lt;!-- 3. sed/awk -ing --&gt;
+&lt;!-- 4. miscilanneious --&gt;
+&lt;!-- 5. alias --&gt;
+&lt;div class="section" id="basic-ls-rm-grep-commands"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic ls, rm, grep commands&lt;/a&gt;&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;ls file &lt;span class="c"&gt;# does the file exist?&lt;/span&gt;
 ls -l file &lt;span class="c"&gt;# info about file&lt;/span&gt;
 ls -lt  &lt;span class="c"&gt;#  list files in time order with info&lt;/span&gt;
@@ -139,44 +165,60 @@ ls -ltr  &lt;span class="c"&gt;#  list files in reverse time order with info&lt;
 ls -a &lt;span class="c"&gt;# list files including hidden files&lt;/span&gt;
 ls - R &lt;span class="nv"&gt;$ &lt;/span&gt;show &lt;span class="nb"&gt;dirs &lt;/span&gt;and subdirs
 
-ls &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="c"&gt;# prints something, that matches something&lt;/span&gt;
+rm !&lt;span class="o"&gt;(&lt;/span&gt;u&lt;span class="p"&gt;|&lt;/span&gt;p&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# delete everything but&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Creating a symbolic link:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ln -s original linkname
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Grepping:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ls &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="c"&gt;# prints something, that matches something&lt;/span&gt;
 less file1 &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="c"&gt;# looks for something in the file&lt;/span&gt;
 grep &lt;span class="s2"&gt;&amp;quot;hi there&amp;quot;&lt;/span&gt; file1 &lt;span class="c"&gt;# look for hi there in the file1&lt;/span&gt;
-
-rm !&lt;span class="o"&gt;(&lt;/span&gt;u&lt;span class="p"&gt;|&lt;/span&gt;p&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# delete everything but&lt;/span&gt;
 ls &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="p"&gt;|&lt;/span&gt; xargs rm &lt;span class="c"&gt;# removes everything that matches something in the directory&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class="section" id="find-and-other"&gt;
-&lt;h2&gt;2.Find and other:&lt;/h2&gt;
-&lt;p&gt;Here are a few ways to use find:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find / -name &lt;span class="s1"&gt;&amp;#39;program.c&amp;#39;&lt;/span&gt; 2&amp;gt;/dev/null
-&lt;span class="nv"&gt;$ &lt;/span&gt;find / -name &lt;span class="s1"&gt;&amp;#39;program.c&amp;#39;&lt;/span&gt; 2&amp;gt;errors.txt
+&lt;p&gt;Grepping &lt;tt class="docutils literal"&gt;str1&lt;/tt&gt; or/and &lt;tt class="docutils literal"&gt;str2&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;egrep -i &lt;span class="s2"&gt;&amp;quot;str1|str2&amp;quot;&lt;/span&gt; file &lt;span class="c"&gt;# str1 or str2&lt;/span&gt;
+egrep -i &lt;span class="s2"&gt;&amp;quot;str1.\*str2&amp;quot;&lt;/span&gt; file &lt;span class="c"&gt;# str1 and str2&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;cite&gt;/&lt;/cite&gt;&lt;/p&gt;
+&lt;!-- ################################### --&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-find-files"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;How to find files?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here are a few ways to use find:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find ./ -name &lt;span class="s1"&gt;&amp;#39;name.\*&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;./&lt;/p&gt;
 &lt;pre class="code bash literal-block"&gt;
-Start searching from the root directory &lt;span class="o"&gt;(&lt;/span&gt;i.e / directory&lt;span class="o"&gt;)&lt;/span&gt;
+Start searching from the current directory &lt;span class="o"&gt;(&lt;/span&gt;i.e ./ directory&lt;span class="o"&gt;)&lt;/span&gt;
 &lt;/pre&gt;
 &lt;p&gt;&lt;cite&gt;-name&lt;/cite&gt;&lt;/p&gt;
 &lt;pre class="code bash literal-block"&gt;
 Given search text is the filename rather than any other attribute of a file
 &lt;/pre&gt;
-&lt;p&gt;&lt;cite&gt;'program.c'&lt;/cite&gt;&lt;/p&gt;
+&lt;p&gt;&lt;cite&gt;'name.*'&lt;/cite&gt;&lt;/p&gt;
 &lt;pre class="code bash literal-block"&gt;
 Search text that we have entered. Always enclose the filename in single quotes.. why to &lt;span class="k"&gt;do&lt;/span&gt; this is complex.. so simply &lt;span class="k"&gt;do&lt;/span&gt; so.
 &lt;/pre&gt;
-&lt;pre class="code bash literal-block"&gt;
-Note : 2&amp;gt;/dev/null is not related to find tool as such. &lt;span class="m"&gt;2&lt;/span&gt; indicates the error stream in Linux, and /dev/null is the device where anything you send simply disappears. So 2&amp;gt;/dev/null in this &lt;span class="k"&gt;case&lt;/span&gt; means that &lt;span class="k"&gt;while&lt;/span&gt; finding &lt;span class="k"&gt;for&lt;/span&gt; the files, in &lt;span class="k"&gt;case&lt;/span&gt; any error messages pop up simply send them to /dev/null i.e. simply discard all error messages.
-&lt;/pre&gt;
-&lt;p&gt;Alternatively you could use 2&amp;gt;error.txt where after the search is completed you would have a file named error.txt in the current directory with all the error messages in it.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find /home/david -name &lt;span class="s1"&gt;&amp;#39;index\*&amp;#39;&lt;/span&gt;
 &lt;span class="nv"&gt;$ &lt;/span&gt;find /home/david -iname &lt;span class="s1"&gt;&amp;#39;index\*&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;The 1st command would find files having the letters index as the beginning of the file name. The search would be started in the directory /home/david and carry on within that directory and its subdirectories only.
 The 2nd command would search for the same, but the case of the filename wouldn't be considered. So all files starting with any combination of letters in upper and lower case such as INDEX or indEX or index would be returned.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div class="section" id="sed-awk"&gt;
-&lt;h2&gt;2.Sed/awk:&lt;/h2&gt;
+&lt;div class="section" id="parsing-through-text-files-using-sed-awk"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Parsing through text files using sed/awk&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Sed:&lt;/p&gt;
+&lt;p&gt;Replace &lt;tt class="docutils literal"&gt;foo&lt;/tt&gt; with &lt;tt class="docutils literal"&gt;bar&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed &lt;span class="s1"&gt;&amp;#39;s/foo/bar/&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Replace &lt;tt class="docutils literal"&gt;Word1&lt;/tt&gt; with &lt;tt class="docutils literal"&gt;Word2&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-n&lt;/span&gt;&lt;/tt&gt; - gets rid of unnecessary stuff&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed -n &lt;span class="s1"&gt;&amp;#39;/Word1/Word2/&amp;#39;&lt;/span&gt; fromfile.txt &amp;gt; newfile.txt
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Deleting lines:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed -i &lt;span class="s1"&gt;&amp;#39;/^\s*$/d&amp;#39;&lt;/span&gt;  fromfile.txt &lt;span class="c"&gt;# delete empty lines fromfile.txt (modifies the file)&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;1d&amp;#39;&lt;/span&gt; filewithfirstline.txt &lt;span class="c"&gt;# deletes first line of a file&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;1i\\&amp;#39;&lt;/span&gt; filewithfirstline.txt &lt;span class="c"&gt;# adds empty first line to file&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;sed -e &lt;span class="s1"&gt;&amp;#39;/^$/d&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$filename&lt;/span&gt;
 &lt;span class="c"&gt;# The -e option causes the next string to be interpreted as an editing instruction.&lt;/span&gt;
 &lt;span class="c"&gt;#  (If passing only a single instruction to sed, the &amp;quot;-e&amp;quot; is optional.)&lt;/span&gt;
@@ -204,11 +246,8 @@ s/00&lt;span class="se"&gt;\*&lt;/span&gt;/0/g   &lt;span class="c"&gt;#Compress
 s/GUI//g    &lt;span class="c"&gt;#Delete all instances of &amp;quot;GUI&amp;quot;, leaving the remainder of each line intact.&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/div&gt;
-&lt;div class="section" id="miscilanneious"&gt;
-&lt;h2&gt;4. Miscilanneious&lt;/h2&gt;
-&lt;/div&gt;
 &lt;div class="section" id="aliasing"&gt;
-&lt;h2&gt;5. Aliasing&lt;/h2&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Aliasing&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;The &lt;cite&gt;alias&lt;/cite&gt; command makes it possible to launch any command or group of commands (inclusive of any options, arguments and redirection) by entering a pre-set string (i.e., sequence of characters). In other words you find some command that you use a lot, say go to certain directory, or &lt;cite&gt;ssh&lt;/cite&gt; to certain server give it a nickname (alias) and use it.&lt;/p&gt;
 &lt;p&gt;For example I know that I go to certain folder a lot, it has all my libraries in it - &lt;cite&gt;/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt&lt;/cite&gt;
 So I just add the following line to ~/.bashrc (~/bash_profile), source it &lt;cite&gt;source ~/.bashrc&lt;/cite&gt; and use it.&lt;/p&gt;
@@ -267,6 +306,19 @@ extract &lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&g
      &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="github-basic-commands"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id5"&gt;5&amp;nbsp;&amp;nbsp;&amp;nbsp;Github basic commands:&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;I assume one does have a working account, then everything is pretty straightforward:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#initialize this directory to be github directory&lt;/span&gt;
+git init .
+&lt;span class="c"&gt;# when you have files to push&lt;/span&gt;
+git add .
+&lt;span class="c"&gt;# adding information on the commit&lt;/span&gt;
+git commit -m &lt;span class="s2"&gt;&amp;quot;i added a lot of stuff&amp;quot;&lt;/span&gt;
+git push origin master
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When you are cloning a directory that it gets initialized automatically.&lt;/p&gt;
 &lt;/div&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Tue, 14 Apr 2015 23:45:00 -0700</pubDate><guid>tag:,2015-04-14:must-know-bash-commands.html</guid><category>Bash</category><category>Software</category></item><item><title>Accelerating Python</title><link>/accelerating-python.html</link><description>&lt;p&gt;Python is great, Python is easy to learn, easy to write in, but sometimes we need our code to run fast. This is where pure Python falls short. Just as many other languages with dynamical variable typing - it is very slow. For example consider this code snippet:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
@@ -1290,7 +1342,8 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 3d Lennard-Jones melt&lt;/span&gt;
 &lt;span class="n"&gt;units&lt;/span&gt;       &lt;span class="n"&gt;real&lt;/span&gt;
 &lt;span class="c1"&gt;#Angstroms, T kelvins,&lt;/span&gt;
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;source&lt;/span&gt;
 &lt;span class="n"&gt;boundary&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;
 &lt;span class="c1"&gt;#periodic boundary conds&lt;/span&gt;
 
@@ -1302,30 +1355,30 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;span class="n"&gt;create_box&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;
 &lt;span class="n"&gt;create_atoms&lt;/span&gt;    &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;
 &lt;span class="n"&gt;mass&lt;/span&gt;        &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;20.0&lt;/span&gt;
-
-&lt;span class="c1"&gt;#potential&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Specifying pair potential that we are using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;#potential&lt;/span&gt;
 &lt;span class="n"&gt;pair_style&lt;/span&gt;  &lt;span class="n"&gt;lj&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;cut&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
 &lt;span class="n"&gt;pair_coeff&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;0.11&lt;/span&gt; &lt;span class="mf"&gt;4.11&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;#assigning random velocties to diffrent atoms&lt;/span&gt;
 &lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;273.3&lt;/span&gt; &lt;span class="mi"&gt;50007878&lt;/span&gt;
 
-&lt;span class="c1"&gt;# neighbor  0.3 bin&lt;/span&gt;
-&lt;span class="c1"&gt;# neigh_modify  every 20 delay 0 check no&lt;/span&gt;
+&lt;span class="n"&gt;neighbor&lt;/span&gt;  &lt;span class="mf"&gt;0.3&lt;/span&gt; &lt;span class="n"&gt;bin&lt;/span&gt;
+&lt;span class="n"&gt;neigh_modify&lt;/span&gt;  &lt;span class="n"&gt;every&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt; &lt;span class="n"&gt;delay&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;check&lt;/span&gt; &lt;span class="nb"&gt;no&lt;/span&gt;
+
+&lt;span class="c1"&gt;#how often we want to dump thermodynamic output&lt;/span&gt;
 &lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
-&lt;span class="c1"&gt;#how often we want to dump list&lt;/span&gt;
 
-&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;
-&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;
-&lt;span class="n"&gt;unfix&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;
-
+&lt;span class="c1"&gt;#how often we want to dump coordinates&lt;/span&gt;
 &lt;span class="nb"&gt;dump&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt; &lt;span class="nb"&gt;dump&lt;/span&gt;&lt;span class="o"&gt;.*.&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="n"&gt;mass&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="n"&gt;xs&lt;/span&gt; &lt;span class="n"&gt;ys&lt;/span&gt; &lt;span class="n"&gt;zs&lt;/span&gt;
-&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
-
-&lt;span class="n"&gt;thermo&lt;/span&gt;      &lt;span class="mi"&gt;50&lt;/span&gt;
-&lt;span class="n"&gt;run&lt;/span&gt;     &lt;span class="mi"&gt;10000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Specifying what type of &lt;tt class="docutils literal"&gt;fix&lt;/tt&gt; we are using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;
 &lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;How to run a simulation from a saved snapshot:&lt;/p&gt;
+&lt;p&gt;How to run a simulation from a saved data file as initial coordinates input file, and dump trajectory for further visualization&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;    &lt;span class="c1"&gt;#LAMMPS&lt;/span&gt;
 &lt;span class="n"&gt;units&lt;/span&gt; &lt;span class="n"&gt;real&lt;/span&gt;
 &lt;span class="n"&gt;boundary&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;
@@ -1342,7 +1395,7 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;span class="c1"&gt;# list thermodynamic output every 100 steps&lt;/span&gt;
 &lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
 
-&lt;span class="c1"&gt;# dump images that would be vizualized by the AtomEye program&lt;/span&gt;
+&lt;span class="c1"&gt;# dump images that would be visualized by the AtomEye program&lt;/span&gt;
 &lt;span class="c1"&gt;# They all have cfg format&lt;/span&gt;
 &lt;span class="c1"&gt;# 1 is a name of our dump&lt;/span&gt;
 &lt;span class="c1"&gt;# all - is that we dump all atoms&lt;/span&gt;
@@ -1449,8 +1502,11 @@ empty_file2
 &lt;/ol&gt;
 &lt;p&gt;Additional information:&lt;/p&gt;
 &lt;p&gt;The files on computer are of two types human-readable - ASCII, and computer readable - binary. We (humans:)) can’t understand computer code because it is all 1s and 0s, at the same time computers can’t understand ASCII files unless we explain them how to transfer ASCII files into binary ones.
+To simplify the procedure of running the program we can tell our system that this program is a bash program this is being done by : &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;#!/bin/bash&lt;/span&gt;&lt;/tt&gt;.
+Then tell the system that we may run this as an executable we do  &lt;tt class="docutils literal"&gt;chmod +x bashscript.sh&lt;/tt&gt;
 To create dummy empty file one may use touch &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; command.
-To create a executable file we use: &lt;tt class="docutils literal"&gt;chmod +x bashscript.sh&lt;/tt&gt;, to delete all files in the directory we use &lt;tt class="docutils literal"&gt;*&lt;/tt&gt; wildcard so to delete all files it will be &lt;tt class="docutils literal"&gt;rm *.&lt;/tt&gt; But be very careful because it will delete all files in directory even some that you may need in future.&lt;/p&gt;
+To delete all files in the directory we use &lt;tt class="docutils literal"&gt;*&lt;/tt&gt; wildcard so to delete all files it will be &lt;tt class="docutils literal"&gt;rm *.&lt;/tt&gt; But we need to be very careful because it
+will delete all files in directory, so make sure that they match the pattern that you are using to delete files.&lt;/p&gt;
 &lt;p&gt;algorithm:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
 &lt;li&gt;list all files in the directory ls&lt;/li&gt;
@@ -1516,8 +1572,9 @@ then we may run the program the following way &lt;tt class="docutils literal"&gt
 &lt;!-- :alt: alternate text --&gt;
 &lt;!-- :align: center --&gt;
 &lt;!-- Its me --&gt;
-&lt;p&gt;Hi, my name is Vasiliy Triandafilidi. I am a 2nd year Ms student at University of British Columbia working in Prof. Savvas Hatzikiriakos' lab &lt;a class="citation-reference" href="#lab" id="id1"&gt;[lab]&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;In my research I focus on investigating properties of matter using Method of Molecular Dynamics &lt;a class="citation-reference" href="#md" id="id2"&gt;[md]&lt;/a&gt;
+&lt;p&gt;Hi, my name is Vasiliy Triandafilidi. I am a 2nd year Ms student at University of British Columbia working in Prof. Savvas Hatzikiriakos' lab &lt;a class="citation-reference" href="#lab" id="id1"&gt;[lab]&lt;/a&gt; . I am also collaborating very closely with Prof. Rottler's group &lt;a class="citation-reference" href="#prof-rottler" id="id2"&gt;[Prof_Rottler]&lt;/a&gt;
+In past I was working in Prof. Norman's group &lt;a class="citation-reference" href="#prof-norman" id="id3"&gt;[Prof_Norman]&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In my research I focus on investigating properties of matter using Method of Molecular Dynamics &lt;a class="citation-reference" href="#md" id="id4"&gt;[md]&lt;/a&gt;
 Unlike many other methods of simulation, where people try to find how can they make equations more difficult so we have an equation that can predict more stuff, Molecular Dynamics focuses on one equation: Newtons equations of motion.&lt;/p&gt;
 &lt;p&gt;By solving numerically Newtons equations of motion for
 each atom explicitely we obtain a trajectory of every atom in the system, for every timestep. This alone can provide a visual insight on the world that could not be seen by any tool explicitely.
@@ -1525,8 +1582,8 @@ But method of MD allows us to calculate a thermodynamically averaged parameters,
 &lt;/div&gt;
 &lt;div class="section" id="tools"&gt;
 &lt;h2&gt;Tools:&lt;/h2&gt;
-&lt;p&gt;To do Molecular Dynamics simulation I use open source code &lt;a class="citation-reference" href="#lammps" id="id3"&gt;[lammps]&lt;/a&gt; , to analyze trajectories I use a powerful Python
-based package &lt;a class="citation-reference" href="#mdanalysis" id="id4"&gt;[mdanalysis]&lt;/a&gt; , to vizualize my results I use &lt;a class="citation-reference" href="#vmd" id="id5"&gt;[vmd]&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;To do Molecular Dynamics simulation I use open source code &lt;a class="citation-reference" href="#lammps" id="id5"&gt;[lammps]&lt;/a&gt; , to analyze trajectories I use a powerful Python
+based package &lt;a class="citation-reference" href="#mdanalysis" id="id6"&gt;[mdanalysis]&lt;/a&gt; , to vizualize my results I use &lt;a class="citation-reference" href="#vmd" id="id7"&gt;[vmd]&lt;/a&gt; .&lt;/p&gt;
 &lt;!-- .. figure:: ~/blog/images/md.png --&gt;
 &lt;!-- :height: 100px --&gt;
 &lt;!-- :width: 100 px --&gt;
@@ -1542,7 +1599,7 @@ Molecular Dynamics --&gt;
 &lt;p&gt;I write this blog mostly because I want to keep track of the stuff that I am doing, as well as maybe share something useful
 with people and hear some feedback. I spend a lot of time working on my project and I hope the stuff that I am doing meanwhile maybe useful for other people as well.
 Molecular Dynamics trajectories require a lot of post processing work, that needs to be done. I do it using a powerful a tool : Python.
-I am a big Pythonista, i use it everywhere: I write this blog using Python based tool &lt;a class="citation-reference" href="#pelican" id="id6"&gt;[pelican]&lt;/a&gt;, I perform analysis using Python based package &lt;a class="citation-reference" href="#mdanalysis" id="id7"&gt;[mdanalysis]&lt;/a&gt; , I plot graphs using Python.&lt;/p&gt;
+I am a big Pythonista, i use it everywhere: I write this blog using Python based tool &lt;a class="citation-reference" href="#pelican" id="id8"&gt;[pelican]&lt;/a&gt;, I perform analysis using Python based package &lt;a class="citation-reference" href="#mdanalysis" id="id9"&gt;[mdanalysis]&lt;/a&gt; , I plot graphs using Python.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="contact-information"&gt;
 &lt;h2&gt;Contact information:&lt;/h2&gt;
@@ -1550,7 +1607,7 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 &lt;table class="docutils citation" frame="void" id="pelican" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id6"&gt;[pelican]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Pelican: &lt;a class="reference external" href="http://docs.getpelican.com/en/latest/index.html"&gt;http://docs.getpelican.com/en/latest/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id8"&gt;[pelican]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Pelican: &lt;a class="reference external" href="http://docs.getpelican.com/en/latest/index.html"&gt;http://docs.getpelican.com/en/latest/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table class="docutils citation" frame="void" id="lab" rules="none"&gt;
@@ -1562,25 +1619,37 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 &lt;table class="docutils citation" frame="void" id="md" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[md]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Method of Molecular Dynamics: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Molecular_dynamics"&gt;http://en.wikipedia.org/wiki/Molecular_dynamics&lt;/a&gt;.&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id4"&gt;[md]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Method of Molecular Dynamics: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Molecular_dynamics"&gt;http://en.wikipedia.org/wiki/Molecular_dynamics&lt;/a&gt;.&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table class="docutils citation" frame="void" id="vmd" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id5"&gt;[vmd]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;VMD: &lt;a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/"&gt;http://www.ks.uiuc.edu/Research/vmd/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id7"&gt;[vmd]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;VMD: &lt;a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/"&gt;http://www.ks.uiuc.edu/Research/vmd/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table class="docutils citation" frame="void" id="mdanalysis" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;[mdanalysis]&lt;/td&gt;&lt;td&gt;&lt;em&gt;(&lt;a class="fn-backref" href="#id4"&gt;1&lt;/a&gt;, &lt;a class="fn-backref" href="#id7"&gt;2&lt;/a&gt;)&lt;/em&gt; MDanalysis: &lt;a class="reference external" href="https://code.google.com/p/mdanalysis/"&gt;https://code.google.com/p/mdanalysis/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[mdanalysis]&lt;/td&gt;&lt;td&gt;&lt;em&gt;(&lt;a class="fn-backref" href="#id6"&gt;1&lt;/a&gt;, &lt;a class="fn-backref" href="#id9"&gt;2&lt;/a&gt;)&lt;/em&gt; MDanalysis: &lt;a class="reference external" href="https://code.google.com/p/mdanalysis/"&gt;https://code.google.com/p/mdanalysis/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table class="docutils citation" frame="void" id="lammps" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[lammps]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Lammps www.lammps.sandia.gov&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id5"&gt;[lammps]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Lammps www.lammps.sandia.gov&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="prof-rottler" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[Prof_Rottler]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://www.phas.ubc.ca/~jrottler/index.html"&gt;http://www.phas.ubc.ca/~jrottler/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="prof-norman" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[Prof_Norman]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://www.ihed.ras.ru/norman/en/index.php"&gt;http://www.ihed.ras.ru/norman/en/index.php&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;

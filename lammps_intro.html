@@ -61,7 +61,8 @@ and run an easy lammps simulation with lj potential.</p>
 <div class="highlight"><pre><span class="c1"># 3d Lennard-Jones melt</span>
 <span class="n">units</span>       <span class="n">real</span>
 <span class="c1">#Angstroms, T kelvins,</span>
-
+</pre></div>
+<div class="highlight"><pre><span class="n">source</span>
 <span class="n">boundary</span> <span class="n">p</span> <span class="n">p</span> <span class="n">p</span>
 <span class="c1">#periodic boundary conds</span>
 
@@ -73,30 +74,30 @@ and run an easy lammps simulation with lj potential.</p>
 <span class="n">create_box</span>  <span class="mi">1</span> <span class="n">box</span>
 <span class="n">create_atoms</span>    <span class="mi">1</span> <span class="n">box</span>
 <span class="n">mass</span>        <span class="mi">1</span> <span class="mf">20.0</span>
-
-<span class="c1">#potential</span>
+</pre></div>
+<p>Specifying pair potential that we are using:</p>
+<div class="highlight"><pre><span class="c1">#potential</span>
 <span class="n">pair_style</span>  <span class="n">lj</span><span class="o">/</span><span class="n">cut</span> <span class="mf">10.5</span>
 <span class="n">pair_coeff</span>  <span class="mi">1</span> <span class="mi">1</span> <span class="mf">0.11</span> <span class="mf">4.11</span> <span class="mf">10.5</span>
-
+</pre></div>
+<div class="highlight"><pre><span class="c1">#assigning random velocties to diffrent atoms</span>
 <span class="n">velocity</span> <span class="n">all</span> <span class="n">create</span> <span class="mf">273.3</span> <span class="mi">50007878</span>
 
-<span class="c1"># neighbor  0.3 bin</span>
-<span class="c1"># neigh_modify  every 20 delay 0 check no</span>
+<span class="n">neighbor</span>  <span class="mf">0.3</span> <span class="n">bin</span>
+<span class="n">neigh_modify</span>  <span class="n">every</span> <span class="mi">20</span> <span class="n">delay</span> <span class="mi">0</span> <span class="n">check</span> <span class="nb">no</span>
+
+<span class="c1">#how often we want to dump thermodynamic output</span>
 <span class="n">thermo</span> <span class="mi">100</span>
-<span class="c1">#how often we want to dump list</span>
 
-<span class="n">fix</span>     <span class="mi">1</span> <span class="n">all</span> <span class="n">nve</span><span class="o">/</span><span class="n">limit</span> <span class="mf">0.1</span>
-<span class="n">run</span> <span class="mi">1000</span>
-<span class="n">unfix</span>   <span class="mi">1</span>
-
+<span class="c1">#how often we want to dump coordinates</span>
 <span class="nb">dump</span> <span class="mi">1</span> <span class="n">all</span> <span class="n">cfg</span> <span class="mi">50</span> <span class="nb">dump</span><span class="o">.*.</span><span class="n">cfg</span> <span class="n">mass</span> <span class="n">type</span> <span class="n">xs</span> <span class="n">ys</span> <span class="n">zs</span>
-<span class="n">fix</span>     <span class="mi">1</span> <span class="n">all</span> <span class="n">nve</span>
-
-<span class="n">thermo</span>      <span class="mi">50</span>
-<span class="n">run</span>     <span class="mi">10000</span>
+</pre></div>
+<p>Specifying what type of <tt class="docutils literal">fix</tt> we are using:</p>
+<div class="highlight"><pre><span class="n">fix</span>     <span class="mi">1</span> <span class="n">all</span> <span class="n">nve</span>
+<span class="n">run</span> <span class="mi">1000</span>
 <span class="n">write_data</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
-<p>How to run a simulation from a saved snapshot:</p>
+<p>How to run a simulation from a saved data file as initial coordinates input file, and dump trajectory for further visualization</p>
 <div class="highlight"><pre>    <span class="c1">#LAMMPS</span>
 <span class="n">units</span> <span class="n">real</span>
 <span class="n">boundary</span> <span class="n">p</span> <span class="n">p</span> <span class="n">p</span>
@@ -113,7 +114,7 @@ and run an easy lammps simulation with lj potential.</p>
 <span class="c1"># list thermodynamic output every 100 steps</span>
 <span class="n">thermo</span> <span class="mi">100</span>
 
-<span class="c1"># dump images that would be vizualized by the AtomEye program</span>
+<span class="c1"># dump images that would be visualized by the AtomEye program</span>
 <span class="c1"># They all have cfg format</span>
 <span class="c1"># 1 is a name of our dump</span>
 <span class="c1"># all - is that we dump all atoms</span>

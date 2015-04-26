@@ -145,8 +145,11 @@ empty_file2
 </ol>
 <p>Additional information:</p>
 <p>The files on computer are of two types human-readable - ASCII, and computer readable - binary. We (humans:)) can’t understand computer code because it is all 1s and 0s, at the same time computers can’t understand ASCII files unless we explain them how to transfer ASCII files into binary ones.
+To simplify the procedure of running the program we can tell our system that this program is a bash program this is being done by : <tt class="docutils literal"><span class="pre">#!/bin/bash</span></tt>.
+Then tell the system that we may run this as an executable we do  <tt class="docutils literal">chmod +x bashscript.sh</tt>
 To create dummy empty file one may use touch <tt class="docutils literal">file1</tt> command.
-To create a executable file we use: <tt class="docutils literal">chmod +x bashscript.sh</tt>, to delete all files in the directory we use <tt class="docutils literal">*</tt> wildcard so to delete all files it will be <tt class="docutils literal">rm *.</tt> But be very careful because it will delete all files in directory even some that you may need in future.</p>
+To delete all files in the directory we use <tt class="docutils literal">*</tt> wildcard so to delete all files it will be <tt class="docutils literal">rm *.</tt> But we need to be very careful because it
+will delete all files in directory, so make sure that they match the pattern that you are using to delete files.</p>
 <p>algorithm:</p>
 <ol class="arabic simple">
 <li>list all files in the directory ls</li>
