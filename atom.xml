@@ -1,5 +1,540 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Molecular Simulation Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2015-04-13T15:23:00-07:00</updated><entry><title>Calculate Persistance Length</title><link href="/calculate-persistance-length.html" rel="alternate"></link><updated>2015-04-13T15:23:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-13:calculate-persistance-length.html</id><summary type="html">&lt;div class="section" id="what-do-we-want-to-calculate"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Molecular Simulation Blog</title><link href="http://www.bazilevs31.github.io/" rel="alternate"></link><link href="/atom.xml" rel="self"></link><id>http://www.bazilevs31.github.io/</id><updated>2015-04-20T17:25:00-07:00</updated><entry><title>Static Structure Factor</title><link href="http://www.bazilevs31.github.io/static-structure-factor.html" rel="alternate"></link><updated>2015-04-20T17:25:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-20:static-structure-factor.html</id><summary type="html">&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
+&lt;ul class="auto-toc simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#applications-why-do-we-need-it" id="id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Applications. Why do we need it?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#mathematical-background" id="id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;Mathematical background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#theoretical-background" id="id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Theoretical background&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#implementation" id="id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Implementation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div class="section" id="applications-why-do-we-need-it"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Applications. Why do we need it?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Molecular Dynamics (MD) simulations provides is with a great tool that can  analyze behavior on atomic level.
+It predicts motion of atoms on the scale not reachable to experimental techniques. A natural question arises how does one builds a bridge between MD simulations and experimental results. One way of doing that would be to obtain integrated quantities such Pressure, Temperature or Static Structure Factor(SSF), which can be directly seen from the experiment. For example SSF is proportional to intensity of the diffracted light in the x-ray diffraction experiment. Interested readers are encouraged to find more about SF in the following &lt;a class="reference external" href="http://www.lehigh.edu/imi/teched/AtModel/Lecture_5_Micoulaut_Atomistics_Glass_Course.pdf"&gt;presentation&lt;/a&gt;, and this paper &lt;a class="reference external" href="http://journals.aps.org/prb/abstract/10.1103/PhysRevB.60.3169"&gt;kob_et_al&lt;/a&gt;.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/Sq_diffract.jpg" style="width: 80%;" /&gt;
+&lt;/div&gt;
+&lt;div class="section" id="mathematical-background"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;Mathematical background&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;To be able to understand certain physical phenomena one needs to be familiar with its mathematical background. For example Static Structure Factor is impossible to understand without the prior knowledge of Fourier Transform(FT).&lt;/p&gt;
+&lt;p&gt;Let us start from a definition of Fourier Series.&lt;/p&gt;
+&lt;blockquote class="epigraph"&gt;
+&lt;blockquote&gt;
+a Fourier series - is a way to represent a wave-like function as the sum of simple sine waves&lt;/blockquote&gt;
+&lt;p class="attribution"&gt;&amp;mdash;wikipedia.org&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In other words: for every function $f(x)$ (mathematically good enough) coefficients ($a_n$, $b_n$, $\omega_n$) can be found which will fit this function.&lt;/p&gt;
+&lt;p&gt;$$f(x) = \Sigma (a_n cos(\omega_n x) + b_n sin(\omega_n x)) $$&lt;/p&gt;
+&lt;p&gt;These: $a_n$ and $b_n$ are called Fourier coefficients, $cos (\omega_n x)$, $sin(\omega_nx)$ are called Fourier harmonics.&lt;/p&gt;
+&lt;p&gt;If we rewrite our Fourier Transform using complex numbers it will look like this:
+$$f(x) = \Sigma c_n e^{-i \omega_n x}$$&lt;/p&gt;
+&lt;p&gt;In many physical applications only absolute value squared plays role, because it represents intensity of physical value, and experiments in physical world can measure only intensity, rather than fields. For example Static Structure Factor, which is to be discussed in further detail below.
+Therefore value which we are interested in is:&lt;/p&gt;
+&lt;p&gt;$$ I = \Sigma \mid c_n \mid^2 =  \Sigma (\mid a_n \mid^2 +  \mid b_n \mid^2)$$&lt;/p&gt;
+&lt;p&gt;For better understanding let us consider following example:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Fourier series of a simple function $f(x) = cos(x)$ is the function itself. Therefore: $ a_1 = 1 $, $a_i = 0$ for every $ i \neq 1 $, $b_i = 0$ for every $i$. So an infinite curve can be represented by a single value.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To read about Fourier Series in greater detail interested reader is encouraged to read the following sources : &lt;a class="reference external" href="http://math.stackexchange.com/questions/1002/fourier-transform-for-dummies"&gt;Fourier_expalained&lt;/a&gt;, &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Fourier_series"&gt;wikipedia&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Fourier Transform is very based on Fourier Series &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Fourier_transform"&gt;Fourier_transform&lt;/a&gt;. For every function in the regular space we find a number in the reciprocal space. In other words we define an operator which maps functions onto numbers. Therefore we analyze function by their image, which we call spectrum.
+For example in the figure below we have a $cos$ function of certain period, this period corresponds to spectrum of the function in reciprocal space.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/fourier.jpg" style="width: 80%;" /&gt;
+&lt;p&gt;Note:
+Infinite curve after Fourier Transform becomes a single value, whereas a peak becomes and infinite curve. This has very deep and fundamental consequences and is directly related to uncertainty principal&lt;/p&gt;
+&lt;p&gt;Interested reader might already noticed that the bigger the period is by x, the smaller is the $k$ value - the wave vector .&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="theoretical-background"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Theoretical background&lt;/a&gt;&lt;/h2&gt;
+&lt;img alt="" src="./images/sq/RdfSqExplained.jpg" style="width: 90%;" /&gt;
+&lt;p&gt;Let us look at the Fig. 2.. Visually we can identify periodic structure on the left side and a random structure on the right side. How can one quantify this order?&lt;/p&gt;
+&lt;p&gt;To be able to quantify this order may use Radial Distribution Function(RDF) &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Radial_distribution_function"&gt;RDF&lt;/a&gt; . By now we will define RDF as an average number of atoms on the distance $r$ from a given atom, averaged by all atoms. Later we will define RDF in more rigorous way.&lt;/p&gt;
+&lt;dl class="docutils"&gt;
+&lt;dt&gt;We see a clear periodicity on the plot, which corresponds to the periodicity of the structure. Although Radial Distribution Function seems to provide us with important information about system structure it is still not very convenient to use. Things get even more complicated when we have to periodic structures (structure within other structure) like in the Fig. 3.&lt;/dt&gt;
+&lt;dd&gt;So we are not there yet. We want to be able to identify a periodic structure by just a number, not a function.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;If we recall our Fourier series whenever we had something periodic in distance space we will have a peak in the reciprocal space. And that is what we want - an easy way to track positions of atoms!&lt;/p&gt;
+&lt;p&gt;Now, if we have a structure with two characteristic distances we will be represented by two peaks in the reciprocal space.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/Sq.jpg" style="width: 60%;" /&gt;
+&lt;p&gt;Now lets formulate statements above in a mathematically sound way:&lt;/p&gt;
+&lt;p&gt;If we have a system of atoms with positions $ \mathbf{r}_{j} $, then&lt;/p&gt;
+&lt;p&gt;Radial distribution function $g(r)$:&lt;/p&gt;
+&lt;p&gt;$$g(r) = \frac{V}{N^{2}}\left\langle \sum_{i=1}^{N}\sum_{j\neq i}\delta(\vec{r} - \vec{r}_{ij})\right\rangle \quad\text{with}
+\vec{r}_{ij}:= \vec{r}_{j} - \vec{r}_{i} $$&lt;/p&gt;
+&lt;p&gt;, the static structure factor is defined as:&lt;/p&gt;
+&lt;p&gt;$$ S(\mathbf{q}) = \frac{1}{N} \left | \sum_{j=1}^{N} \mathrm{e}^{-i \mathbf{q} \mathbf{r}_{j}} \right | ^2$$&lt;/p&gt;
+&lt;p&gt;Which is an absolute value of Fourier coefficient squared.
+It can equally expressed the following way:&lt;/p&gt;
+&lt;p&gt;$$  S(\mathbf{q}) = 1 + \frac{1}{N} \left \langle \int_V \mathrm{d} \mathbf{r} \, \mathrm{e}^{-i \mathbf{q} \mathbf{r}} \sum_{i \neq j} \delta \left [ \mathbf{r} - (\mathbf{r}_i - \mathbf{r}_j) \right ] \right \rangle  $$&lt;/p&gt;
+&lt;p&gt;Which is the definition we will work with.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="implementation"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Implementation&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Now several points need to be clarified:&lt;/p&gt;
+&lt;p&gt;To implement the algorithm above we need to figure out how to :&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;to evaluate integral&lt;/li&gt;
+&lt;li&gt;to deal with delta function&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Evaluating integral with exponent would be performing a Fourier transform, therefore we can use tools available for that : FFT - fast fourier transform.&lt;/p&gt;
+&lt;p&gt;Delta function will be considered by binning and histograming our atomic positions $\mathbf{r}_{j}$, which will be demonstrated on 2D example for convenience.&lt;/p&gt;
+&lt;img alt="" src="./images/sq/histogram.jpg" style="width: 100%;" /&gt;
+&lt;p&gt;To start with lets import everything that we will need for our program:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; \&lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;read_parameters&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;read_traj_vmd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;save_plots&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;numpy.fft&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;fftn&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fftshift&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;scipy&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;scipy.integrate&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;quad&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib&lt;/span&gt;
+&lt;span class="n"&gt;matplotlib&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Agg&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Lets define some necessary variables and bin the data:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Universe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;psffile&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;.psf&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;traj&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Ndiv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;201&lt;/span&gt;
+&lt;span class="c"&gt;# create arrays of positions, get the box dimenstions&lt;/span&gt;
+&lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atoms&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt;
+&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;trajectory&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ts&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dimensions&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;length_x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;  &lt;span class="c"&gt;# be careful here&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;length_x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;length_x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;endpoint&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;# binning and histogramming&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edges&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;histogramdd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bins&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;delta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ok, now we are all set to do Fourier Transform and &amp;quot;go&amp;quot; to reciprocal space&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;ftk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fftshift&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fftn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fftshift&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;delta&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;sk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;abs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ftk&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Natoms&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c"&gt;# basis in reciporal space&lt;/span&gt;
+&lt;span class="n"&gt;omega&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pi&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;length_x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;omega&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="n"&gt;omega&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We are almost all set, the only thing is that we need to radially average our data, since we are interested only in the $|q|$&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;C&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;norm_sq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;kmax&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;norm_sq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;kmax&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="sd"&gt;    calculates normk = norm of each vector in grid=|k1,k2,k3|&lt;/span&gt;
+&lt;span class="sd"&gt;    bins in, calculating average sq of each bin&lt;/span&gt;
+&lt;span class="sd"&gt;    output: C[Nbins,3] = binindex, kval = normk, sq&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;normk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k1&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;k1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k2&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;k2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;k3&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;k3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c"&gt;# array to histogram - dk,kmax,Nbins&lt;/span&gt;
+    &lt;span class="n"&gt;Nbins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;dk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;kmax&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Nbins&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;C&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ones&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;Nbins&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ndiv&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;kval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;normk&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="n"&gt;bindex&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;kval&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;dk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;bindex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+                &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;bindex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;kval&lt;/span&gt;
+                &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;bindex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;sk&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;[:,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Special thanks for Amanda Parker.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="MDAnalysis"></category><category term="Python"></category><category term="Analysis"></category></entry><entry><title>Must Know Bash Commands</title><link href="http://www.bazilevs31.github.io/must-know-bash-commands.html" rel="alternate"></link><updated>2015-04-14T23:45:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-14:must-know-bash-commands.html</id><summary type="html">&lt;p&gt;What are tricky bash commands that I consider useful:&lt;/p&gt;
+&lt;div class="contents topic" id="table-of-contents"&gt;
+&lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
+&lt;ul class="auto-toc simple"&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#basic-ls-rm-grep-commands" id="id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic ls, rm, grep commands&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#how-to-find-files" id="id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;How to find files?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#parsing-through-text-files-using-sed-awk" id="id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Parsing through text files using sed/awk&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#aliasing" id="id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Aliasing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference internal" href="#github-basic-commands" id="id5"&gt;5&amp;nbsp;&amp;nbsp;&amp;nbsp;Github basic commands:&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;!-- 1. Basic ls,rm, grep --&gt;
+&lt;!-- 2. find and other --&gt;
+&lt;!-- 3. sed/awk -ing --&gt;
+&lt;!-- 4. miscilanneious --&gt;
+&lt;!-- 5. alias --&gt;
+&lt;div class="section" id="basic-ls-rm-grep-commands"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic ls, rm, grep commands&lt;/a&gt;&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ls file &lt;span class="c"&gt;# does the file exist?&lt;/span&gt;
+ls -l file &lt;span class="c"&gt;# info about file&lt;/span&gt;
+ls -lt  &lt;span class="c"&gt;#  list files in time order with info&lt;/span&gt;
+ls -ltr  &lt;span class="c"&gt;#  list files in reverse time order with info&lt;/span&gt;
+ls -a &lt;span class="c"&gt;# list files including hidden files&lt;/span&gt;
+ls - R &lt;span class="nv"&gt;$ &lt;/span&gt;show &lt;span class="nb"&gt;dirs &lt;/span&gt;and subdirs
+
+rm !&lt;span class="o"&gt;(&lt;/span&gt;u&lt;span class="p"&gt;|&lt;/span&gt;p&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c"&gt;# delete everything but&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Creating a symbolic link:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ln -s original linkname
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Grepping:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;ls &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="c"&gt;# prints something, that matches something&lt;/span&gt;
+less file1 &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="c"&gt;# looks for something in the file&lt;/span&gt;
+grep &lt;span class="s2"&gt;&amp;quot;hi there&amp;quot;&lt;/span&gt; file1 &lt;span class="c"&gt;# look for hi there in the file1&lt;/span&gt;
+ls &lt;span class="p"&gt;|&lt;/span&gt; grep something &lt;span class="p"&gt;|&lt;/span&gt; xargs rm &lt;span class="c"&gt;# removes everything that matches something in the directory&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Grepping &lt;tt class="docutils literal"&gt;str1&lt;/tt&gt; or/and &lt;tt class="docutils literal"&gt;str2&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;egrep -i &lt;span class="s2"&gt;&amp;quot;str1|str2&amp;quot;&lt;/span&gt; file &lt;span class="c"&gt;# str1 or str2&lt;/span&gt;
+egrep -i &lt;span class="s2"&gt;&amp;quot;str1.\*str2&amp;quot;&lt;/span&gt; file &lt;span class="c"&gt;# str1 and str2&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;!-- ################################### --&gt;
+&lt;/div&gt;
+&lt;div class="section" id="how-to-find-files"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id2"&gt;2&amp;nbsp;&amp;nbsp;&amp;nbsp;How to find files?&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Here are a few ways to use find:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find ./ -name &lt;span class="s1"&gt;&amp;#39;name.\*&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;./&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+Start searching from the current directory &lt;span class="o"&gt;(&lt;/span&gt;i.e ./ directory&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;&lt;cite&gt;-name&lt;/cite&gt;&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+Given search text is the filename rather than any other attribute of a file
+&lt;/pre&gt;
+&lt;p&gt;&lt;cite&gt;'name.*'&lt;/cite&gt;&lt;/p&gt;
+&lt;pre class="code bash literal-block"&gt;
+Search text that we have entered. Always enclose the filename in single quotes.. why to &lt;span class="k"&gt;do&lt;/span&gt; this is complex.. so simply &lt;span class="k"&gt;do&lt;/span&gt; so.
+&lt;/pre&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;find /home/david -name &lt;span class="s1"&gt;&amp;#39;index\*&amp;#39;&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;find /home/david -iname &lt;span class="s1"&gt;&amp;#39;index\*&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The 1st command would find files having the letters index as the beginning of the file name. The search would be started in the directory /home/david and carry on within that directory and its subdirectories only.
+The 2nd command would search for the same, but the case of the filename wouldn't be considered. So all files starting with any combination of letters in upper and lower case such as INDEX or indEX or index would be returned.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="parsing-through-text-files-using-sed-awk"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id3"&gt;3&amp;nbsp;&amp;nbsp;&amp;nbsp;Parsing through text files using sed/awk&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;Sed:&lt;/p&gt;
+&lt;p&gt;Replace &lt;tt class="docutils literal"&gt;foo&lt;/tt&gt; with &lt;tt class="docutils literal"&gt;bar&lt;/tt&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed &lt;span class="s1"&gt;&amp;#39;s/foo/bar/&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Replace &lt;tt class="docutils literal"&gt;Word1&lt;/tt&gt; with &lt;tt class="docutils literal"&gt;Word2&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;-n&lt;/span&gt;&lt;/tt&gt; - gets rid of unnecessary stuff&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed -n &lt;span class="s1"&gt;&amp;#39;/Word1/Word2/&amp;#39;&lt;/span&gt; fromfile.txt &amp;gt; newfile.txt
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Deleting lines:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed -i &lt;span class="s1"&gt;&amp;#39;/^\s*$/d&amp;#39;&lt;/span&gt;  fromfile.txt &lt;span class="c"&gt;# delete empty lines fromfile.txt (modifies the file)&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;1d&amp;#39;&lt;/span&gt; filewithfirstline.txt &lt;span class="c"&gt;# deletes first line of a file&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;1i\\&amp;#39;&lt;/span&gt; filewithfirstline.txt &lt;span class="c"&gt;# adds empty first line to file&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;sed -e &lt;span class="s1"&gt;&amp;#39;/^$/d&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$filename&lt;/span&gt;
+&lt;span class="c"&gt;# The -e option causes the next string to be interpreted as an editing instruction.&lt;/span&gt;
+&lt;span class="c"&gt;#  (If passing only a single instruction to sed, the &amp;quot;-e&amp;quot; is optional.)&lt;/span&gt;
+&lt;span class="c"&gt;#  The &amp;quot;strong&amp;quot; quotes (&amp;#39;&amp;#39;) protect the RE characters in the instruction&lt;/span&gt;
+&lt;span class="c"&gt;#+ from reinterpretation as special characters by the body of the script.&lt;/span&gt;
+&lt;span class="c"&gt;# (This reserves RE expansion of the instruction for sed.)&lt;/span&gt;
+&lt;span class="c"&gt;#&lt;/span&gt;
+&lt;span class="c"&gt;# Operates on the text contained in file $filename.&lt;/span&gt;
+
+
+8d  &lt;span class="c"&gt;#Delete 8th line of input.&lt;/span&gt;
+/^&lt;span class="nv"&gt;$/&lt;/span&gt;d   &lt;span class="c"&gt;#Delete all blank lines.&lt;/span&gt;
+1,/^&lt;span class="nv"&gt;$/&lt;/span&gt;d &lt;span class="c"&gt;#Delete from beginning of input up to, and including first blank line.&lt;/span&gt;
+
+/Jones/p  &lt;span class="c"&gt;#  Print only lines containing &amp;quot;Jones&amp;quot; (with -n option).&lt;/span&gt;
+s/Windows/Linux/   &lt;span class="c"&gt;# Substitute &amp;quot;Linux&amp;quot; for first instance of &amp;quot;Windows&amp;quot; found in each input line.&lt;/span&gt;
+s/BSOD/stability/g  &lt;span class="c"&gt;#Substitute &amp;quot;stability&amp;quot; for every instance of &amp;quot;BSOD&amp;quot; found in each input line.&lt;/span&gt;
+
+s/ &lt;span class="se"&gt;\*&lt;/span&gt;&lt;span class="nv"&gt;$/&lt;/span&gt;/ &lt;span class="c"&gt;#Delete all spaces at the end of every line.&lt;/span&gt;
+s/00&lt;span class="se"&gt;\*&lt;/span&gt;/0/g   &lt;span class="c"&gt;#Compress all consecutive sequences of zeroes into a single zero.&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Working on it.&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;1i How far are you along?&amp;#39;&lt;/span&gt;  &lt;span class="c"&gt;#Prints &amp;quot;How far are you along?&amp;quot; as first line, &amp;quot;Working on it&amp;quot; as second.&lt;/span&gt;
+5i &lt;span class="s1"&gt;&amp;#39;Linux is great.&amp;#39;&lt;/span&gt; file.txt   &lt;span class="c"&gt;#Inserts &amp;#39;Linux is great.&amp;#39; at line 5 of the file file.txt.&lt;/span&gt;
+/GUI/d  &lt;span class="c"&gt;#Delete all lines containing &amp;quot;GUI&amp;quot;.&lt;/span&gt;
+s/GUI//g    &lt;span class="c"&gt;#Delete all instances of &amp;quot;GUI&amp;quot;, leaving the remainder of each line intact.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="aliasing"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id4"&gt;4&amp;nbsp;&amp;nbsp;&amp;nbsp;Aliasing&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The &lt;cite&gt;alias&lt;/cite&gt; command makes it possible to launch any command or group of commands (inclusive of any options, arguments and redirection) by entering a pre-set string (i.e., sequence of characters). In other words you find some command that you use a lot, say go to certain directory, or &lt;cite&gt;ssh&lt;/cite&gt; to certain server give it a nickname (alias) and use it.&lt;/p&gt;
+&lt;p&gt;For example I know that I go to certain folder a lot, it has all my libraries in it - &lt;cite&gt;/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt&lt;/cite&gt;
+So I just add the following line to ~/.bashrc (~/bash_profile), source it &lt;cite&gt;source ~/.bashrc&lt;/cite&gt; and use it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nb"&gt;alias &lt;/span&gt;&lt;span class="nv"&gt;createmelt&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;cd ~/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;For now on, whenever I need to go to the &lt;cite&gt;/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt&lt;/cite&gt; directory I use&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;~/blog @ Vasiliys-MacBook-Pro &lt;span class="o"&gt;(&lt;/span&gt;bazilevs&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="nb"&gt;pwd&lt;/span&gt;
+/Users/bazilevs/blog
+
+&lt;span class="nv"&gt;$ &lt;/span&gt;~/blog @ Vasiliys-MacBook-Pro &lt;span class="o"&gt;(&lt;/span&gt;bazilevs&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; createmelt
+
+&lt;span class="nv"&gt;$ &lt;/span&gt;~/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt @ Vasiliys-MacBook-Pro &lt;span class="o"&gt;(&lt;/span&gt;bazilevs&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="nb"&gt;pwd&lt;/span&gt;
+    /Users/bazilevs/Dropbox/Lammps_simulation/my_git_repo/polymer_simulation/CreateMelt
+
+
+&lt;span class="nb"&gt;source&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# very handy tool to go any number of directories up&lt;/span&gt;
+up&lt;span class="o"&gt;(){&lt;/span&gt;
+  &lt;span class="nb"&gt;local &lt;/span&gt;&lt;span class="nv"&gt;d&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+  &lt;span class="nv"&gt;limit&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nv"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; i &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt; limit &lt;span class="p"&gt;;&lt;/span&gt; i++&lt;span class="o"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;do&lt;/span&gt;
+      &lt;span class="nv"&gt;d&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$d&lt;/span&gt;/..
+    &lt;span class="k"&gt;done&lt;/span&gt;
+  &lt;span class="nv"&gt;d&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$d&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;s/^\///&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$d&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    &lt;span class="nv"&gt;d&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;..
+  &lt;span class="k"&gt;fi&lt;/span&gt;
+  &lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$d&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="c"&gt;# very handy tool to extract files&lt;/span&gt;
+extract &lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f &lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nv"&gt;$1&lt;/span&gt; in
+        &lt;span class="se"&gt;\*&lt;/span&gt;.tar.bz2&lt;span class="o"&gt;)&lt;/span&gt;   tar xjf &lt;span class="nv"&gt;$1&lt;/span&gt;     &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.tar.gz&lt;span class="o"&gt;)&lt;/span&gt;    tar xzf &lt;span class="nv"&gt;$1&lt;/span&gt;     &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.bz2&lt;span class="o"&gt;)&lt;/span&gt;       bunzip2 &lt;span class="nv"&gt;$1&lt;/span&gt;     &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.rar&lt;span class="o"&gt;)&lt;/span&gt;       unrar e &lt;span class="nv"&gt;$1&lt;/span&gt;     &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.gz&lt;span class="o"&gt;)&lt;/span&gt;        gunzip &lt;span class="nv"&gt;$1&lt;/span&gt;      &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.tar&lt;span class="o"&gt;)&lt;/span&gt;       tar xf &lt;span class="nv"&gt;$1&lt;/span&gt;      &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.tbz2&lt;span class="o"&gt;)&lt;/span&gt;      tar xjf &lt;span class="nv"&gt;$1&lt;/span&gt;     &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.tgz&lt;span class="o"&gt;)&lt;/span&gt;       tar xzf &lt;span class="nv"&gt;$1&lt;/span&gt;     &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.zip&lt;span class="o"&gt;)&lt;/span&gt;       unzip &lt;span class="nv"&gt;$1&lt;/span&gt;       &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.Z&lt;span class="o"&gt;)&lt;/span&gt;         uncompress &lt;span class="nv"&gt;$1&lt;/span&gt;  &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;.7z&lt;span class="o"&gt;)&lt;/span&gt;        7z x &lt;span class="nv"&gt;$1&lt;/span&gt;        &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="se"&gt;\*&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;     &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39; cannot be extracted via extract()&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt;
+         &lt;span class="k"&gt;esac&lt;/span&gt;
+     &lt;span class="k"&gt;else&lt;/span&gt;
+         &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39; is not a valid file&amp;quot;&lt;/span&gt;
+     &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="github-basic-commands"&gt;
+&lt;h2&gt;&lt;a class="toc-backref" href="#id5"&gt;5&amp;nbsp;&amp;nbsp;&amp;nbsp;Github basic commands:&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;I assume one does have a working account, then everything is pretty straightforward:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#initialize this directory to be github directory&lt;/span&gt;
+git init .
+&lt;span class="c"&gt;# when you have files to push&lt;/span&gt;
+git add .
+&lt;span class="c"&gt;# adding information on the commit&lt;/span&gt;
+git commit -m &lt;span class="s2"&gt;&amp;quot;i added a lot of stuff&amp;quot;&lt;/span&gt;
+git push origin master
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When you are cloning a directory that it gets initialized automatically.&lt;/p&gt;
+&lt;/div&gt;
+</summary><category term="Bash"></category><category term="Software"></category></entry><entry><title>Accelerating Python</title><link href="http://www.bazilevs31.github.io/accelerating-python.html" rel="alternate"></link><updated>2015-04-14T22:05:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-14:accelerating-python.html</id><summary type="html">&lt;p&gt;Python is great, Python is easy to learn, easy to write in, but sometimes we need our code to run fast. This is where pure Python falls short. Just as many other languages with dynamical variable typing - it is very slow. For example consider this code snippet:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10000&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;For every loop Python analyzes the type of i, sets a new variable a of i.
+This is where such languages as C or Fortran come handy, they are arguably the fastest languages in the game today.
+Luckily there are several ways of improving performance of our Python code:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;Numpy&lt;/li&gt;
+&lt;li&gt;Cython&lt;/li&gt;
+&lt;li&gt;ff2&lt;/li&gt;
+&lt;li&gt;Numba&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Numpy - &lt;a class="citation-reference" href="#numpy" id="id1"&gt;[numpy]&lt;/a&gt; - is an extension to the Python programming language, adding support for large, multi-dimensional arrays and matrices, along with a large library of high-level mathematical functions to operate on these arrays. Basically, people tried to make Python a scientific language, to do that you need to be Matlab-like, i.e focus on arrays as your main structure in the code. That was done in &lt;cite&gt;Numpy&lt;/cite&gt;. It is a key library to all scientific programming on Python.&lt;/p&gt;
+&lt;p&gt;&lt;a class="citation-reference" href="#cython" id="id2"&gt;[cython]&lt;/a&gt; -  is an optimising static compiler for both the Python programming language and the extended Cython programming language (based on Pyrex). It makes writing C extensions for Python as easy as Python itself. In other words you find something very slow in your code(a bottleneck) write a something that looks like Python and C at the same time, compile it and use it in your code. This time your bottleneck will(supposedly) run very fast.&lt;/p&gt;
+&lt;p&gt;f2py (&lt;a class="citation-reference" href="#fortran" id="id3"&gt;[fortran]&lt;/a&gt;) - is a project which aims to provide a connection between Python and Fortran languages. The idea is similar to Cython, but the connection is done with Fortran.&lt;/p&gt;
+&lt;p&gt;Finally, if you are a lazy person just like me, you may want to try &lt;a class="citation-reference" href="#numba" id="id4"&gt;[numba]&lt;/a&gt;. If you recally the example in the begging of this page where Python was dynamicaly setting type &lt;cite&gt;int&lt;/cite&gt; to variable &lt;cite&gt;a&lt;/cite&gt;. You find slow parts in your code, put them into function, add numba directive &lt;cite&gt;&amp;#64;jit&lt;/cite&gt; and run your program. Numba takes care of the rest. Sounds good eh?
+Lets have a closer look on it:&lt;/p&gt;
+&lt;p&gt;The most frequent code snippet used to demonstrate numba is this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;pairwise_python&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;M&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;empty&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;dtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;float&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt; \&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;
+            &lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt;
+&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;timeit&lt;/span&gt; &lt;span class="n"&gt;pairwise_python&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;13.4&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Now if we add a &lt;cite&gt;&amp;#64;autojit&lt;/cite&gt; Numba directive to the top:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;numba&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;double&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;numba.decorators&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;jit&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;autojit&lt;/span&gt;
+
+&lt;span class="n"&gt;pairwise_numba&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;autojit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pairwise_python&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;timeit&lt;/span&gt; &lt;span class="n"&gt;pairwise_numba&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;pre class="code python literal-block"&gt;
+&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;loops&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;9.12&lt;/span&gt; &lt;span class="n"&gt;ms&lt;/span&gt; &lt;span class="n"&gt;per&lt;/span&gt; &lt;span class="n"&gt;loop&lt;/span&gt;
+&lt;/pre&gt;
+&lt;p&gt;Impressive isn't it? Now lets take an interesting problem for Molecular Simulation and write a program using Numba library.
+Calculating g(r) - Radial Distribution Function &lt;a class="citation-reference" href="#rdf" id="id5"&gt;[rdf]&lt;/a&gt; .&lt;/p&gt;
+&lt;img alt="" src="./images/rdf_atoms.jpeg" style="width: 200pt;" /&gt;
+&lt;img alt="" src="./images/rdf.png" style="width: 330pt;" /&gt;
+&lt;!-- Radial Distribution Function Explanation --&gt;
+&lt;!-- Radial Distribution Function --&gt;
+&lt;p&gt;In order to analyze the structure of a solid or fluid one often looks
+at the radial pair distribution function (&lt;cite&gt;RDF&lt;/cite&gt;)&lt;/p&gt;
+&lt;div class="math"&gt;
+\begin{equation*}
+g(r) = \frac{V}{N^{2}}\left\langle \sum_{i=1}^{N}\sum_{j\neq i}\delta(\vec{r} - \vec{r}_{ij})\right\rangle \quad\text{with}\vec{r}_{ij}:= \vec{r}_{j} - \vec{r}_{i}$
+\end{equation*}
+&lt;/div&gt;
+&lt;p&gt;What this really means is that $g(r)dr$ is the number of atoms at
+distance $r$ from one arbitrary atom in a thin shell of thickness
+$dr$, relative to the number at the same distance in an ideal gas at the
+same (constant!) density&lt;/p&gt;
+&lt;p&gt;So lets write the algorithm for the program:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;loop over all atoms&lt;/li&gt;
+&lt;li&gt;for ever atoms loop over the rest&lt;/li&gt;
+&lt;li&gt;get the distance(consider pbc) histogramm it&lt;/li&gt;
+&lt;li&gt;normalize the histogramm so the r-&amp;gt;inf it -&amp;gt; 1.0&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Purpose: Calculate radial distribution function  using Python and Numba library&lt;/span&gt;
+&lt;span class="c"&gt;# Author:  Triandafilidi Vasiliy , MSc student at CHBE UBC, Vancouver&lt;/span&gt;
+&lt;span class="c"&gt;# e-mail:  vtriandafilidi(at)chbe(dot)ubc(dot)ca&lt;/span&gt;
+&lt;span class="c"&gt;# Syntax:  python  python_numba_rdf.py&lt;/span&gt;
+&lt;span class="c"&gt;# Requires: poly.psf poly.pdb, numba library&lt;/span&gt;
+
+&lt;span class="c"&gt;# Theory:&lt;/span&gt;
+&lt;span class="c"&gt;# http:\//en.wikipedia.org/wiki/Radial_distribution_function&lt;/span&gt;
+&lt;span class="c"&gt;#&lt;/span&gt;
+&lt;span class="c"&gt;#&lt;/span&gt;
+&lt;span class="c"&gt;# Copyright (c) 2014 Vasiliy Triandafilidi&lt;/span&gt;
+&lt;span class="c"&gt;# Released under the GNU Public Licence, v2 or any higher version&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;numba&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;jit&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;autojit&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;njit&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;math&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; \&lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+
+&lt;span class="nd"&gt;@jit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;f8(f8)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;nopython&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;CUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mf"&gt;3.&lt;/span&gt;
+
+
+&lt;span class="c"&gt;#loop over all atoms&lt;/span&gt;
+&lt;span class="c"&gt;#for ever atoms loop over the rest&lt;/span&gt;
+&lt;span class="c"&gt;#get the distance(consider pbc) histogramm it&lt;/span&gt;
+&lt;span class="nd"&gt;@jit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;void(float32[:,:],float32[:],float32,float32,float32)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;nopython&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;pairwise_python&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;smax&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;M&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;nbins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;smax&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c"&gt;# print &amp;quot; atom &amp;quot; , i&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;M&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;
+            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+                &lt;span class="n"&gt;tmp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numbatrunc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tmp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt; \&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;tmp&lt;/span&gt;
+            &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;smax&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;g&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mf"&gt;2.0&lt;/span&gt;
+
+
+&lt;span class="c"&gt;#normalize the histogramm so the r-&amp;gt;inf it -&amp;gt; 1.0&lt;/span&gt;
+&lt;span class="nd"&gt;@jit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;void(float32[:],float32,float32,int32)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;nopython&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;normalise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="c"&gt;# pairs = float(N)\*(float(N)-1.0)/float(2)&lt;/span&gt;
+    &lt;span class="n"&gt;pairs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;factor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;4.&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;3.&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pi&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pairs&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;density&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;/=&lt;/span&gt; &lt;span class="n"&gt;factor&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;CUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;\&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;CUB&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Universe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;poly.psf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;poly.pdb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;selectAtoms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;all&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;aa&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;positions&lt;/span&gt;
+&lt;span class="n"&gt;box&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;universe&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dimensions&lt;/span&gt;&lt;span class="p"&gt;[:&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;L&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;smax&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;10.0&lt;/span&gt;
+&lt;span class="n"&gt;db&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;
+&lt;span class="n"&gt;nbins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;smax&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;zeros&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nbins&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dtype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;float32&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;bins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;smax&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;nbins&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pairwise_python&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aa&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;smax&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aa&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;normalise&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;L&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;table class="docutils citation" frame="void" id="rdf" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id5"&gt;[rdf]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;RDF: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Radial_distribution_function"&gt;http://en.wikipedia.org/wiki/Radial_distribution_function&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="numba" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id4"&gt;[numba]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Numba: &lt;a class="reference external" href="http://numba.pydata.org/"&gt;http://numba.pydata.org/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="fortran" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[fortran]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Fortran: &lt;a class="reference external" href="http://docs.scipy.org/doc/numpy-dev/f2py/"&gt;http://docs.scipy.org/doc/numpy-dev/f2py/&lt;/a&gt;, &lt;a class="reference external" href="https://github.com/thehackerwithin/PyTrieste/wiki/F2Py"&gt;https://github.com/thehackerwithin/PyTrieste/wiki/F2Py&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="cython" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[cython]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Cython: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Cython"&gt;http://en.wikipedia.org/wiki/Cython&lt;/a&gt;, &lt;a class="reference external" href="http://cython.org/#about"&gt;http://cython.org/#about&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="numpy" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id1"&gt;[numpy]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Numpy: &lt;a class="reference external" href="http://www.numpy.org/"&gt;http://www.numpy.org/&lt;/a&gt;, &lt;a class="reference external" href="http://en.wikipedia.org/wiki/NumPy"&gt;http://en.wikipedia.org/wiki/NumPy&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+    
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="Python"></category><category term="MDAnalysis"></category><category term="Perfomance"></category><category term="Analysis"></category></entry><entry><title>Calculate Persistence Length</title><link href="http://www.bazilevs31.github.io/calculate-persistance-length.html" rel="alternate"></link><updated>2015-04-13T15:23:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-13:calculate-persistance-length.html</id><summary type="html">&lt;div class="section" id="what-do-we-want-to-calculate"&gt;
 &lt;h2&gt;What do we want to calculate?&lt;/h2&gt;
 &lt;p&gt;Bond correlation function:&lt;/p&gt;
 &lt;div class="math"&gt;
@@ -111,7 +646,44 @@ time = 101
 &lt;p&gt;As we can  see at $n=11$ our green dots start being different than
 the red curve(the fitting curve), therefore the persistance length : $l_p = n*l_0 = 11*1.3 A$.&lt;/p&gt;
 &lt;/div&gt;
-</summary><category term="MDAnalysis"></category><category term="Python"></category><category term="Analysis"></category></entry><entry><title>Using_vmd</title><link href="/using_vmd.html" rel="alternate"></link><updated>2015-04-09T16:40:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-09:using_vmd.html</id><summary type="html">&lt;div class="section" id="you-have-run-your-simulation-now-what"&gt;
+&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+    
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="MDAnalysis"></category><category term="Python"></category><category term="Analysis"></category></entry><entry><title>Using_vmd</title><link href="http://www.bazilevs31.github.io/using_vmd.html" rel="alternate"></link><updated>2015-04-09T16:40:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-09:using_vmd.html</id><summary type="html">&lt;div class="section" id="you-have-run-your-simulation-now-what"&gt;
 &lt;h2&gt;You have run your simulation. Now what?&lt;/h2&gt;
 &lt;p&gt;So after you managed to get your trajectories from Lammps, or other Simulation packages its time to create nice vizualizations.
 In this blog entry I will cover how do I use VMD and Lammps together.&lt;/p&gt;
@@ -127,9 +699,9 @@ In this blog entry I will cover how do I use VMD and Lammps together.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="vizualizing-your-trajectory"&gt;
 &lt;h2&gt;Vizualizing your trajectory:&lt;/h2&gt;
-&lt;img alt="" src="./images/polymer_amor.png" style="width: 200pt;" /&gt;
-&lt;img alt="" src="./images/polymer100.png" style="width: 200pt;" /&gt;
-&lt;img alt="" src="./images/polymer_cryst.png" style="width: 200pt;" /&gt;
+&lt;img alt="" src="./images/using_vmd/polymer_amor.png" style="width: 200pt;" /&gt;
+&lt;img alt="" src="./images/using_vmd/polymer100.png" style="width: 200pt;" /&gt;
+&lt;img alt="" src="./images/using_vmd/polymer_cryst.png" style="width: 200pt;" /&gt;
 &lt;p&gt;To visualize your trajectory one needs to give VMD information about bonds in the system, by providing VMD with .psf files, i.e bond information files.
 Here comes handy the .data file: traj.data and &lt;a class="citation-reference" href="#topotools" id="id3"&gt;[topotools]&lt;/a&gt; :&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;topo&lt;/span&gt; readlammpsdata traj.data molecular
@@ -267,7 +839,7 @@ optional arguments:
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</summary><category term="VMD"></category><category term="Python"></category><category term="Lammps"></category><category term="Software"></category></entry><entry><title>MDAnalysis_advanced</title><link href="/mdanalysis_advanced.html" rel="alternate"></link><updated>2015-04-08T14:53:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-08:mdanalysis_advanced.html</id><summary type="html">&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
+</summary><category term="VMD"></category><category term="Python"></category><category term="Lammps"></category><category term="Software"></category></entry><entry><title>MDAnalysis_advanced</title><link href="http://www.bazilevs31.github.io/mdanalysis_advanced.html" rel="alternate"></link><updated>2015-04-08T14:53:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-08:mdanalysis_advanced.html</id><summary type="html">&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
@@ -474,7 +1046,44 @@ regular xscale
 &lt;/pre&gt;
 &lt;img alt="" src="./images/output_20_1.png" /&gt;
 &lt;/div&gt;
-</summary><category term="mdanalysis"></category><category term="Python"></category><category term="Analysis"></category></entry><entry><title>installing_soft</title><link href="/installing_soft.html" rel="alternate"></link><updated>2015-04-08T13:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-08:installing_soft.html</id><summary type="html">&lt;div class="section" id="what-do-we-need"&gt;
+&lt;script type='text/javascript'&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+    
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="mdanalysis"></category><category term="Python"></category><category term="Analysis"></category></entry><entry><title>installing_soft</title><link href="http://www.bazilevs31.github.io/installing_soft.html" rel="alternate"></link><updated>2015-04-08T13:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-08:installing_soft.html</id><summary type="html">&lt;div class="section" id="what-do-we-need"&gt;
 &lt;h2&gt;What do we need?&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
 &lt;p&gt;In order to do Molecular Dynamics one needs to install essential software.&lt;/p&gt;
@@ -579,7 +1188,7 @@ We just need &lt;cite&gt;vim configure&lt;/cite&gt;, and change &lt;cite&gt;home
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</summary><category term="Lammps"></category><category term="VMD"></category><category term="MDAnalysis"></category><category term="Software"></category><category term="Python"></category></entry><entry><title>Create_melt</title><link href="/create_melt.html" rel="alternate"></link><updated>2015-04-05T17:03:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:create_melt.html</id><summary type="html">&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
+</summary><category term="Lammps"></category><category term="VMD"></category><category term="MDAnalysis"></category><category term="Software"></category><category term="Python"></category></entry><entry><title>Create_melt</title><link href="http://www.bazilevs31.github.io/create_melt.html" rel="alternate"></link><updated>2015-04-05T17:03:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-05:create_melt.html</id><summary type="html">&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
 &lt;p&gt;Creating data files for polymer systems appears to be a daunting task.
 The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
@@ -620,7 +1229,7 @@ The process of creating a data file includes three stages. One of possible ways 
    &lt;span class="mi"&gt;0&lt;/span&gt;  &lt;span class="n"&gt;impropers&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</summary><category term="Lammps"></category><category term="Simulation"></category></entry><entry><title>Equilibrate_melt</title><link href="/equilibrate_melt.html" rel="alternate"></link><updated>2015-04-05T16:57:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:equilibrate_melt.html</id><summary type="html">&lt;div class="contents topic" id="table-of-contents"&gt;
+</summary><category term="Lammps"></category><category term="Simulation"></category></entry><entry><title>Equilibrate_melt</title><link href="http://www.bazilevs31.github.io/equilibrate_melt.html" rel="alternate"></link><updated>2015-04-05T16:57:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-05:equilibrate_melt.html</id><summary type="html">&lt;div class="contents topic" id="table-of-contents"&gt;
 &lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
 &lt;ul class="auto-toc simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#quantifying-equilibration" id="id4"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Quantifying equilibration:&lt;/a&gt;&lt;/li&gt;
@@ -839,12 +1448,13 @@ One of them is &lt;a class="citation-reference" href="#auhl" id="id1"&gt;[auhl]&
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</summary><category term="Lammps"></category><category term="Equilibration"></category><category term="Simulation"></category></entry><entry><title>Lammps_intro</title><link href="/lammps_intro.html" rel="alternate"></link><updated>2015-04-05T16:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:lammps_intro.html</id><summary type="html">&lt;p&gt;Running simulations in Lammps. In this section we will create a group of atoms
+</summary><category term="Lammps"></category><category term="Equilibration"></category><category term="Simulation"></category></entry><entry><title>Lammps_intro</title><link href="http://www.bazilevs31.github.io/lammps_intro.html" rel="alternate"></link><updated>2015-04-05T16:54:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:www.bazilevs31.github.io,2015-04-05:lammps_intro.html</id><summary type="html">&lt;p&gt;Running simulations in Lammps. In this section we will create a group of atoms
 and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 3d Lennard-Jones melt&lt;/span&gt;
 &lt;span class="n"&gt;units&lt;/span&gt;       &lt;span class="n"&gt;real&lt;/span&gt;
 &lt;span class="c1"&gt;#Angstroms, T kelvins,&lt;/span&gt;
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;source&lt;/span&gt;
 &lt;span class="n"&gt;boundary&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;
 &lt;span class="c1"&gt;#periodic boundary conds&lt;/span&gt;
 
@@ -856,30 +1466,30 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;span class="n"&gt;create_box&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;
 &lt;span class="n"&gt;create_atoms&lt;/span&gt;    &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;
 &lt;span class="n"&gt;mass&lt;/span&gt;        &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;20.0&lt;/span&gt;
-
-&lt;span class="c1"&gt;#potential&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Specifying pair potential that we are using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;#potential&lt;/span&gt;
 &lt;span class="n"&gt;pair_style&lt;/span&gt;  &lt;span class="n"&gt;lj&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;cut&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
 &lt;span class="n"&gt;pair_coeff&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="mf"&gt;0.11&lt;/span&gt; &lt;span class="mf"&gt;4.11&lt;/span&gt; &lt;span class="mf"&gt;10.5&lt;/span&gt;
-
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;#assigning random velocties to diffrent atoms&lt;/span&gt;
 &lt;span class="n"&gt;velocity&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="mf"&gt;273.3&lt;/span&gt; &lt;span class="mi"&gt;50007878&lt;/span&gt;
 
-&lt;span class="c1"&gt;# neighbor  0.3 bin&lt;/span&gt;
-&lt;span class="c1"&gt;# neigh_modify  every 20 delay 0 check no&lt;/span&gt;
+&lt;span class="n"&gt;neighbor&lt;/span&gt;  &lt;span class="mf"&gt;0.3&lt;/span&gt; &lt;span class="n"&gt;bin&lt;/span&gt;
+&lt;span class="n"&gt;neigh_modify&lt;/span&gt;  &lt;span class="n"&gt;every&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt; &lt;span class="n"&gt;delay&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;check&lt;/span&gt; &lt;span class="nb"&gt;no&lt;/span&gt;
+
+&lt;span class="c1"&gt;#how often we want to dump thermodynamic output&lt;/span&gt;
 &lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
-&lt;span class="c1"&gt;#how often we want to dump list&lt;/span&gt;
 
-&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;
-&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;
-&lt;span class="n"&gt;unfix&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;
-
+&lt;span class="c1"&gt;#how often we want to dump coordinates&lt;/span&gt;
 &lt;span class="nb"&gt;dump&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt; &lt;span class="nb"&gt;dump&lt;/span&gt;&lt;span class="o"&gt;.*.&lt;/span&gt;&lt;span class="n"&gt;cfg&lt;/span&gt; &lt;span class="n"&gt;mass&lt;/span&gt; &lt;span class="n"&gt;type&lt;/span&gt; &lt;span class="n"&gt;xs&lt;/span&gt; &lt;span class="n"&gt;ys&lt;/span&gt; &lt;span class="n"&gt;zs&lt;/span&gt;
-&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
-
-&lt;span class="n"&gt;thermo&lt;/span&gt;      &lt;span class="mi"&gt;50&lt;/span&gt;
-&lt;span class="n"&gt;run&lt;/span&gt;     &lt;span class="mi"&gt;10000&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Specifying what type of &lt;tt class="docutils literal"&gt;fix&lt;/tt&gt; we are using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;fix&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;nve&lt;/span&gt;
+&lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;
 &lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;How to run a simulation from a saved snapshot:&lt;/p&gt;
+&lt;p&gt;How to run a simulation from a saved data file as initial coordinates input file, and dump trajectory for further visualization&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;    &lt;span class="c1"&gt;#LAMMPS&lt;/span&gt;
 &lt;span class="n"&gt;units&lt;/span&gt; &lt;span class="n"&gt;real&lt;/span&gt;
 &lt;span class="n"&gt;boundary&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;
@@ -896,7 +1506,7 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;span class="c1"&gt;# list thermodynamic output every 100 steps&lt;/span&gt;
 &lt;span class="n"&gt;thermo&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
 
-&lt;span class="c1"&gt;# dump images that would be vizualized by the AtomEye program&lt;/span&gt;
+&lt;span class="c1"&gt;# dump images that would be visualized by the AtomEye program&lt;/span&gt;
 &lt;span class="c1"&gt;# They all have cfg format&lt;/span&gt;
 &lt;span class="c1"&gt;# 1 is a name of our dump&lt;/span&gt;
 &lt;span class="c1"&gt;# all - is that we dump all atoms&lt;/span&gt;
@@ -914,228 +1524,4 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
 &lt;span class="c1"&gt;# initial - &amp;gt; result.data -&amp;gt; result2.data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</summary><category term="Lammps"></category><category term="Simulation"></category></entry><entry><title>bash_intro</title><link href="/bash_intro.html" rel="alternate"></link><updated>2015-04-05T16:31:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:bash_intro.html</id><summary type="html">&lt;div class="section" id="how-to-work-in-unix-bash"&gt;
-&lt;h2&gt;How to work in Unix Bash&lt;/h2&gt;
-&lt;p&gt;--&lt;/p&gt;
-&lt;p&gt;Imagine you have 10 files with two columns of data in each file. You want to load them and take an average of all second columns. Sounds like an easy Excell program. But it is not. When you have not 10 but 10 000 files, it will take ages for Excell to load them, also Excell is not free and is not installed everywhere. Fortunatelly there is an amazing tool that you may use : Bash shell. It is available by default in Linux/Mac OS , it can be installed via CygWin on Windows machine. It takes a couple of hours to learn, couple of days/weeks to master, and it will save you couple of years in future. Interested? So lets get started …&lt;/p&gt;
-&lt;p&gt;Plan:&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;What we need to know&lt;/li&gt;
-&lt;li&gt;Elementary operations&lt;/li&gt;
-&lt;li&gt;Secrets of mastering bash&lt;/li&gt;
-&lt;li&gt;Useful links&lt;/li&gt;
-&lt;li&gt;Here is how the linux console looks on Ubuntu 14.04&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="section" id="elementary-introduction"&gt;
-&lt;h3&gt;Elementary Introduction&lt;/h3&gt;
-&lt;p&gt;==&lt;/p&gt;
-&lt;p&gt;In a nutshell we see computer memmory as a bunch of files and folders. When we use computer in our daily routine we navigate between different files and folders. Even when we surf the web we navigate between webpages which are the files on remote servers.
-So the most “intersting” command would be ls&lt;/p&gt;
-&lt;ol class="arabic simple"&gt;
-&lt;li&gt;List all files and folders&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ls
-    empty_file1  empty_folder1
-    Here empty_folder1 is a directory, and empty_file1 is a text file.
-&lt;/pre&gt;&lt;/div&gt;
-&lt;ol class="arabic simple" start="2"&gt;
-&lt;li&gt;Navigate to directory&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;empty_folder1
-Now we are in empty_folder1 directory. To &lt;span class="nb"&gt;test &lt;/span&gt;that we use
-&lt;/pre&gt;&lt;/div&gt;
-&lt;ol class="arabic simple" start="3"&gt;
-&lt;li&gt;Show current directory&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;
-/home/vasiliy/tests
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;To navigate back in the parent directory we use cd ..
-Now lets use this 4 commands together&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;vasiliy@vasiliy-office:~/tests/empty_folder1&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;
-/home/vasiliy/tests/empty_folder1
-vasiliy@vasiliy-office:~/tests/empty_folder1&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ..
-vasiliy@vasiliy-office:~/tests&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;
-/home/vasiliy/tests
-vasiliy@vasiliy-office:~/tests&lt;span class="nv"&gt;$ &lt;/span&gt;ls
-empty_file1  empty_folder1
-vasiliy@vasiliy-office:~/tests&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;empty_folder1/
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;To create a file we may use any text editor we like. I myself am a big fan of Sublime-Text.. To copy file &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; to &lt;tt class="docutils literal"&gt;file2&lt;/tt&gt; we use cp &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; &lt;tt class="docutils literal"&gt;file2&lt;/tt&gt; command. To remove files we use rm filename command. To create an empty directory we use mkdir mynewcooldirectory.&lt;/p&gt;
-&lt;ol class="arabic simple" start="4"&gt;
-&lt;li&gt;Creating/Copying/Removing files&lt;/li&gt;
-&lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ls
-&lt;span class="nv"&gt;$ &lt;/span&gt;subl empty_file2 &lt;span class="c"&gt;# edit file and save it&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;ls
-empty_file2
-&lt;span class="nv"&gt;$ &lt;/span&gt;cp empty_file2 empty_file2_copy
-&lt;span class="nv"&gt;$ &lt;/span&gt;ls
-empty_file2 empty_file2_copy
-&lt;span class="nv"&gt;$ &lt;/span&gt;rm empty_file2_copy &lt;span class="c"&gt;#delete the copy file&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;ls
-empty_file2
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;If we want to rename file, we could copy it and consequently remove it, or use a move mv &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; &lt;tt class="docutils literal"&gt;file2&lt;/tt&gt; command which combines this procedures.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="must-know-commands"&gt;
-&lt;h3&gt;Must-know commands&lt;/h3&gt;
-&lt;p&gt;==&lt;/p&gt;
-&lt;p&gt;So here is a little cheat sheet of required operations:&lt;/p&gt;
-&lt;ol class="arabic simple"&gt;
-&lt;li&gt;LiSt files and folders ls&lt;/li&gt;
-&lt;li&gt;Current directory pwd&lt;/li&gt;
-&lt;li&gt;Navigate to directory(ChangeDirectory) cd foldername, cd ..&lt;/li&gt;
-&lt;li&gt;CoPy/MoVe/ReMove files &lt;tt class="docutils literal"&gt;cp file1 file2&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;mv file1 file2&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;rm file1&lt;/tt&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;/div&gt;
-&lt;div class="section" id="a-project"&gt;
-&lt;h3&gt;A Project&lt;/h3&gt;
-&lt;p&gt;==&lt;/p&gt;
-&lt;p&gt;Problem:&lt;/p&gt;
-&lt;p&gt;Create a binary bash script(a file that can be executed by linux shell) that:&lt;/p&gt;
-&lt;ol class="arabic simple"&gt;
-&lt;li&gt;lists all files in the directory&lt;/li&gt;
-&lt;li&gt;creates a set of files file1, file2, file3, … file10&lt;/li&gt;
-&lt;li&gt;copies file1 to file1_copy, list all files&lt;/li&gt;
-&lt;li&gt;removes file1, list all files&lt;/li&gt;
-&lt;li&gt;removes all files in the directory&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Additional information:&lt;/p&gt;
-&lt;p&gt;The files on computer are of two types human-readable - ASCII, and computer readable - binary. We (humans:)) can’t understand computer code because it is all 1s and 0s, at the same time computers can’t understand ASCII files unless we explain them how to transfer ASCII files into binary ones.
-To create dummy empty file one may use touch &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; command.
-To create a executable file we use: &lt;tt class="docutils literal"&gt;chmod +x bashscript.sh&lt;/tt&gt;, to delete all files in the directory we use &lt;tt class="docutils literal"&gt;*&lt;/tt&gt; wildcard so to delete all files it will be &lt;tt class="docutils literal"&gt;rm *.&lt;/tt&gt; But be very careful because it will delete all files in directory even some that you may need in future.&lt;/p&gt;
-&lt;p&gt;algorithm:&lt;/p&gt;
-&lt;ol class="arabic simple"&gt;
-&lt;li&gt;list all files in the directory ls&lt;/li&gt;
-&lt;li&gt;create a list with for command&lt;/li&gt;
-&lt;li&gt;&lt;tt class="docutils literal"&gt;cp file1 file1_copy&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;ls&lt;/tt&gt;&lt;/li&gt;
-&lt;li&gt;&lt;tt class="docutils literal"&gt;rm file1&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;ls&lt;/tt&gt;&lt;/li&gt;
-&lt;li&gt;delete all files in the directory &lt;tt class="docutils literal"&gt;rm *&lt;/tt&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Solution:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;listing the files in the directory&amp;quot;&lt;/span&gt; &lt;span class="c"&gt;# use echo command to print information in the terminal&lt;/span&gt;
-ls
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;starting the loop&amp;quot;&lt;/span&gt;
-&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 1&lt;span class="p"&gt;;&lt;/span&gt; i &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt; 10&lt;span class="p"&gt;;&lt;/span&gt; i++ &lt;span class="o"&gt;))&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;doing loop on iteration # = &lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-    touch file&lt;span class="nv"&gt;$i&lt;/span&gt;
-&lt;span class="k"&gt;done&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;done with the loop&amp;quot;&lt;/span&gt;
-ls
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;copy ``file1`` in file1_copy&amp;quot;&lt;/span&gt;
-cp file1 file1_copy
-ls
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;remove file1&amp;quot;&lt;/span&gt;
-rm file1
-ls
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;OUTPUT:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$~&lt;/span&gt;/tests&lt;span class="nv"&gt;$ &lt;/span&gt;bash simple_prog.sh
-listing the files in the directory
-simple_prog.sh
-starting the loop
-doing loop on iteration &lt;span class="c"&gt;# = 1&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 2&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 3&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 4&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 5&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 6&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 7&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 8&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 9&lt;/span&gt;
-doing loop on iteration &lt;span class="c"&gt;# = 10&lt;/span&gt;
-&lt;span class="k"&gt;done&lt;/span&gt; with the loop
-file1  file10  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
-copy file1 in file1_copy
-file1  file10  file1_copy  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
-remove file1
-file10  file1_copy  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;If we change the mode to executable &lt;tt class="docutils literal"&gt;chmod +x simple_prog.sh&lt;/tt&gt;,
-then we may run the program the following way &lt;tt class="docutils literal"&gt;./simple_prog.sh&lt;/tt&gt;&lt;/p&gt;
-&lt;p&gt;Secrets of mastering Bash&lt;/p&gt;
-&lt;p&gt;There is only one secret of becoming good with bash - practice, you may need to spend a little bit of energy now, but it will save you tons of time in the future.&lt;/p&gt;
-&lt;p&gt;Useful links&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</summary><category term="bash"></category><category term="Analysis"></category></entry><entry><title>Introduction</title><link href="/introduction.html" rel="alternate"></link><updated>2015-04-05T15:08:00-07:00</updated><author><name>Vasiliy Triandafilidi</name></author><id>tag:,2015-04-05:introduction.html</id><summary type="html">&lt;div class="section" id="about-me"&gt;
-&lt;h2&gt;About me&lt;/h2&gt;
-&lt;p&gt;--&lt;/p&gt;
-&lt;!-- .. figure:: ~/blog/images/me.jpg --&gt;
-&lt;!-- :height: 100px --&gt;
-&lt;!-- :width: 100 px --&gt;
-&lt;!-- :scale: 400 % --&gt;
-&lt;!-- :alt: alternate text --&gt;
-&lt;!-- :align: center --&gt;
-&lt;!-- Its me --&gt;
-&lt;p&gt;Hi, my name is Vasiliy Triandafilidi. I am a 2nd year Ms student at University of British Columbia working in Prof. Savvas Hatzikiriakos' lab &lt;a class="citation-reference" href="#lab" id="id1"&gt;[lab]&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;In my research I focus on investigating properties of matter using Method of Molecular Dynamics &lt;a class="citation-reference" href="#md" id="id2"&gt;[md]&lt;/a&gt;
-Unlike many other methods of simulation, where people try to find how can they make equations more difficult so we have an equation that can predict more stuff, Molecular Dynamics focuses on one equation: Newtons equations of motion.&lt;/p&gt;
-&lt;p&gt;By solving numerically Newtons equations of motion for
-each atom explicitely we obtain a trajectory of every atom in the system, for every timestep. This alone can provide a visual insight on the world that could not be seen by any tool explicitely.
-But method of MD allows us to calculate a thermodynamically averaged parameters, such as Temperature, Pressure, Density ...&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="tools"&gt;
-&lt;h2&gt;Tools:&lt;/h2&gt;
-&lt;p&gt;To do Molecular Dynamics simulation I use open source code &lt;a class="citation-reference" href="#lammps" id="id3"&gt;[lammps]&lt;/a&gt; , to analyze trajectories I use a powerful Python
-based package &lt;a class="citation-reference" href="#mdanalysis" id="id4"&gt;[mdanalysis]&lt;/a&gt; , to vizualize my results I use &lt;a class="citation-reference" href="#vmd" id="id5"&gt;[vmd]&lt;/a&gt; .&lt;/p&gt;
-&lt;!-- .. figure:: ~/blog/images/md.png --&gt;
-&lt;!-- :height: 100px --&gt;
-&lt;!-- :width: 100 px --&gt;
-&lt;!-- :scale: 400 % --&gt;
-&lt;!-- :alt: alternate text --&gt;
-&lt;!-- :align: center
-
-Molecular Dynamics --&gt;
-&lt;/div&gt;
-&lt;div class="section" id="so-why-do-i-write-this-blog"&gt;
-&lt;h2&gt;So why do I write this blog?&lt;/h2&gt;
-&lt;p&gt;--&lt;/p&gt;
-&lt;p&gt;I write this blog mostly because I want to keep track of the stuff that I am doing, as well as maybe share something useful
-with people and hear some feedback. I spend a lot of time working on my project and I hope the stuff that I am doing meanwhile maybe useful for other people as well.
-Molecular Dynamics trajectories require a lot of post processing work, that needs to be done. I do it using a powerful a tool : Python.
-I am a big Pythonista, i use it everywhere: I write this blog using Python based tool &lt;a class="citation-reference" href="#pelican" id="id6"&gt;[pelican]&lt;/a&gt;, I perform analysis using Python based package &lt;a class="citation-reference" href="#mdanalysis" id="id7"&gt;[mdanalysis]&lt;/a&gt; , I plot graphs using Python.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="section" id="contact-information"&gt;
-&lt;h2&gt;Contact information:&lt;/h2&gt;
-&lt;p&gt;email: vasiliy(dot)triandafilidi( at )gmail.com&lt;/p&gt;
-&lt;table class="docutils citation" frame="void" id="pelican" rules="none"&gt;
-&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id6"&gt;[pelican]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Pelican: &lt;a class="reference external" href="http://docs.getpelican.com/en/latest/index.html"&gt;http://docs.getpelican.com/en/latest/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table class="docutils citation" frame="void" id="lab" rules="none"&gt;
-&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id1"&gt;[lab]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Prof. Savvas Hatzikiriakos: &lt;a class="reference external" href="http://www.chml.ubc.ca/faculty-staff/hatzikiriakos.php"&gt;http://www.chml.ubc.ca/faculty-staff/hatzikiriakos.php&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table class="docutils citation" frame="void" id="md" rules="none"&gt;
-&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[md]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Method of Molecular Dynamics: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Molecular_dynamics"&gt;http://en.wikipedia.org/wiki/Molecular_dynamics&lt;/a&gt;.&lt;/td&gt;&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table class="docutils citation" frame="void" id="vmd" rules="none"&gt;
-&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id5"&gt;[vmd]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;VMD: &lt;a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/"&gt;http://www.ks.uiuc.edu/Research/vmd/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table class="docutils citation" frame="void" id="mdanalysis" rules="none"&gt;
-&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;[mdanalysis]&lt;/td&gt;&lt;td&gt;&lt;em&gt;(&lt;a class="fn-backref" href="#id4"&gt;1&lt;/a&gt;, &lt;a class="fn-backref" href="#id7"&gt;2&lt;/a&gt;)&lt;/em&gt; MDanalysis: &lt;a class="reference external" href="https://code.google.com/p/mdanalysis/"&gt;https://code.google.com/p/mdanalysis/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table class="docutils citation" frame="void" id="lammps" rules="none"&gt;
-&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
-&lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[lammps]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Lammps www.lammps.sandia.gov&lt;/td&gt;&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;/div&gt;
-</summary><category term="About"></category></entry></feed>
+</summary><category term="Lammps"></category><category term="Simulation"></category></entry></feed>
