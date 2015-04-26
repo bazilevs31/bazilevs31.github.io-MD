@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Molecular Simulation Blog</title><link>http://www.bazilevs31.github.io/</link><description></description><atom:link href="/feeds/vasiliy-triandafilidi.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 20 Apr 2015 17:25:00 -0700</lastBuildDate><item><title>Static Structure Factor</title><link>http://www.bazilevs31.github.io/static-structure-factor.html</link><description>&lt;div class="contents topic" id="table-of-contents"&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Molecular Simulation Blog</title><link>/</link><description></description><atom:link href="/feeds/vasiliy-triandafilidi.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 20 Apr 2015 17:25:00 -0700</lastBuildDate><item><title>Static Structure Factor</title><link>/static-structure-factor.html</link><description>&lt;div class="contents topic" id="table-of-contents"&gt;
 &lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
 &lt;ul class="auto-toc simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#applications-why-do-we-need-it" id="id1"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Applications. Why do we need it?&lt;/a&gt;&lt;/li&gt;
@@ -140,7 +140,7 @@ It can equally expressed the following way:&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Special thanks for Amanda Parker.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Mon, 20 Apr 2015 17:25:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-20:static-structure-factor.html</guid><category>MDAnalysis</category><category>Python</category><category>Analysis</category></item><item><title>Must Know Bash Commands</title><link>http://www.bazilevs31.github.io/must-know-bash-commands.html</link><description>&lt;p&gt;What are tricky bash commands that I consider useful:&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Mon, 20 Apr 2015 17:25:00 -0700</pubDate><guid>tag:,2015-04-20:static-structure-factor.html</guid><category>MDAnalysis</category><category>Python</category><category>Analysis</category></item><item><title>Must Know Bash Commands</title><link>/must-know-bash-commands.html</link><description>&lt;p&gt;What are tricky bash commands that I consider useful:&lt;/p&gt;
 &lt;div class="contents topic" id="table-of-contents"&gt;
 &lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
 &lt;ul class="auto-toc simple"&gt;
@@ -320,7 +320,7 @@ git push origin master
 &lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;When you are cloning a directory that it gets initialized automatically.&lt;/p&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Tue, 14 Apr 2015 23:45:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-14:must-know-bash-commands.html</guid><category>Bash</category><category>Software</category></item><item><title>Accelerating Python</title><link>http://www.bazilevs31.github.io/accelerating-python.html</link><description>&lt;p&gt;Python is great, Python is easy to learn, easy to write in, but sometimes we need our code to run fast. This is where pure Python falls short. Just as many other languages with dynamical variable typing - it is very slow. For example consider this code snippet:&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Tue, 14 Apr 2015 23:45:00 -0700</pubDate><guid>tag:,2015-04-14:must-know-bash-commands.html</guid><category>Bash</category><category>Software</category></item><item><title>Accelerating Python</title><link>/accelerating-python.html</link><description>&lt;p&gt;Python is great, Python is easy to learn, easy to write in, but sometimes we need our code to run fast. This is where pure Python falls short. Just as many other languages with dynamical variable typing - it is very slow. For example consider this code snippet:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
 &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10000&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
@@ -534,7 +534,7 @@ same (constant!) density&lt;/p&gt;
         "}); ";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Tue, 14 Apr 2015 22:05:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-14:accelerating-python.html</guid><category>Python</category><category>MDAnalysis</category><category>Perfomance</category><category>Analysis</category></item><item><title>Calculate Persistence Length</title><link>http://www.bazilevs31.github.io/calculate-persistance-length.html</link><description>&lt;div class="section" id="what-do-we-want-to-calculate"&gt;
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Tue, 14 Apr 2015 22:05:00 -0700</pubDate><guid>tag:,2015-04-14:accelerating-python.html</guid><category>Python</category><category>MDAnalysis</category><category>Perfomance</category><category>Analysis</category></item><item><title>Calculate Persistence Length</title><link>/calculate-persistance-length.html</link><description>&lt;div class="section" id="what-do-we-want-to-calculate"&gt;
 &lt;h2&gt;What do we want to calculate?&lt;/h2&gt;
 &lt;p&gt;Bond correlation function:&lt;/p&gt;
 &lt;div class="math"&gt;
@@ -683,7 +683,7 @@ the red curve(the fitting curve), therefore the persistance length : $l_p = n*l_
         "}); ";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Mon, 13 Apr 2015 15:23:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-13:calculate-persistance-length.html</guid><category>MDAnalysis</category><category>Python</category><category>Analysis</category></item><item><title>Using_vmd</title><link>http://www.bazilevs31.github.io/using_vmd.html</link><description>&lt;div class="section" id="you-have-run-your-simulation-now-what"&gt;
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Mon, 13 Apr 2015 15:23:00 -0700</pubDate><guid>tag:,2015-04-13:calculate-persistance-length.html</guid><category>MDAnalysis</category><category>Python</category><category>Analysis</category></item><item><title>Using_vmd</title><link>/using_vmd.html</link><description>&lt;div class="section" id="you-have-run-your-simulation-now-what"&gt;
 &lt;h2&gt;You have run your simulation. Now what?&lt;/h2&gt;
 &lt;p&gt;So after you managed to get your trajectories from Lammps, or other Simulation packages its time to create nice vizualizations.
 In this blog entry I will cover how do I use VMD and Lammps together.&lt;/p&gt;
@@ -839,7 +839,7 @@ optional arguments:
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Thu, 09 Apr 2015 16:40:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-09:using_vmd.html</guid><category>VMD</category><category>Python</category><category>Lammps</category><category>Software</category></item><item><title>MDAnalysis_advanced</title><link>http://www.bazilevs31.github.io/mdanalysis_advanced.html</link><description>&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Thu, 09 Apr 2015 16:40:00 -0700</pubDate><guid>tag:,2015-04-09:using_vmd.html</guid><category>VMD</category><category>Python</category><category>Lammps</category><category>Software</category></item><item><title>MDAnalysis_advanced</title><link>/mdanalysis_advanced.html</link><description>&lt;p&gt;This is a ipython notebook which demonstrates how to use MDAnalysis
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;MDAnalysis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
@@ -1083,7 +1083,7 @@ regular xscale
         "}); ";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 14:53:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-08:mdanalysis_advanced.html</guid><category>mdanalysis</category><category>Python</category><category>Analysis</category></item><item><title>installing_soft</title><link>http://www.bazilevs31.github.io/installing_soft.html</link><description>&lt;div class="section" id="what-do-we-need"&gt;
+&lt;/script&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 14:53:00 -0700</pubDate><guid>tag:,2015-04-08:mdanalysis_advanced.html</guid><category>mdanalysis</category><category>Python</category><category>Analysis</category></item><item><title>installing_soft</title><link>/installing_soft.html</link><description>&lt;div class="section" id="what-do-we-need"&gt;
 &lt;h2&gt;What do we need?&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
 &lt;p&gt;In order to do Molecular Dynamics one needs to install essential software.&lt;/p&gt;
@@ -1188,7 +1188,7 @@ We just need &lt;cite&gt;vim configure&lt;/cite&gt;, and change &lt;cite&gt;home
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 13:54:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-08:installing_soft.html</guid><category>Lammps</category><category>VMD</category><category>MDAnalysis</category><category>Software</category><category>Python</category></item><item><title>Create_melt</title><link>http://www.bazilevs31.github.io/create_melt.html</link><description>&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Wed, 08 Apr 2015 13:54:00 -0700</pubDate><guid>tag:,2015-04-08:installing_soft.html</guid><category>Lammps</category><category>VMD</category><category>MDAnalysis</category><category>Software</category><category>Python</category></item><item><title>Create_melt</title><link>/create_melt.html</link><description>&lt;p&gt;How to create a data file of a polymer system for Lammps.&lt;/p&gt;
 &lt;p&gt;Creating data files for polymer systems appears to be a daunting task.
 The process of creating a data file includes three stages. One of possible ways of tackling this problem would be:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
@@ -1229,7 +1229,7 @@ The process of creating a data file includes three stages. One of possible ways 
    &lt;span class="mi"&gt;0&lt;/span&gt;  &lt;span class="n"&gt;impropers&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 17:03:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-05:create_melt.html</guid><category>Lammps</category><category>Simulation</category></item><item><title>Equilibrate_melt</title><link>http://www.bazilevs31.github.io/equilibrate_melt.html</link><description>&lt;div class="contents topic" id="table-of-contents"&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 17:03:00 -0700</pubDate><guid>tag:,2015-04-05:create_melt.html</guid><category>Lammps</category><category>Simulation</category></item><item><title>Equilibrate_melt</title><link>/equilibrate_melt.html</link><description>&lt;div class="contents topic" id="table-of-contents"&gt;
 &lt;p class="topic-title first"&gt;Table of contents:&lt;/p&gt;
 &lt;ul class="auto-toc simple"&gt;
 &lt;li&gt;&lt;a class="reference internal" href="#quantifying-equilibration" id="id4"&gt;1&amp;nbsp;&amp;nbsp;&amp;nbsp;Quantifying equilibration:&lt;/a&gt;&lt;/li&gt;
@@ -1448,7 +1448,7 @@ One of them is &lt;a class="citation-reference" href="#auhl" id="id1"&gt;[auhl]&
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 16:57:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-05:equilibrate_melt.html</guid><category>Lammps</category><category>Equilibration</category><category>Simulation</category></item><item><title>Lammps_intro</title><link>http://www.bazilevs31.github.io/lammps_intro.html</link><description>&lt;p&gt;Running simulations in Lammps. In this section we will create a group of atoms
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 16:57:00 -0700</pubDate><guid>tag:,2015-04-05:equilibrate_melt.html</guid><category>Lammps</category><category>Equilibration</category><category>Simulation</category></item><item><title>Lammps_intro</title><link>/lammps_intro.html</link><description>&lt;p&gt;Running simulations in Lammps. In this section we will create a group of atoms
 and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# 3d Lennard-Jones melt&lt;/span&gt;
 &lt;span class="n"&gt;units&lt;/span&gt;       &lt;span class="n"&gt;real&lt;/span&gt;
@@ -1524,4 +1524,244 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;span class="n"&gt;write_data&lt;/span&gt; &lt;span class="n"&gt;result2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;
 &lt;span class="c1"&gt;# initial - &amp;gt; result.data -&amp;gt; result2.data&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 16:54:00 -0700</pubDate><guid>tag:www.bazilevs31.github.io,2015-04-05:lammps_intro.html</guid><category>Lammps</category><category>Simulation</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 16:54:00 -0700</pubDate><guid>tag:,2015-04-05:lammps_intro.html</guid><category>Lammps</category><category>Simulation</category></item><item><title>bash_intro</title><link>/bash_intro.html</link><description>&lt;div class="section" id="how-to-work-in-unix-bash"&gt;
+&lt;h2&gt;How to work in Unix Bash&lt;/h2&gt;
+&lt;p&gt;--&lt;/p&gt;
+&lt;p&gt;Imagine you have 10 files with two columns of data in each file. You want to load them and take an average of all second columns. Sounds like an easy Excell program. But it is not. When you have not 10 but 10 000 files, it will take ages for Excell to load them, also Excell is not free and is not installed everywhere. Fortunatelly there is an amazing tool that you may use : Bash shell. It is available by default in Linux/Mac OS , it can be installed via CygWin on Windows machine. It takes a couple of hours to learn, couple of days/weeks to master, and it will save you couple of years in future. Interested? So lets get started …&lt;/p&gt;
+&lt;p&gt;Plan:&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;What we need to know&lt;/li&gt;
+&lt;li&gt;Elementary operations&lt;/li&gt;
+&lt;li&gt;Secrets of mastering bash&lt;/li&gt;
+&lt;li&gt;Useful links&lt;/li&gt;
+&lt;li&gt;Here is how the linux console looks on Ubuntu 14.04&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="elementary-introduction"&gt;
+&lt;h3&gt;Elementary Introduction&lt;/h3&gt;
+&lt;p&gt;==&lt;/p&gt;
+&lt;p&gt;In a nutshell we see computer memmory as a bunch of files and folders. When we use computer in our daily routine we navigate between different files and folders. Even when we surf the web we navigate between webpages which are the files on remote servers.
+So the most “intersting” command would be ls&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;List all files and folders&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ls
+    empty_file1  empty_folder1
+    Here empty_folder1 is a directory, and empty_file1 is a text file.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ol class="arabic simple" start="2"&gt;
+&lt;li&gt;Navigate to directory&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;empty_folder1
+Now we are in empty_folder1 directory. To &lt;span class="nb"&gt;test &lt;/span&gt;that we use
+&lt;/pre&gt;&lt;/div&gt;
+&lt;ol class="arabic simple" start="3"&gt;
+&lt;li&gt;Show current directory&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/vasiliy/tests
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To navigate back in the parent directory we use cd ..
+Now lets use this 4 commands together&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;vasiliy@vasiliy-office:~/tests/empty_folder1&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/vasiliy/tests/empty_folder1
+vasiliy@vasiliy-office:~/tests/empty_folder1&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ..
+vasiliy@vasiliy-office:~/tests&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;
+/home/vasiliy/tests
+vasiliy@vasiliy-office:~/tests&lt;span class="nv"&gt;$ &lt;/span&gt;ls
+empty_file1  empty_folder1
+vasiliy@vasiliy-office:~/tests&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;empty_folder1/
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To create a file we may use any text editor we like. I myself am a big fan of Sublime-Text.. To copy file &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; to &lt;tt class="docutils literal"&gt;file2&lt;/tt&gt; we use cp &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; &lt;tt class="docutils literal"&gt;file2&lt;/tt&gt; command. To remove files we use rm filename command. To create an empty directory we use mkdir mynewcooldirectory.&lt;/p&gt;
+&lt;ol class="arabic simple" start="4"&gt;
+&lt;li&gt;Creating/Copying/Removing files&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;ls
+&lt;span class="nv"&gt;$ &lt;/span&gt;subl empty_file2 &lt;span class="c"&gt;# edit file and save it&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;ls
+empty_file2
+&lt;span class="nv"&gt;$ &lt;/span&gt;cp empty_file2 empty_file2_copy
+&lt;span class="nv"&gt;$ &lt;/span&gt;ls
+empty_file2 empty_file2_copy
+&lt;span class="nv"&gt;$ &lt;/span&gt;rm empty_file2_copy &lt;span class="c"&gt;#delete the copy file&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;ls
+empty_file2
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we want to rename file, we could copy it and consequently remove it, or use a move mv &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; &lt;tt class="docutils literal"&gt;file2&lt;/tt&gt; command which combines this procedures.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="must-know-commands"&gt;
+&lt;h3&gt;Must-know commands&lt;/h3&gt;
+&lt;p&gt;==&lt;/p&gt;
+&lt;p&gt;So here is a little cheat sheet of required operations:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;LiSt files and folders ls&lt;/li&gt;
+&lt;li&gt;Current directory pwd&lt;/li&gt;
+&lt;li&gt;Navigate to directory(ChangeDirectory) cd foldername, cd ..&lt;/li&gt;
+&lt;li&gt;CoPy/MoVe/ReMove files &lt;tt class="docutils literal"&gt;cp file1 file2&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;mv file1 file2&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;rm file1&lt;/tt&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="section" id="a-project"&gt;
+&lt;h3&gt;A Project&lt;/h3&gt;
+&lt;p&gt;==&lt;/p&gt;
+&lt;p&gt;Problem:&lt;/p&gt;
+&lt;p&gt;Create a binary bash script(a file that can be executed by linux shell) that:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;lists all files in the directory&lt;/li&gt;
+&lt;li&gt;creates a set of files file1, file2, file3, … file10&lt;/li&gt;
+&lt;li&gt;copies file1 to file1_copy, list all files&lt;/li&gt;
+&lt;li&gt;removes file1, list all files&lt;/li&gt;
+&lt;li&gt;removes all files in the directory&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Additional information:&lt;/p&gt;
+&lt;p&gt;The files on computer are of two types human-readable - ASCII, and computer readable - binary. We (humans:)) can’t understand computer code because it is all 1s and 0s, at the same time computers can’t understand ASCII files unless we explain them how to transfer ASCII files into binary ones.
+To simplify the procedure of running the program we can tell our system that this program is a bash program this is being done by : &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;#!/bin/bash&lt;/span&gt;&lt;/tt&gt;.
+Then tell the system that we may run this as an executable we do  &lt;tt class="docutils literal"&gt;chmod +x bashscript.sh&lt;/tt&gt;
+To create dummy empty file one may use touch &lt;tt class="docutils literal"&gt;file1&lt;/tt&gt; command.
+To delete all files in the directory we use &lt;tt class="docutils literal"&gt;*&lt;/tt&gt; wildcard so to delete all files it will be &lt;tt class="docutils literal"&gt;rm *.&lt;/tt&gt; But we need to be very careful because it
+will delete all files in directory, so make sure that they match the pattern that you are using to delete files.&lt;/p&gt;
+&lt;p&gt;algorithm:&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;list all files in the directory ls&lt;/li&gt;
+&lt;li&gt;create a list with for command&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;cp file1 file1_copy&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;ls&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;&lt;tt class="docutils literal"&gt;rm file1&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;ls&lt;/tt&gt;&lt;/li&gt;
+&lt;li&gt;delete all files in the directory &lt;tt class="docutils literal"&gt;rm *&lt;/tt&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Solution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;listing the files in the directory&amp;quot;&lt;/span&gt; &lt;span class="c"&gt;# use echo command to print information in the terminal&lt;/span&gt;
+ls
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;starting the loop&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt; &lt;span class="nv"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 1&lt;span class="p"&gt;;&lt;/span&gt; i &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt; 10&lt;span class="p"&gt;;&lt;/span&gt; i++ &lt;span class="o"&gt;))&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;doing loop on iteration # = &lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    touch file&lt;span class="nv"&gt;$i&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;done with the loop&amp;quot;&lt;/span&gt;
+ls
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;copy ``file1`` in file1_copy&amp;quot;&lt;/span&gt;
+cp file1 file1_copy
+ls
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;remove file1&amp;quot;&lt;/span&gt;
+rm file1
+ls
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;OUTPUT:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$~&lt;/span&gt;/tests&lt;span class="nv"&gt;$ &lt;/span&gt;bash simple_prog.sh
+listing the files in the directory
+simple_prog.sh
+starting the loop
+doing loop on iteration &lt;span class="c"&gt;# = 1&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 2&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 3&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 4&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 5&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 6&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 7&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 8&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 9&lt;/span&gt;
+doing loop on iteration &lt;span class="c"&gt;# = 10&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt; with the loop
+file1  file10  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
+copy file1 in file1_copy
+file1  file10  file1_copy  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
+remove file1
+file10  file1_copy  file2  file3  file4  file5  file6  file7  file8  file9  simple_prog.sh
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we change the mode to executable &lt;tt class="docutils literal"&gt;chmod +x simple_prog.sh&lt;/tt&gt;,
+then we may run the program the following way &lt;tt class="docutils literal"&gt;./simple_prog.sh&lt;/tt&gt;&lt;/p&gt;
+&lt;p&gt;Secrets of mastering Bash&lt;/p&gt;
+&lt;p&gt;There is only one secret of becoming good with bash - practice, you may need to spend a little bit of energy now, but it will save you tons of time in the future.&lt;/p&gt;
+&lt;p&gt;Useful links&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 16:31:00 -0700</pubDate><guid>tag:,2015-04-05:bash_intro.html</guid><category>bash</category><category>Analysis</category></item><item><title>Introduction</title><link>/introduction.html</link><description>&lt;div class="section" id="about-me"&gt;
+&lt;h2&gt;About me&lt;/h2&gt;
+&lt;p&gt;--&lt;/p&gt;
+&lt;!-- .. figure:: ~/blog/images/me.jpg --&gt;
+&lt;!-- :height: 100px --&gt;
+&lt;!-- :width: 100 px --&gt;
+&lt;!-- :scale: 400 % --&gt;
+&lt;!-- :alt: alternate text --&gt;
+&lt;!-- :align: center --&gt;
+&lt;!-- Its me --&gt;
+&lt;p&gt;Hi, my name is Vasiliy Triandafilidi. I am a 2nd year Ms student at University of British Columbia working in Prof. Savvas Hatzikiriakos' lab &lt;a class="citation-reference" href="#lab" id="id1"&gt;[lab]&lt;/a&gt; . I am also collaborating very closely with Prof. Rottler's group &lt;a class="citation-reference" href="#prof-rottler" id="id2"&gt;[Prof_Rottler]&lt;/a&gt;
+In past I was working in Prof. Norman's group &lt;a class="citation-reference" href="#prof-norman" id="id3"&gt;[Prof_Norman]&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In my research I focus on investigating properties of matter using Method of Molecular Dynamics &lt;a class="citation-reference" href="#md" id="id4"&gt;[md]&lt;/a&gt;
+Unlike many other methods of simulation, where people try to find how can they make equations more difficult so we have an equation that can predict more stuff, Molecular Dynamics focuses on one equation: Newtons equations of motion.&lt;/p&gt;
+&lt;p&gt;By solving numerically Newtons equations of motion for
+each atom explicitely we obtain a trajectory of every atom in the system, for every timestep. This alone can provide a visual insight on the world that could not be seen by any tool explicitely.
+But method of MD allows us to calculate a thermodynamically averaged parameters, such as Temperature, Pressure, Density ...&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="tools"&gt;
+&lt;h2&gt;Tools:&lt;/h2&gt;
+&lt;p&gt;To do Molecular Dynamics simulation I use open source code &lt;a class="citation-reference" href="#lammps" id="id5"&gt;[lammps]&lt;/a&gt; , to analyze trajectories I use a powerful Python
+based package &lt;a class="citation-reference" href="#mdanalysis" id="id6"&gt;[mdanalysis]&lt;/a&gt; , to vizualize my results I use &lt;a class="citation-reference" href="#vmd" id="id7"&gt;[vmd]&lt;/a&gt; .&lt;/p&gt;
+&lt;!-- .. figure:: ~/blog/images/md.png --&gt;
+&lt;!-- :height: 100px --&gt;
+&lt;!-- :width: 100 px --&gt;
+&lt;!-- :scale: 400 % --&gt;
+&lt;!-- :alt: alternate text --&gt;
+&lt;!-- :align: center
+
+Molecular Dynamics --&gt;
+&lt;/div&gt;
+&lt;div class="section" id="so-why-do-i-write-this-blog"&gt;
+&lt;h2&gt;So why do I write this blog?&lt;/h2&gt;
+&lt;p&gt;--&lt;/p&gt;
+&lt;p&gt;I write this blog mostly because I want to keep track of the stuff that I am doing, as well as maybe share something useful
+with people and hear some feedback. I spend a lot of time working on my project and I hope the stuff that I am doing meanwhile maybe useful for other people as well.
+Molecular Dynamics trajectories require a lot of post processing work, that needs to be done. I do it using a powerful a tool : Python.
+I am a big Pythonista, i use it everywhere: I write this blog using Python based tool &lt;a class="citation-reference" href="#pelican" id="id8"&gt;[pelican]&lt;/a&gt;, I perform analysis using Python based package &lt;a class="citation-reference" href="#mdanalysis" id="id9"&gt;[mdanalysis]&lt;/a&gt; , I plot graphs using Python.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="contact-information"&gt;
+&lt;h2&gt;Contact information:&lt;/h2&gt;
+&lt;p&gt;email: vasiliy(dot)triandafilidi( at )gmail.com&lt;/p&gt;
+&lt;table class="docutils citation" frame="void" id="pelican" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id8"&gt;[pelican]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Pelican: &lt;a class="reference external" href="http://docs.getpelican.com/en/latest/index.html"&gt;http://docs.getpelican.com/en/latest/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="lab" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id1"&gt;[lab]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Prof. Savvas Hatzikiriakos: &lt;a class="reference external" href="http://www.chml.ubc.ca/faculty-staff/hatzikiriakos.php"&gt;http://www.chml.ubc.ca/faculty-staff/hatzikiriakos.php&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="md" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id4"&gt;[md]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Method of Molecular Dynamics: &lt;a class="reference external" href="http://en.wikipedia.org/wiki/Molecular_dynamics"&gt;http://en.wikipedia.org/wiki/Molecular_dynamics&lt;/a&gt;.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="vmd" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id7"&gt;[vmd]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;VMD: &lt;a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/"&gt;http://www.ks.uiuc.edu/Research/vmd/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="mdanalysis" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;[mdanalysis]&lt;/td&gt;&lt;td&gt;&lt;em&gt;(&lt;a class="fn-backref" href="#id6"&gt;1&lt;/a&gt;, &lt;a class="fn-backref" href="#id9"&gt;2&lt;/a&gt;)&lt;/em&gt; MDanalysis: &lt;a class="reference external" href="https://code.google.com/p/mdanalysis/"&gt;https://code.google.com/p/mdanalysis/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="lammps" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id5"&gt;[lammps]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Lammps www.lammps.sandia.gov&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="prof-rottler" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id2"&gt;[Prof_Rottler]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://www.phas.ubc.ca/~jrottler/index.html"&gt;http://www.phas.ubc.ca/~jrottler/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="prof-norman" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[Prof_Norman]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://www.ihed.ras.ru/norman/en/index.php"&gt;http://www.ihed.ras.ru/norman/en/index.php&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 15:08:00 -0700</pubDate><guid>tag:,2015-04-05:introduction.html</guid><category>About</category></item></channel></rss>
