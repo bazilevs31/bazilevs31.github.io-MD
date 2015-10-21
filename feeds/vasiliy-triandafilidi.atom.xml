@@ -1695,7 +1695,7 @@ that treats matter as a system of interacting particles.&lt;/p&gt;
 &lt;img alt="lala" src="../images/md_explained.png" style="width: 550pt;" /&gt;
 &lt;/div&gt;
 &lt;p&gt;Schematic representation of Molecular Dynamics flow&lt;/p&gt;
-&lt;p&gt;In order to run a Molecular Dynamics Simulation one needs to provide the initial atomic positions $\mathbf{r_1},\mathbf{r_2} ... mathbf{r_N}$, the inter-atomic potential $U(\mathbf{r})$ and a set of constraints also known as an ensemble for integrating the equations of motion. Then
+&lt;p&gt;In order to run a Molecular Dynamics Simulation one needs to provide the initial atomic positions $\mathbf{r_1},\mathbf{r_2} ... \mathbf{r_N}$, the inter-atomic potential $U(\mathbf{r})$ and a set of constraints also known as an ensemble for integrating the equations of motion. Then
 using this information of the atomic positions, and interacting potential; the Newtons equations of motion are used to calculate the atomic positions on the next time step.
 After simulation is terminated one obtains the final positions
 $\mathbf{r^{'}_1},\mathbf{r^{'}_2} ...\mathbf{r^{'}_N}$. The macroscopic parameters can be calculated by integrating and averaging, e.g temperature can be calculated as a mean square
