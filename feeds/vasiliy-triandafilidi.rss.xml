@@ -1526,7 +1526,8 @@ and run an easy lammps simulation with lj potential.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Vasiliy Triandafilidi</dc:creator><pubDate>Sun, 05 Apr 2015 16:54:00 -0700</pubDate><guid>tag:,2015-04-05:lammps_intro.html</guid><category>Lammps</category><category>Simulation</category></item><item><title>bash_intro</title><link>/bash_intro.html</link><description>&lt;div class="section" id="how-to-work-in-unix-bash"&gt;
 &lt;h2&gt;How to work in Unix Bash&lt;/h2&gt;
-&lt;p&gt;--&lt;/p&gt;
+&lt;p&gt;--
+ll&lt;/p&gt;
 &lt;p&gt;Imagine you have 10 files with two columns of data in each file. You want to load them and take an average of all second columns. Sounds like an easy Excell program. But it is not. When you have not 10 but 10 000 files, it will take ages for Excell to load them, also Excell is not free and is not installed everywhere. Fortunatelly there is an amazing tool that you may use : Bash shell. It is available by default in Linux/Mac OS , it can be installed via CygWin on Windows machine. It takes a couple of hours to learn, couple of days/weeks to master, and it will save you couple of years in future. Interested? So lets get started …&lt;/p&gt;
 &lt;p&gt;Plan:&lt;/p&gt;
 &lt;ul class="simple"&gt;
@@ -1683,13 +1684,31 @@ then we may run the program the following way &lt;tt class="docutils literal"&gt
 &lt;!-- :alt: alternate text --&gt;
 &lt;!-- :align: center --&gt;
 &lt;!-- Its me --&gt;
-&lt;p&gt;Hi, my name is Vasiliy Triandafilidi. I am a 2nd year Ms student at University of British Columbia working in Prof. Savvas Hatzikiriakos' lab &lt;a class="citation-reference" href="#lab" id="id1"&gt;[lab]&lt;/a&gt; . I am also collaborating very closely with Prof. Rottler's group &lt;a class="citation-reference" href="#prof-rottler" id="id2"&gt;[Prof_Rottler]&lt;/a&gt;
-In past I was working in Prof. Norman's group &lt;a class="citation-reference" href="#prof-norman" id="id3"&gt;[Prof_Norman]&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;In my research I focus on investigating properties of matter using Method of Molecular Dynamics &lt;a class="citation-reference" href="#md" id="id4"&gt;[md]&lt;/a&gt;
-Unlike many other methods of simulation, where people try to find how can they make equations more difficult so we have an equation that can predict more stuff, Molecular Dynamics focuses on one equation: Newtons equations of motion.&lt;/p&gt;
-&lt;p&gt;By solving numerically Newtons equations of motion for
-each atom explicitely we obtain a trajectory of every atom in the system, for every timestep. This alone can provide a visual insight on the world that could not be seen by any tool explicitely.
-But method of MD allows us to calculate a thermodynamically averaged parameters, such as Temperature, Pressure, Density ...&lt;/p&gt;
+&lt;p&gt;Hi, my name is Vasilii Triandafilidi.
+I am a first year PhD student at the University of British Columbia.
+I work under supervision of Prof. Savvas Hatzikiriakos' lab &lt;a class="citation-reference" href="#lab" id="id1"&gt;[lab]&lt;/a&gt; and Prof. Rottler &lt;a class="citation-reference" href="#prof-rottler" id="id2"&gt;[Prof_Rottler]&lt;/a&gt; .
+In the past I had a pleasure working in the Prof. Norman's group &lt;a class="citation-reference" href="#prof-norman" id="id3"&gt;[Prof_Norman]&lt;/a&gt; under supervision of Dr. Stegailov.&lt;/p&gt;
+&lt;p&gt;In my research I focus on investigating properties of matter using Method of Molecular Dynamics.
+Molecular Dynamics &lt;a class="citation-reference" href="#md" id="id4"&gt;[md]&lt;/a&gt; is a computational tool
+that treats matter as a system of interacting particles.&lt;/p&gt;
+&lt;div class="figure align-center" id="figmd"&gt;
+&lt;img alt="lala" src="../images/md_explained.png" style="width: 550pt;" /&gt;
+&lt;/div&gt;
+&lt;p&gt;Schematic representation of Molecular Dynamics flow&lt;/p&gt;
+&lt;p&gt;In order to run a Molecular Dynamics Simulation one needs to provide the initial atomic positions $\mathbf{r_1},\mathbf{r_2} ... mathbf{r_N}$, the inter-atomic potential $U(\mathbf{r})$ and a set of constraints also known as an ensemble for integrating the equations of motion. Then
+using this information of the atomic positions, and interacting potential; the Newtons equations of motion are used to calculate the atomic positions on the next time step.
+After simulation is terminated one obtains the final positions
+$\mathbf{r^{'}_1},\mathbf{r^{'}_2} ...\mathbf{r^{'}_N}$. The macroscopic parameters can be calculated by integrating and averaging, e.g temperature can be calculated as a mean square
+kinetic energy, i.e velocity of the system.&lt;/p&gt;
+&lt;p&gt;In particular I am very interested in investigating the process of polymer crystallization.&lt;/p&gt;
+&lt;div class="figure align-center" id="figspagetti"&gt;
+&lt;img alt="" src="../images/spagetti.png" style="width: 300pt;" /&gt;
+&lt;/div&gt;
+&lt;p&gt;Spaghetti representation of polymer chains&lt;/p&gt;
+&lt;div class="figure align-center" id="figbidisp"&gt;
+&lt;img alt="lala" src="../images/bidisp_equal1.png" style="width: 200pt;" /&gt;
+&lt;/div&gt;
+&lt;p&gt;Bundle like crystallite upon bidisperse polymer crystallization. Short chains are colored in red, long chains in green&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="tools"&gt;
 &lt;h2&gt;Tools:&lt;/h2&gt;
@@ -1707,10 +1726,13 @@ Molecular Dynamics --&gt;
 &lt;div class="section" id="so-why-do-i-write-this-blog"&gt;
 &lt;h2&gt;So why do I write this blog?&lt;/h2&gt;
 &lt;p&gt;--&lt;/p&gt;
-&lt;p&gt;I write this blog mostly because I want to keep track of the stuff that I am doing, as well as maybe share something useful
-with people and hear some feedback. I spend a lot of time working on my project and I hope the stuff that I am doing meanwhile maybe useful for other people as well.
-Molecular Dynamics trajectories require a lot of post processing work, that needs to be done. I do it using a powerful a tool : Python.
-I am a big Pythonista, i use it everywhere: I write this blog using Python based tool &lt;a class="citation-reference" href="#pelican" id="id8"&gt;[pelican]&lt;/a&gt;, I perform analysis using Python based package &lt;a class="citation-reference" href="#mdanalysis" id="id9"&gt;[mdanalysis]&lt;/a&gt; , I plot graphs using Python.&lt;/p&gt;
+&lt;p&gt;I write this blog mostly because I want to keep track of my progress.
+I do also believe in an open-source and reproducible science. I am very against inventing bicycles over and over again. The best way to avoid it is to share, to talk to people and hear their feedback.&lt;/p&gt;
+&lt;p&gt;I chose Python language because of its open-source nature and great package infrastructure. If you have a cool program you load it, and other person can install it as easy as&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;pip install packagename
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I think scientific community (especially those who work in simulation) have to learn a lot from this approach. Those who got interested in open-source science may address a great project by Mozilla &lt;a class="citation-reference" href="#mozillascience" id="id8"&gt;[mozillascience]&lt;/a&gt;. Besides,Python is a beautiful and powerful language. The range of its capabilities varies from building a static blog &lt;a class="citation-reference" href="#pelican" id="id9"&gt;[pelican]&lt;/a&gt; to solving a numerical equations. If you haven't used it yet, I think,  you should give it a try.&lt;/p&gt;
+&lt;p&gt;I spend a lot of time working on my project and I hope the stuff that I am doing maybe useful for other people as well.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class="section" id="contact-information"&gt;
 &lt;h2&gt;Contact information:&lt;/h2&gt;
@@ -1718,7 +1740,7 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 &lt;table class="docutils citation" frame="void" id="pelican" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id8"&gt;[pelican]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Pelican: &lt;a class="reference external" href="http://docs.getpelican.com/en/latest/index.html"&gt;http://docs.getpelican.com/en/latest/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id9"&gt;[pelican]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Pelican: &lt;a class="reference external" href="http://docs.getpelican.com/en/latest/index.html"&gt;http://docs.getpelican.com/en/latest/index.html&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table class="docutils citation" frame="void" id="lab" rules="none"&gt;
@@ -1742,7 +1764,7 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 &lt;table class="docutils citation" frame="void" id="mdanalysis" rules="none"&gt;
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
-&lt;tr&gt;&lt;td class="label"&gt;[mdanalysis]&lt;/td&gt;&lt;td&gt;&lt;em&gt;(&lt;a class="fn-backref" href="#id6"&gt;1&lt;/a&gt;, &lt;a class="fn-backref" href="#id9"&gt;2&lt;/a&gt;)&lt;/em&gt; MDanalysis: &lt;a class="reference external" href="https://code.google.com/p/mdanalysis/"&gt;https://code.google.com/p/mdanalysis/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id6"&gt;[mdanalysis]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;MDanalysis: &lt;a class="reference external" href="https://code.google.com/p/mdanalysis/"&gt;https://code.google.com/p/mdanalysis/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table class="docutils citation" frame="void" id="lammps" rules="none"&gt;
@@ -1761,6 +1783,12 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 &lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
 &lt;tbody valign="top"&gt;
 &lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id3"&gt;[Prof_Norman]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;a class="reference external" href="http://www.ihed.ras.ru/norman/en/index.php"&gt;http://www.ihed.ras.ru/norman/en/index.php&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table class="docutils citation" frame="void" id="mozillascience" rules="none"&gt;
+&lt;colgroup&gt;&lt;col class="label" /&gt;&lt;col /&gt;&lt;/colgroup&gt;
+&lt;tbody valign="top"&gt;
+&lt;tr&gt;&lt;td class="label"&gt;&lt;a class="fn-backref" href="#id8"&gt;[mozillascience]&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Mozilla Science: &lt;a class="reference external" href="https://www.mozillascience.org/"&gt;https://www.mozillascience.org/&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/div&gt;

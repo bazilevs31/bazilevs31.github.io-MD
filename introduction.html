@@ -70,13 +70,31 @@
 <!-- :alt: alternate text -->
 <!-- :align: center -->
 <!-- Its me -->
-<p>Hi, my name is Vasiliy Triandafilidi. I am a 2nd year Ms student at University of British Columbia working in Prof. Savvas Hatzikiriakos' lab <a class="citation-reference" href="#lab" id="id1">[lab]</a> . I am also collaborating very closely with Prof. Rottler's group <a class="citation-reference" href="#prof-rottler" id="id2">[Prof_Rottler]</a>
-In past I was working in Prof. Norman's group <a class="citation-reference" href="#prof-norman" id="id3">[Prof_Norman]</a>.</p>
-<p>In my research I focus on investigating properties of matter using Method of Molecular Dynamics <a class="citation-reference" href="#md" id="id4">[md]</a>
-Unlike many other methods of simulation, where people try to find how can they make equations more difficult so we have an equation that can predict more stuff, Molecular Dynamics focuses on one equation: Newtons equations of motion.</p>
-<p>By solving numerically Newtons equations of motion for
-each atom explicitely we obtain a trajectory of every atom in the system, for every timestep. This alone can provide a visual insight on the world that could not be seen by any tool explicitely.
-But method of MD allows us to calculate a thermodynamically averaged parameters, such as Temperature, Pressure, Density ...</p>
+<p>Hi, my name is Vasilii Triandafilidi.
+I am a first year PhD student at the University of British Columbia.
+I work under supervision of Prof. Savvas Hatzikiriakos' lab <a class="citation-reference" href="#lab" id="id1">[lab]</a> and Prof. Rottler <a class="citation-reference" href="#prof-rottler" id="id2">[Prof_Rottler]</a> .
+In the past I had a pleasure working in the Prof. Norman's group <a class="citation-reference" href="#prof-norman" id="id3">[Prof_Norman]</a> under supervision of Dr. Stegailov.</p>
+<p>In my research I focus on investigating properties of matter using Method of Molecular Dynamics.
+Molecular Dynamics <a class="citation-reference" href="#md" id="id4">[md]</a> is a computational tool
+that treats matter as a system of interacting particles.</p>
+<div class="figure align-center" id="figmd">
+<img alt="lala" src="../images/md_explained.png" style="width: 550pt;" />
+</div>
+<p>Schematic representation of Molecular Dynamics flow</p>
+<p>In order to run a Molecular Dynamics Simulation one needs to provide the initial atomic positions $\mathbf{r_1},\mathbf{r_2} ... mathbf{r_N}$, the inter-atomic potential $U(\mathbf{r})$ and a set of constraints also known as an ensemble for integrating the equations of motion. Then
+using this information of the atomic positions, and interacting potential; the Newtons equations of motion are used to calculate the atomic positions on the next time step.
+After simulation is terminated one obtains the final positions
+$\mathbf{r^{'}_1},\mathbf{r^{'}_2} ...\mathbf{r^{'}_N}$. The macroscopic parameters can be calculated by integrating and averaging, e.g temperature can be calculated as a mean square
+kinetic energy, i.e velocity of the system.</p>
+<p>In particular I am very interested in investigating the process of polymer crystallization.</p>
+<div class="figure align-center" id="figspagetti">
+<img alt="" src="../images/spagetti.png" style="width: 300pt;" />
+</div>
+<p>Spaghetti representation of polymer chains</p>
+<div class="figure align-center" id="figbidisp">
+<img alt="lala" src="../images/bidisp_equal1.png" style="width: 200pt;" />
+</div>
+<p>Bundle like crystallite upon bidisperse polymer crystallization. Short chains are colored in red, long chains in green</p>
 </div>
 <div class="section" id="tools">
 <h2>Tools:</h2>
@@ -94,10 +112,13 @@ Molecular Dynamics -->
 <div class="section" id="so-why-do-i-write-this-blog">
 <h2>So why do I write this blog?</h2>
 <p>--</p>
-<p>I write this blog mostly because I want to keep track of the stuff that I am doing, as well as maybe share something useful
-with people and hear some feedback. I spend a lot of time working on my project and I hope the stuff that I am doing meanwhile maybe useful for other people as well.
-Molecular Dynamics trajectories require a lot of post processing work, that needs to be done. I do it using a powerful a tool : Python.
-I am a big Pythonista, i use it everywhere: I write this blog using Python based tool <a class="citation-reference" href="#pelican" id="id8">[pelican]</a>, I perform analysis using Python based package <a class="citation-reference" href="#mdanalysis" id="id9">[mdanalysis]</a> , I plot graphs using Python.</p>
+<p>I write this blog mostly because I want to keep track of my progress.
+I do also believe in an open-source and reproducible science. I am very against inventing bicycles over and over again. The best way to avoid it is to share, to talk to people and hear their feedback.</p>
+<p>I chose Python language because of its open-source nature and great package infrastructure. If you have a cool program you load it, and other person can install it as easy as</p>
+<div class="highlight"><pre>pip install packagename
+</pre></div>
+<p>I think scientific community (especially those who work in simulation) have to learn a lot from this approach. Those who got interested in open-source science may address a great project by Mozilla <a class="citation-reference" href="#mozillascience" id="id8">[mozillascience]</a>. Besides,Python is a beautiful and powerful language. The range of its capabilities varies from building a static blog <a class="citation-reference" href="#pelican" id="id9">[pelican]</a> to solving a numerical equations. If you haven't used it yet, I think,  you should give it a try.</p>
+<p>I spend a lot of time working on my project and I hope the stuff that I am doing maybe useful for other people as well.</p>
 </div>
 <div class="section" id="contact-information">
 <h2>Contact information:</h2>
@@ -105,7 +126,7 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 <table class="docutils citation" frame="void" id="pelican" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id8">[pelican]</a></td><td>Pelican: <a class="reference external" href="http://docs.getpelican.com/en/latest/index.html">http://docs.getpelican.com/en/latest/index.html</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id9">[pelican]</a></td><td>Pelican: <a class="reference external" href="http://docs.getpelican.com/en/latest/index.html">http://docs.getpelican.com/en/latest/index.html</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="lab" rules="none">
@@ -129,7 +150,7 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 <table class="docutils citation" frame="void" id="mdanalysis" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[mdanalysis]</td><td><em>(<a class="fn-backref" href="#id6">1</a>, <a class="fn-backref" href="#id9">2</a>)</em> MDanalysis: <a class="reference external" href="https://code.google.com/p/mdanalysis/">https://code.google.com/p/mdanalysis/</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id6">[mdanalysis]</a></td><td>MDanalysis: <a class="reference external" href="https://code.google.com/p/mdanalysis/">https://code.google.com/p/mdanalysis/</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="lammps" rules="none">
@@ -148,6 +169,12 @@ I am a big Pythonista, i use it everywhere: I write this blog using Python based
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id3">[Prof_Norman]</a></td><td><a class="reference external" href="http://www.ihed.ras.ru/norman/en/index.php">http://www.ihed.ras.ru/norman/en/index.php</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="mozillascience" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id8">[mozillascience]</a></td><td>Mozilla Science: <a class="reference external" href="https://www.mozillascience.org/">https://www.mozillascience.org/</a></td></tr>
 </tbody>
 </table>
 </div>
