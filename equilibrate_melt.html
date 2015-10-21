@@ -65,52 +65,69 @@
             <div class="contents topic" id="table-of-contents">
 <p class="topic-title first">Table of contents:</p>
 <ul class="auto-toc simple">
-<li><a class="reference internal" href="#quantifying-equilibration" id="id4">1&nbsp;&nbsp;&nbsp;Quantifying equilibration:</a></li>
-<li><a class="reference internal" href="#what-algorithm-to-use-to-prepare-equilibrated-melts" id="id5">2&nbsp;&nbsp;&nbsp;What algorithm to use, to prepare equilibrated melts?</a></li>
-<li><a class="reference internal" href="#how-to-use-equilibrated-melt-datafile-with-an-actual-simulation" id="id6">3&nbsp;&nbsp;&nbsp;How to use equilibrated_melt_datafile with an actual simulation?</a></li>
+<li><a class="reference internal" href="#introduction-to-polymer-physics" id="id14">1&nbsp;&nbsp;&nbsp;Introduction to polymer physics</a></li>
+<li><a class="reference internal" href="#theoretical-aspects-of-polymer-melt-equilibration-in-md" id="id15">2&nbsp;&nbsp;&nbsp;Theoretical aspects of polymer melt equilibration in MD</a></li>
+<li><a class="reference internal" href="#practical-aspects-of-polymer-equilibration" id="id16">3&nbsp;&nbsp;&nbsp;Practical aspects of polymer equilibration</a></li>
 </ul>
 </div>
-<p>Creating polymer structures using self-avoiding random walk was pretty easy, which is not the case for equilibration.
-Equilibrating polymer melts can be considered as an art itself.</p>
-<p>There are several key questions we are answering in this post:</p>
-<ol class="arabic simple">
-<li>What melts can be considered equilibrated?</li>
-<li>What algorithm to use, to prepare equilibrated melts?</li>
-<li>How to use equilibrated_melt_datafile with an actual simulation?</li>
-</ol>
-<p>Lets answer this questions:</p>
-<div class="section" id="quantifying-equilibration">
-<h2><a class="toc-backref" href="#id4">1&nbsp;&nbsp;&nbsp;Quantifying equilibration:</a></h2>
-<p>Imagine we have equilibrated our polymer melt, how do we check whether the chains are equilibrated well enough?</p>
-<p>Solution:</p>
-<p>To understand whether our melt is equilibrated enough we need to consider 4 following parameters:</p>
-<blockquote>
-<ol class="loweralpha simple">
-<li>Chain statistics</li>
-<li>Radial distribution function (RDF)</li>
-<li>Thermodynamic parameters</li>
-<li>MSD</li>
-</ol>
-</blockquote>
-<p>Lets start with second and third items in our list, they are pretty obvious: if there is any time evolution of your thermodynamic parameters (for example Energy) then,obviously, your melt is not equilibrated enough. The same applies to the RDF.</p>
-<p>Equilibration of long polymer chains can be a daunting task and for the chains longer than C1000 is literally unfeasable to achieve using the brute force MD run. Fortunately there are several methods that can help you with achieving the well-equilibrated state in comparetively short time.  For a detailed analysis of these methods there are couple of must read papers.
-One of them is <a class="citation-reference" href="#auhl" id="id1">[auhl]</a>. For me personally this paper was also very helpful <a class="citation-reference" href="#sliozberg" id="id2">[sliozberg]</a></p>
-<p>As for the chain statistics it has to be gaussian, i.e should be a <a class="citation-reference" href="#randomcoil" id="id3">[randomcoil]</a>. In a gaussian chain, chain is randomly coiled, and exhibits a certain relation between end-to-end distance (average distance between the last and the first atom in chain) and gyration radius(a quantity that shows how coiled the structure is) also it is regulated by the Mean Square Difference paramter $MSID(n) = \frac{&lt;R^2(n)&gt;}{n}$. When chains are equilibrated they exhibit gaussian properties, i.e $\frac{MSID(N)}{R^2_g} = 6$ and MSID(n) behaviour starts with linear part and then saturates.</p>
+<div class="section" id="introduction-to-polymer-physics">
+<h2><a class="toc-backref" href="#id14">1&nbsp;&nbsp;&nbsp;Introduction to polymer physics</a></h2>
+<p>The simplest model to describe polymer chains is the Freely Jointed Chain index{Freely Jointed Chain} (FJC) model <a class="citation-reference" href="#fjc" id="id1">[FJC]</a>.
+In this simple model (<a class="citation-reference" href="#randomcoil" id="id2">[randomcoil]</a>) a polymer chain is represented as a succession of monomer units that interact $textbf{only}$ by covalent binding forces, therefore the potential energy of the polymer is taken to be independent of its shape. Therefore at thermodynamic equilibrium, all of its shape configurations are equally likely to occur as the polymer fluctuates in time, according to the Boltzmann distribution. As a result, the bond length is fixed, and the internal rotations are completely free <a class="citation-reference" href="#equilibrating" id="id3">[equilibrating]</a></p>
+<p>Polymer configuration can be described by setting up the positions
+of each monomer: for example $3N$ Cartesian coordinates $XYZ$ with respect to the laboratory fixed frame. Since all of the configurations are random, the  end-to-end vector, connecting the first and the last units of a chain, should have a zero average <a class="citation-reference" href="#average" id="id4">[average]</a> and a certain variance.</p>
+<p>$$\mathbf{R}(N)=\sum_{i=1}^{i=N}\mathbf{r}_i$$</p>
+<p>Evidently <a class="citation-reference" href="#central-limit" id="id5">[central_limit]</a>, a long freely jointed chain will obey Gaussian statistics: the probability to observe a certain end-to-end vector $\mathbf{R}$ is given by the Gaussian distribution function with zero average (centered at the origin) and mean squared value.</p>
+<p>$$\Big \langle \mathbf{R}(N)  \Big \rangle = 0$$</p>
+<p>$$\Big \langle \mathbf{R^2}(N)\Big \rangle \equiv \Big \langle R^2(N)\Big \rangle = Nb^2$$
+where $b$ is the bond length and $N$ is the number of bonds.
+Another value used in polymer physics is the radius of gyration \index{radius of gyration} $R_g$ which is defined by the \autoref{eq:rg_def}.</p>
+<p>$$R^2_g(N) = \frac{1}{N} \Sigma_{i}(\mathbf{r}_i-\mathbf{r}_{CM})^2$$</p>
+<p>where $\mathbf{r_i}$ \- is the position vector of bead number $i$ in the chain and $r_{CM}$ is the position
+vector of the center of mass of the polymer chain. Schematically it is represented in the \autoref{fig:radius}. For ideal chains\index{ideal chains}, the radius of gyration (see \autoref{fig:radius}) can also be calculated by:</p>
+<p>$$&lt;R^2_g(N)&gt; = \frac{&lt;R^2(N)&gt;}{6}$$</p>
+<p>Despite its simplicity, $&lt;R^2_g(N)&gt; = \frac{&lt;R^2(N)&gt;}{6}$ is among the most fundamental results of
+polymer science - it provides an estimate of the length scales in polymer melts, as well as serving as a bridge to connect experimental results to MD.</p>
+<div class="figure align-center" id="figpolymerparameters">
+<img alt="lala" src="../images/end_to_end_explained.png" style="width: 300pt;" />
+</div>
+<p>FIG. <a class="citation-reference" href="#figpolymerparameters" id="id6">[figPolymerParameters]</a> Schematic representation of a polymer chain. Two main characteristic values are shown: the end-to-end distance  which corresponds to the vector connecting the first and the last beads of the polymer, and the gyration radius which is a characteristic average size of the polymer chain.</p>
+<p>In practice, chains are non-ideal, they interact and have internal stiffness. Moreover, since the number of beads $N$ is usually a large number, no distinction is made between the finite and the infinite number of bonds. In 1969 Flory \cite{Gennes1971}  used these ideas to define the characteristic ratio \index{characteristic ratio} $C_{\infty}$ of a polymer
+as:</p>
+<p>$$C_{\infty} = \lim_{N\to\infty} \frac{&lt;R^2(N)&gt;}{Nb^2}$$</p>
+<p>By definition, $C^{FJC}_{\infty} = 1$. Values of $C_{\infty}$ larger than $1$ occur
+when some of the degrees of freedom are constrained.
+The $C_{\infty}$ can be used as a measure of stiffness along the polymer backbone. The value $C_{\infty}$ is experimentally observable therefore one can judge the level of equilibration of polymer melts by how well their Mean Square Internal Distances($R^2(n)/n$)  plot saturate
+on the value $&lt;R^2(n \to \infty)&gt; \to C_{\infty} Nb^2$, explained in
+<a class="citation-reference" href="#figmsid" id="id7">[figMSID]</a>.</p>
+<div class="figure align-center" id="figmsid">
+<img alt="lala" src="../images/msid_explained.png" style="width: 500pt;" />
+</div>
+<p>FIG. <a class="citation-reference" href="#figmsid" id="id8">[figMSID]</a> Schematic representation of evolution of Mean Square Internal Distances (MSID) for equilibrated and non-equilibrated polymer melts. Upon equilibration chain MSID saturates on correct End-to-End distances that can be directly obtained from number of units in the chain, bond length and chain stiffness</p>
+</div>
+<div class="section" id="theoretical-aspects-of-polymer-melt-equilibration-in-md">
+<h2><a class="toc-backref" href="#id15">2&nbsp;&nbsp;&nbsp;Theoretical aspects of polymer melt equilibration in MD</a></h2>
+<p>The MD scheme takes care of the time evolution of the model used to study a particular system. Still, the first configuration (meaning positions and velocities
+(for all particles) have to be defined. For the case of short inorganic molecules, the initial positions can be set up ”by hand” on the vertices of a perfect crystal. This is not the case for the long chain high-temperature polymer melt. Therefore, one needs to start with a configuration that closely resembles an equilibrated, disordered and amorphous system. This can be achieved using a Monte-Carlo algorithm that will efficiently decorrelate an artificial configuration so as to let it acquire equilibrium properties. For instance, in the present work melts were created using self-avoiding random walk via a chain.f tool provided by the LAMMPS Molecular Dynamics Simulator (<a class="citation-reference" href="#lammps" id="id9">[lammps]</a>) package.</p>
+<p>After initial configurations are created, polymer chains need to be equilibrated. Unlike short molecules, long chain polymers require both thermodynamic and configurational equilibration. Configurational equilibration can be achieved when the Mean Square Internal Distance ($MSID$) parameter is equilibrated and correspond to pseudo-Gaussian chain, see FIG.[figmsid]_. This was done via Kremer-Grest equilibration process 7 using bead-springs polymer representation (<a class="citation-reference" href="#sliozberg" id="id10">[sliozberg]</a> )The method used for configurational equilibration is a fast ’Dpd-push-off’ - it is a commonly used way to prepare well-equilibrated melts. This method is an extension of the slow push-off method developed by Auhl et al. (<a class="citation-reference" href="#auhl" id="id11">[auhl]</a>). The idea of application of soft repulsive potentials for equilibration of polymer melts is effective provided the potential is applied to the initial configurations that closely match equilibrium structures at large length scales. The details and the practical aspects of the algorithm will be discussed below. The MSID plots, alongside plots of the thermodynamic parameters evolution provide evidence on a fine quality of equilibration achieved using the procedure explained above.</p>
 <div class="figure">
-<img alt="" src="./images/output_20_1.png" style="width: 400.0pt;" />
+<img alt="" src="../images/output_20_1.png" style="width: 400.0pt;" />
 </div>
+<p>Mean Square Internal Distance Plot ($MSID$). The plot indicates well equilibrated character of polymer melt. Linear growth at the initial stages is followed by saturation on the</p>
 </div>
-<div class="section" id="what-algorithm-to-use-to-prepare-equilibrated-melts">
-<h2><a class="toc-backref" href="#id5">2&nbsp;&nbsp;&nbsp;What algorithm to use, to prepare equilibrated melts?</a></h2>
-<p>Equilibration included several steps:</p>
+<div class="section" id="practical-aspects-of-polymer-equilibration">
+<h2><a class="toc-backref" href="#id16">3&nbsp;&nbsp;&nbsp;Practical aspects of polymer equilibration</a></h2>
+<p>We have already discussed the theoretical aspects of polymer equilibration. We emphasized the importance of creating decorrelated initial configurtions and tracking the evolution of MSID parameter as a gauge of equilibration. In this subsection we will discussed the practical aspects of polymer equilibration.</p>
+<p>Now it's time to &quot;make hands dirty&quot; and cover the steps and code used for equilibration.</p>
 <blockquote>
 <ol class="loweralpha simple">
-<li>Unphysical Kremer-Grest equilibration using bead-springs. [Equilibrate generated beads with Kremer-Grest model(atoms+bonds)]</li>
-<li>Adding angle/dihedral interactions</li>
-<li>Physical MD run equilibration(Equilibrate in a Physical (NVE, NPT) ensemble</li>
+<li>We start with unphysical Kremer-Grest equilibration using bead-spring model. (no angles in the atom topology only atoms+bonds)</li>
+<li>We add the angle/dihedral parts</li>
+<li>Finish up via physical NVE+NPT run</li>
 </ol>
 </blockquote>
-<p>Kremer-Grest. This is the main part of the equilibration, after this the chains need to be fully relaxed, have gaussian chain statistics, adequate radial distribution function.</p>
+<p>Below is my LAMMPS code I used for the Kremer-Grest equilibration. Details may be found in papers of <a class="citation-reference" href="#sliozberg" id="id12">[sliozberg]</a> or <a class="citation-reference" href="#auhl" id="id13">[auhl]</a>.
+This is the main part of the equilibration, after this step we expect the chains to be fully relaxed and have Gaussian chain statistics.</p>
 <div class="highlight"><pre><span class="c1"># Kremer-Grest model.</span>
 
 <span class="n">units</span> <span class="n">lj</span>
@@ -172,12 +189,7 @@ One of them is <a class="citation-reference" href="#auhl" id="id1">[auhl]</a>. F
 
 <span class="n">write_data</span> <span class="n">equil</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
-<!-- ==================================================== -->
-<!-- modifying data files -->
-</div>
-<div class="section" id="how-to-use-equilibrated-melt-datafile-with-an-actual-simulation">
-<h2><a class="toc-backref" href="#id6">3&nbsp;&nbsp;&nbsp;How to use equilibrated_melt_datafile with an actual simulation?</a></h2>
-<p>If we recall the init.data created at the first stage of creating melt it started like this:</p>
+<p>The init.data that was created using self-avoiding random walk and imported at the beginning of the script above didn't have any angle sections. But the actual simulation that we will run will need this parameters. So here I present a short SED/AWK script to update the data file. Interested read may find a good Introductory tutorial on <a class="reference external" href="https://quickleft.com/blog/command-line-tutorials-sed-awk/">https://quickleft.com/blog/command-line-tutorials-sed-awk/</a>.</p>
 <div class="highlight"><pre> <span class="n">LAMMPS</span> <span class="n">FENE</span> <span class="n">chain</span> <span class="n">data</span> <span class="n">file</span>
 
 <span class="mi">140</span>  <span class="n">atoms</span>
@@ -262,22 +274,52 @@ One of them is <a class="citation-reference" href="#auhl" id="id1">[auhl]</a>. F
 <span class="mi">1</span>  <span class="n">angle</span> <span class="n">types</span>
 <span class="o">...</span>
 </pre></div>
+<table class="docutils citation" frame="void" id="central-limit" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[central_limit]</a></td><td>According to Central Limit Theorem</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="lammps" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id9">[lammps]</a></td><td>Lammps www.lammps.sandia.gov</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="fjc" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[FJC]</a></td><td>Sometimes FJC model is also called an Ideal Chain Model</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="equilibrating" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[equilibrating]</a></td><td>This makes possible to track the level of equilibration of polymer melts   by tracking how ideal the chain configurations are</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="average" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[average]</a></td><td>After all different chains in the melt are averaged</td></tr>
+</tbody>
+</table>
 <table class="docutils citation" frame="void" id="randomcoil" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[randomcoil]</a></td><td>Random Coil: <a class="reference external" href="http://en.wikipedia.org/wiki/Random_coil">http://en.wikipedia.org/wiki/Random_coil</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[randomcoil]</a></td><td>Random Coil: <a class="reference external" href="http://en.wikipedia.org/wiki/Random_coil">http://en.wikipedia.org/wiki/Random_coil</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="auhl" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[auhl]</a></td><td><a class="reference external" href="http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670">http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670</a></td></tr>
+<tr><td class="label">[auhl]</td><td><em>(<a class="fn-backref" href="#id11">1</a>, <a class="fn-backref" href="#id13">2</a>)</em> <a class="reference external" href="http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670">http://scitation.aip.org/content/aip/journal/jcp/119/24/10.1063/1.1628670</a></td></tr>
 </tbody>
 </table>
 <table class="docutils citation" frame="void" id="sliozberg" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[sliozberg]</a></td><td>Sliozberg: <a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf">http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf</a> &lt;<a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf">http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf</a>&gt;</td></tr>
+<tr><td class="label">[sliozberg]</td><td><em>(<a class="fn-backref" href="#id10">1</a>, <a class="fn-backref" href="#id12">2</a>)</em> Sliozberg: <a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf">http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf</a> &lt;<a class="reference external" href="http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf">http://lammps.sandia.gov/threads/pdfEfEwE2ix6N.pdf</a>&gt;</td></tr>
 </tbody>
 </table>
 </div>
